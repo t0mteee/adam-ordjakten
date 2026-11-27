@@ -24,7 +24,7 @@ import {
 } from "./karta.mjs";
 import {
   SFX, KLIPP, klippProva, vackLjud, prata, stoppaTal,
-  sagBokstav, ljudaOrd, svenskaRoster
+  sagBokstav, ljudaOrd, svenskaRoster, rostEtikett
 } from "./ljud.mjs";
 import {
   SPELVERSION, laddaData, sparaData, nySpelare,
@@ -1787,11 +1787,11 @@ function openInstallningar(){
         </div>
         ${roster.length ? `
           <div class="set-row" style="flex-wrap:wrap">
-            <span><b>Röst på enheten</b></span>
-            <select id="voice-sel" style="padding:6px 10px;border-radius:10px;border:1.5px solid var(--border-hi);font-family:inherit;font-weight:600;max-width:220px">
+            <span><b>Röst på enheten</b><small>På iPad/Mac: ladda ner Alva (Premium) under Uppläst innehåll</small></span>
+            <select id="voice-sel" style="padding:6px 10px;border-radius:10px;border:1.5px solid var(--border-hi);font-family:inherit;font-weight:600;max-width:230px">
               <option value="auto" ${s.voiceURI === "auto" ? "selected" : ""}>Automatiskt (bästa)</option>
-              <option value="system" ${s.voiceURI === "system" ? "selected" : ""}>Plattans val (iPad Premium)</option>
-              ${roster.map(v => `<option value="${escapeHtml(v.voiceURI)}" ${s.voiceURI === v.voiceURI ? "selected" : ""}>${escapeHtml(v.name)}</option>`).join("")}
+              <option value="system" ${s.voiceURI === "system" ? "selected" : ""}>Plattans val (Alva Premium)</option>
+              ${roster.map(v => `<option value="${escapeHtml(v.voiceURI)}" ${s.voiceURI === v.voiceURI ? "selected" : ""}>${escapeHtml(rostEtikett(v))}</option>`).join("")}
             </select>
           </div>
         ` : ""}

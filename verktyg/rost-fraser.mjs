@@ -6,19 +6,24 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { TRAM_LINES, ALLA_STOPP, VAGNTYPER, VAGNNAMN } from "../js/gbg-data.mjs";
-import { ORDBANK, BYGG_HALLPLATSER, VAGN_NAMN_ORD } from "../js/ord-data.mjs";
-import { klippId } from "../js/ljud.mjs";
+import { ALFABET, BOKSTAVSLJUD, ORDBANK, BYGG_HALLPLATSER, VAGN_NAMN_ORD } from "../js/ord-data.mjs";
+import { klippId, bokstavKlippId } from "../js/ljud.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const utFil = path.join(__dirname, "rost-fraser.txt");
 
 const poster = new Map();
-const lagg = (text) => {
+const lagg = (text, customId = null) => {
   const t = String(text || "").trim();
   if(!t) return;
-  const id = klippId(t);
+  const id = customId || klippId(t);
   if(id && !poster.has(id)) poster.set(id, t);
 };
+
+/* Bokstavsljud A–Ö för naturlig Alva Premium-ljudning */
+for(const ch of ALFABET){
+  lagg(BOKSTAVSLJUD[ch] || ch.toLowerCase(), bokstavKlippId(ch));
+}
 
 /* Grundfraser & beröm */
 [

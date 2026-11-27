@@ -1,6 +1,6 @@
 /* Ordjaktens servicearbetare — gör att spelet fungerar utan nätverk.
    Höj VERSION när spelet ändras, så hämtas det nya vid nästa start. */
-const VERSION = "ordjakten-v2-r1";
+const VERSION = "ordjakten-v2-r2";
 const SKAL = [
   "./",
   "./index.html",

@@ -1,30 +1,59 @@
 # Ordjaktens klippröst: fraser att läsa in med ./verktyg/gor-rost.sh
 # filnamn<tabb>text
+bokstav-a	a
+bokstav-b	b
+bokstav-c	s
+bokstav-d	d
+bokstav-e	e
+bokstav-f	ff
+bokstav-g	g
+bokstav-h	h
+bokstav-i	i
+bokstav-j	j
+bokstav-k	k
+bokstav-l	ll
+bokstav-m	mm
+bokstav-n	nn
+bokstav-o	o
+bokstav-p	p
+bokstav-q	k
+bokstav-r	rr
+bokstav-s	ss
+bokstav-t	t
+bokstav-u	u
+bokstav-v	vv
+bokstav-w	vv
+bokstav-x	ks
+bokstav-y	y
+bokstav-z	ss
+bokstav-aa	å
+bokstav-ae	ä
+bokstav-oe	ö
 hej	Hej
-vaelkommen-till-ordjakten	Välkommen till Ordjakten!
-toppen	Toppen!
-snyggt-laest	Snyggt läst!
-heja	Heja!
-helt-raett	Helt rätt!
-suveraent	Suveränt!
-laes-ordet-vilken-bild-aer-det	Läs ordet! Vilken bild är det?
-vilket-ord-aer	Vilket ord är
-vilken-bokstav-boerjar	Vilken bokstav börjar
-paa	på?
-vilken-bokstav-fattas-i	Vilken bokstav fattas i
-bygg-ordet	Bygg ordet
-bygg-haallplatsen	Bygg hållplatsen
-vilken-vagn-aaker-mot	Vilken vagn åker mot
-hitta-skylten	Hitta skylten:
-naesta-haallplats	Nästa hållplats:
-aendstation	Ändstation!
-ta-dig-till	Ta dig till
-raett-svar-aer	Rätt svar är
-prova-igen	Prova igen!
-foersoek-igen	Försök igen!
-tut-tut-haer-kommer-spaarvagnen	Tut tut! Här kommer spårvagnen!
-mot	mot
-vagn	Vagn
+1	Välkommen till Ordjakten!
+2	Toppen!
+3	Snyggt läst!
+4	Heja!
+5	Helt rätt!
+6	Suveränt!
+7	Läs ordet! Vilken bild är det?
+8	Vilket ord är
+9	Vilken bokstav börjar
+10	på?
+11	Vilken bokstav fattas i
+12	Bygg ordet
+13	Bygg hållplatsen
+14	Vilken vagn åker mot
+15	Hitta skylten:
+16	Nästa hållplats:
+17	Ändstation!
+18	Ta dig till
+19	Rätt svar är
+20	Prova igen!
+21	Försök igen!
+22	Tut tut! Här kommer spårvagnen!
+23	mot
+24	Vagn
 is	Is
 bygg-ordet-is	Bygg ordet Is!
 vilket-ord-aer-is	Vilket ord är Is?
@@ -136,6 +165,7 @@ vilket-ord-aer-vaeg	Vilket ord är Väg?
 tak	Tak
 bygg-ordet-tak	Bygg ordet Tak!
 vilket-ord-aer-tak	Vilket ord är Tak?
+vagn	Vagn
 bygg-ordet-vagn	Bygg ordet Vagn!
 vilket-ord-aer-vagn	Vilket ord är Vagn?
 spaar	Spår

@@ -1,11 +1,17 @@
 /* ═══════════════════════════════════════════════════════════════
    Ordjakten — Ljud, Klippröst (Alva Premium), talsyntes & Ljudning
-   Bygger på iPad/iPhone-lärdomarna från Räknelandet.
+   Lugnt nybörjartempo och korrekt Apple-röstval (Alva Premium).
    ═══════════════════════════════════════════════════════════════ */
 
 import { BOKSTAVSLJUD } from "./ord-data.mjs";
 
-const APPLE = typeof navigator !== "undefined" && (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+const APPLE = typeof navigator !== "undefined" && /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent || "");
+
+export const RATES = [
+  { name: "Långsam", tts: 0.62, klipp: 0.86 },
+  { name: "Lagom",   tts: 0.78, klipp: 0.94 },
+  { name: "Snabb",   tts: 0.96, klipp: 1.04 }
+];
 
 let audioCtx = null;
 function getCtx(){
@@ -14,7 +20,9 @@ function getCtx(){
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if(Ctx) audioCtx = new Ctx();
   }
-  if(audioCtx && audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
+  if(audioCtx && (audioCtx.state === "suspended" || audioCtx.state === "interrupted")){
+    audioCtx.resume().catch(() => {});
+  }
   return audioCtx;
 }
 
@@ -30,7 +38,7 @@ export function vackLjud(spelaPaTyst = false){
   }
 }
 
-/* ── Syntetiserade ljudeffekter ──────────────────────────────────────── */
+/* ── Syntetiserade ljudeffekter (mjuka in-/uttoningar utan klick) ────── */
 export const SFX = {
   aktiv: true,
   tone(freq, delay, dur, type = "sine", vol = 0.14){
@@ -52,46 +60,43 @@ export const SFX = {
     osc.stop(now + dur + 0.015);
   },
   klick(){
-    this.tone(520, 0, 0.055, "triangle", 0.09);
+    this.tone(520, 0, 0.055, "triangle", 0.085);
   },
   ratt(){
-    this.tone(523.25, 0, 0.16, "triangle", 0.16);
-    this.tone(659.25, 0.09, 0.18, "triangle", 0.16);
-    this.tone(783.99, 0.18, 0.28, "triangle", 0.18);
+    this.tone(523.25, 0, 0.16, "triangle", 0.15);
+    this.tone(659.25, 0.09, 0.18, "triangle", 0.15);
+    this.tone(783.99, 0.18, 0.28, "triangle", 0.17);
   },
   fel(){
-    this.tone(290, 0, 0.14, "sine", 0.12);
-    this.tone(240, 0.1, 0.2, "sine", 0.11);
+    this.tone(290, 0, 0.14, "sine", 0.11);
+    this.tone(240, 0.1, 0.2, "sine", 0.1);
   },
   mynt(){
-    this.tone(987.77, 0, 0.08, "sine", 0.12);
-    this.tone(1318.5, 0.07, 0.18, "sine", 0.12);
+    this.tone(987.77, 0, 0.08, "sine", 0.11);
+    this.tone(1318.5, 0.07, 0.18, "sine", 0.11);
   },
   fanfar(){
     [[523.25, 0], [659.25, 0.1], [783.99, 0.2], [1046.5, 0.32]].forEach(([f, t]) => {
-      this.tone(f, t, 0.35, "triangle", 0.16);
+      this.tone(f, t, 0.35, "triangle", 0.15);
     });
   },
-  /* Spårvagnsklocka: slagen metallklocka med deltoner */
   klocka(){
     if(!this.aktiv) return;
     const f = 1120;
-    [[1, 0.14, 0.7], [2.02, 0.06, 0.45], [2.98, 0.04, 0.32], [4.18, 0.025, 0.22]].forEach(([m, v, d]) => {
+    [[1, 0.13, 0.7], [2.02, 0.055, 0.45], [2.98, 0.038, 0.32], [4.18, 0.022, 0.22]].forEach(([m, v, d]) => {
       this.tone(f * m, 0, d, "sine", v);
       this.tone(f * m, 0.22, d * 0.9, "sine", v * 0.85);
     });
   },
-  /* Dörrsignal: tre lätta pip */
   dorr(){
-    this.tone(880, 0, 0.1, "sine", 0.11);
-    this.tone(880, 0.15, 0.1, "sine", 0.11);
-    this.tone(1046.5, 0.3, 0.16, "sine", 0.11);
+    this.tone(880, 0, 0.1, "sine", 0.1);
+    this.tone(880, 0.15, 0.1, "sine", 0.1);
+    this.tone(1046.5, 0.3, 0.16, "sine", 0.1);
   },
-  /* Två mjuka toner före hållplatsutrop */
   utrop(){
     [[987.77, 0], [739.99, 0.24]].forEach(([f, t]) => {
-      this.tone(f, t, 0.72, "sine", 0.15);
-      this.tone(f * 2, t, 0.4, "sine", 0.045);
+      this.tone(f, t, 0.72, "sine", 0.14);
+      this.tone(f * 2, t, 0.4, "sine", 0.04);
     });
   }
 };
@@ -102,7 +107,7 @@ export const KLIPP = {
   finns: null,
   rost: "",
   format: "m4a",
-  takt: 165,
+  takt: 150,
   buffrar: new Map(),
   laddar: new Map(),
   kor: 0,
@@ -128,6 +133,10 @@ export function klippId(text){
   return s.slice(0, 60).replace(/-$/, "") + "-" + h.toString(16);
 }
 
+export function bokstavKlippId(ch){
+  return "bokstav-" + klippId(ch);
+}
+
 export function klippDelar(text, finns, namn = ""){
   if(!finns || !finns.size) return null;
   const ord = klippNorm(text).replace(/([.,!?:])/g, " $1 ").split(/\s+/).filter(Boolean);
@@ -138,7 +147,7 @@ export function klippDelar(text, finns, namn = ""){
   const lagg = (d) => { if(paus && ut.length) ut.push({ paus }); paus = 0; ut.push(...d); };
   while(i < ord.length){
     const t = ord[i];
-    if(tecken(t)){ paus = Math.max(paus, /[.!?]/.test(t) ? 240 : 120); i++; continue; }
+    if(tecken(t)){ paus = Math.max(paus, /[.!?]/.test(t) ? 260 : 140); i++; continue; }
     const idx = [];
     for(let j = i; j < ord.length && idx.length < 40; j++) if(!tecken(ord[j])) idx.push(j);
     let traff = null;
@@ -162,12 +171,11 @@ export function klippProva(){
       KLIPP.finns = new Set(j.klipp);
       KLIPP.rost = String(j.rost || "");
       KLIPP.format = String(j.format || "m4a");
-      KLIPP.takt = Number(j.takt) || 165;
+      KLIPP.takt = Number(j.takt) || 150;
     })
     .catch(() => {});
 }
 
-/* Generös marginal i kanterna + mjuk in-/uttoning i spelaKlipp så klippen aldrig klickar */
 function klippKanter(buf){
   const ch = buf.getChannelData(0), sr = buf.sampleRate, tr = 0.01;
   let a = 0, b = ch.length;
@@ -191,7 +199,7 @@ function klippHamta(id){
       const k = klippKanter(buf);
       KLIPP.laddar.delete(id);
       KLIPP.buffrar.set(id, k);
-      while(KLIPP.buffrar.size > 200) KLIPP.buffrar.delete(KLIPP.buffrar.keys().next().value);
+      while(KLIPP.buffrar.size > 240) KLIPP.buffrar.delete(KLIPP.buffrar.keys().next().value);
       return k;
     })
     .catch(e => { KLIPP.laddar.delete(id); throw e; });
@@ -205,17 +213,19 @@ export function klippStopp(){
   KLIPP.noder = [];
 }
 
-function spelaKlipp(delar, takt = 1, onDone = null, annars = null){
+function spelaKlipp(delar, takt = 0.94, onDone = null, annars = null, onStep = null){
   const ctx = getCtx();
   if(!ctx){ if(annars) annars(); return; }
   const kor = ++KLIPP.kor;
   const ids = [...new Set(delar.filter(d => typeof d === "string"))];
   Promise.all(ids.map(klippHamta)).then(() => {
     if(kor !== KLIPP.kor) return;
-    let t = ctx.currentTime + 0.025;
+    const baseT = ctx.currentTime + 0.025;
+    let t = baseT;
     let sistaNod = null;
+    let stepIdx = 0;
     for(const d of delar){
-      if(typeof d !== "string"){ t += (d.paus || 120) / 1000 / takt; continue; }
+      if(typeof d !== "string"){ t += (d.paus || 140) / 1000 / takt; continue; }
       const k = KLIPP.buffrar.get(d);
       if(!k) continue;
       const src = ctx.createBufferSource();
@@ -239,8 +249,14 @@ function spelaKlipp(delar, takt = 1, onDone = null, annars = null){
         const i = KLIPP.noder.indexOf(src);
         if(i >= 0) KLIPP.noder.splice(i, 1);
       };
+      if(onStep){
+        const sIdx = stepIdx;
+        const delayMs = Math.max(0, (t - ctx.currentTime) * 1000);
+        ljudningTimers.push(setTimeout(() => { if(kor === KLIPP.kor) onStep(sIdx); }, delayMs));
+      }
+      stepIdx++;
       sistaNod = src;
-      t += spelDur + 0.04;
+      t += spelDur + 0.055;
     }
     if(sistaNod && onDone){
       const orig = sistaNod.onended;
@@ -253,23 +269,53 @@ function spelaKlipp(delar, takt = 1, onDone = null, annars = null){
   });
 }
 
-/* ── Talsyntes (SpeechSynthesis) ─────────────────────────────────────── */
+/* ── Talsyntes (SpeechSynthesis) — rankar Premium / Förbättrad / Natural ─ */
 let talTimer = null;
 let ljudningTimers = [];
 let ljudningAvbruten = false;
 let avbrutetVid = 0;
 
+export function rostPoang(v){
+  const s = ((v.name || "") + " " + (v.voiceURI || "")).toLowerCase();
+  if(/premium/.test(s)) return 4;
+  if(/enhanced|förbättrad|forbattrad|natural|neural|wavenet/.test(s)) return 3;
+  if(v.localService === false) return 2;
+  return 1;
+}
+
+export function rostEtikett(v){
+  const namn = (v.name || "Röst")
+    .replace(/^(Microsoft|Google|Apple)\s+/i, "")
+    .replace(/\s+-\s+Swedish.*$/i, "")
+    .replace(/\s*\(Sweden\)/i, "")
+    .trim();
+  const s = ((v.name || "") + " " + (v.voiceURI || "")).toLowerCase();
+  const kval = /premium/.test(s) ? "Premium"
+    : /enhanced|förbättrad|forbattrad/.test(s) ? "Förbättrad"
+    : /natural|neural|wavenet/.test(s) ? "Natural"
+    : /compact/.test(s) ? "liten"
+    : v.localService === false ? "nätröst" : "";
+  return kval && !new RegExp(kval, "i").test(namn) ? `${namn} · ${kval}` : namn;
+}
+
 export function svenskaRoster(){
   if(typeof speechSynthesis === "undefined") return [];
-  const alla = speechSynthesis.getVoices().filter(v => /^sv\b/i.test(v.lang));
-  const rank = (v) => {
-    const n = (v.name + " " + v.voiceURI).toLowerCase();
-    if(/premium/.test(n)) return 4;
-    if(/enhanced|förbättrad|natural|neural|wavenet/.test(n)) return 3;
-    if(!v.localService) return 2;
-    return 1;
-  };
-  return alla.sort((a, b) => rank(b) - rank(a));
+  const alla = (speechSynthesis.getVoices() || []).filter(v => /^sv([-_]|$)/i.test(v.lang || ""));
+  return alla.slice().sort((a, b) => rostPoang(b) - rostPoang(a) || (b.default ? 1 : 0) - (a.default ? 1 : 0));
+}
+
+/* På iPhone, iPad och Mac visar Safari/webbläsaren ofta bara den lilla inbyggda
+   robotrösten i listan. Genom att lämna voice = null tar enheten i stället den
+   nedladdade Alva (Premium) under Uppläst innehåll → Röster → Svenska! */
+export function valjRost(roster, vill){
+  if(vill === "system") return null;
+  if(vill && vill !== "auto"){
+    const v = roster.find(x => x.voiceURI === vill);
+    if(v) return v;
+  }
+  const bast = roster[0] || null;
+  if(APPLE && (!bast || rostPoang(bast) < 3)) return null;
+  return bast;
 }
 
 export function stoppaTal(){
@@ -284,12 +330,10 @@ export function stoppaTal(){
 }
 
 export function prata(text, opts = {}){
-  if(!text) return;
-  if(opts.tyst) return;
+  if(!text || opts.tyst) return;
   const s = opts.settings || {};
   if(s.voice === false) return;
-  const hastighet = [0.86, 0.96, 1.08][s.rate != null ? s.rate : 1] || 0.96;
-  const klippTakt = [0.92, 1.0, 1.08][s.rate != null ? s.rate : 1] || 1.0;
+  const rObj = RATES[s.rate != null ? s.rate : 1] || RATES[1];
 
   stoppaTal();
 
@@ -297,11 +341,11 @@ export function prata(text, opts = {}){
   if(anvandKlipp){
     const delar = klippDelar(text, KLIPP.finns, opts.namn || "");
     if(delar){
-      spelaKlipp(delar, klippTakt, opts.onDone, () => prataTTS(text, hastighet, s, opts.onDone));
+      spelaKlipp(delar, rObj.klipp, opts.onDone, () => prataTTS(text, rObj.tts, s, opts.onDone));
       return;
     }
   }
-  prataTTS(text, hastighet, s, opts.onDone);
+  prataTTS(text, rObj.tts, s, opts.onDone);
 }
 
 function skapaUtsaga(text, rate, s = {}){
@@ -309,16 +353,8 @@ function skapaUtsaga(text, rate, s = {}){
   u.lang = "sv-SE";
   u.rate = rate;
   u.pitch = 1;
-  const roster = svenskaRoster();
-  if(s.voiceURI && s.voiceURI !== "auto" && s.voiceURI !== "system"){
-    const v = roster.find(x => x.voiceURI === s.voiceURI);
-    if(v) u.voice = v;
-  }else if(s.voiceURI !== "system"){
-    const bast = roster[0];
-    if(bast && (!APPLE || /premium|enhanced|förbättrad|natural/i.test(bast.name + bast.voiceURI))){
-      u.voice = bast;
-    }
-  }
+  const v = valjRost(svenskaRoster(), s.voiceURI);
+  if(v){ u.voice = v; if(v.lang) u.lang = v.lang; }
   return u;
 }
 
@@ -329,6 +365,7 @@ function prataTTS(text, rate, s = {}, onDone = null, onBoundary = null){
   }
   const gor = () => {
     try{
+      if(speechSynthesis.paused) speechSynthesis.resume();
       const u = skapaUtsaga(text, rate, s);
       if(onBoundary) u.onboundary = onBoundary;
       if(onDone){
@@ -340,23 +377,34 @@ function prataTTS(text, rate, s = {}, onDone = null, onBoundary = null){
       if(onDone) onDone();
     }
   };
-  /* Vänta bara efter cancel() om något faktiskt nyss avbröts */
   const sedanAvbrott = performance.now() - avbrutetVid;
-  const vant = avbrutetVid && sedanAvbrott < 140 ? Math.max(20, (APPLE ? 130 : 40) - sedanAvbrott) : 0;
+  const vant = avbrutetVid && sedanAvbrott < 150 ? Math.max(25, (APPLE ? 140 : 45) - sedanAvbrott) : 0;
   if(vant > 0) talTimer = setTimeout(gor, vant);
   else gor();
 }
 
-/* Säg ett enstaka bokstavsljud när barnet trycker på en bricka eller bokstav */
+/* Säg ett enstaka bokstavsljud — använder Alva-klipp om inläst, annars lugn talsyntes */
 export function sagBokstav(ch, settings = {}){
   if(settings.voice === false) return;
   const stor = String(ch || "").toLocaleUpperCase("sv");
+  const rObj = RATES[settings.rate != null ? settings.rate : 1] || RATES[1];
+  const cid = bokstavKlippId(stor);
+  if(settings.klipprost !== false && KLIPP.finns && KLIPP.finns.has(cid)){
+    stoppaTal();
+    spelaKlipp([cid], rObj.klipp, null, () => {
+      const ljud = BOKSTAVSLJUD[stor] || stor.toLocaleLowerCase("sv");
+      prataTTS(ljud, Math.max(0.62, rObj.tts - 0.06), settings);
+    });
+    return;
+  }
   const ljud = BOKSTAVSLJUD[stor] || stor.toLocaleLowerCase("sv");
-  prata(ljud, { settings, tvingaTTS: true });
+  stoppaTal();
+  prataTTS(ljud, Math.max(0.62, rObj.tts - 0.06), settings);
 }
 
-/* Interaktiv ljudning i EN sammanhängande talsyntes-utsaga (inga klick mellan
-   bokstäverna!). Synkar markeringen via onboundary med mjuk reserv-timer. */
+/* Interaktiv ljudning i lugnt, tydligt tempo för 5-åringar.
+   Använder Alva-klipp om bokstäver + ord är inlästa, annars en sammanhängande
+   talsyntes-utsaga utan klickljud mellan bokstäverna. */
 export function ljudaOrd(ord, settings = {}, onIndex = () => {}, onDone = () => {}){
   stoppaTal();
   ljudningAvbruten = false;
@@ -365,14 +413,37 @@ export function ljudaOrd(ord, settings = {}, onIndex = () => {}, onDone = () => 
 
   if(settings.voice === false){
     bokst.forEach((_, i) => {
-      ljudningTimers.push(setTimeout(() => { if(!ljudningAvbruten) onIndex(i); }, i * 420));
+      ljudningTimers.push(setTimeout(() => { if(!ljudningAvbruten) onIndex(i); }, i * 480));
     });
-    ljudningTimers.push(setTimeout(() => { if(!ljudningAvbruten) onIndex("alla"); }, bokst.length * 420 + 180));
-    ljudningTimers.push(setTimeout(() => { if(!ljudningAvbruten){ onIndex(-1); onDone(); } }, bokst.length * 420 + 750));
+    ljudningTimers.push(setTimeout(() => { if(!ljudningAvbruten) onIndex("alla"); }, bokst.length * 480 + 200));
+    ljudningTimers.push(setTimeout(() => { if(!ljudningAvbruten){ onIndex(-1); onDone(); } }, bokst.length * 480 + 820));
     return;
   }
 
-  /* Bygg en enda mjuk fras, t.ex. "ss, o, ll. Sol" och spara startposition per del */
+  const rObj = RATES[settings.rate != null ? settings.rate : 1] || RATES[1];
+  const bokstavIds = bokst.map(ch => bokstavKlippId(ch));
+  const ordKlipp = klippId(ord);
+  const harAllaKlipp = settings.klipprost !== false && KLIPP.finns
+    && bokstavIds.every(id => KLIPP.finns.has(id))
+    && KLIPP.finns.has(ordKlipp);
+
+  if(harAllaKlipp){
+    const sekvens = [];
+    bokstavIds.forEach((id, i) => {
+      sekvens.push(id);
+      sekvens.push({ paus: i + 1 < bokstavIds.length ? 220 : 380 });
+    });
+    sekvens.push(ordKlipp);
+    spelaKlipp(sekvens, Math.max(0.84, rObj.klipp - 0.04), () => {
+      if(!ljudningAvbruten){ onIndex(-1); onDone(); }
+    }, null, (stepIdx) => {
+      if(stepIdx < bokst.length) onIndex(stepIdx);
+      else onIndex("alla");
+    });
+    return;
+  }
+
+  /* Talsyntes i lugnt tempo: en enda sammanhängande mening */
   const delar = bokst.map(ch => BOKSTAVSLJUD[ch] || ch.toLocaleLowerCase("sv"));
   let fras = "";
   const spann = [];
@@ -380,7 +451,7 @@ export function ljudaOrd(ord, settings = {}, onIndex = () => {}, onDone = () => 
     const start = fras.length;
     fras += d;
     spann.push({ start, idx: i });
-    fras += i + 1 < delar.length ? ", " : ". ";
+    fras += i + 1 < delar.length ? "... " : ". ";
   });
   const ordStart = fras.length;
   fras += String(ord);
@@ -388,18 +459,18 @@ export function ljudaOrd(ord, settings = {}, onIndex = () => {}, onDone = () => 
   let fickBoundary = false;
   onIndex(0);
 
-  /* Mjuk reserv-animation om webbläsarens röst inte skickar onboundary */
   bokst.forEach((_, i) => {
     if(i === 0) return;
     ljudningTimers.push(setTimeout(() => {
       if(!ljudningAvbruten && !fickBoundary) onIndex(i);
-    }, i * 460));
+    }, i * 560));
   });
   ljudningTimers.push(setTimeout(() => {
     if(!ljudningAvbruten && !fickBoundary) onIndex("alla");
-  }, bokst.length * 460 + 220));
+  }, bokst.length * 560 + 260));
 
-  prataTTS(fras, 0.88, settings, () => {
+  const ljudTakt = Math.max(0.62, rObj.tts - 0.08);
+  prataTTS(fras, ljudTakt, settings, () => {
     if(ljudningAvbruten) return;
     for(const tm of ljudningTimers) clearTimeout(tm);
     ljudningTimers = [];
@@ -409,14 +480,9 @@ export function ljudaOrd(ord, settings = {}, onIndex = () => {}, onDone = () => 
     if(ljudningAvbruten || typeof ev.charIndex !== "number") return;
     fickBoundary = true;
     const pos = ev.charIndex;
-    if(pos >= ordStart){
-      onIndex("alla");
-      return;
-    }
+    if(pos >= ordStart){ onIndex("alla"); return; }
     let vald = 0;
-    for(const sp of spann){
-      if(pos >= sp.start) vald = sp.idx;
-    }
+    for(const sp of spann){ if(pos >= sp.start) vald = sp.idx; }
     onIndex(vald);
   });
 }

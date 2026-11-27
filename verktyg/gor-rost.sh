@@ -2,12 +2,12 @@
 # Läser in Ordjaktens röst som ljudfiler på en Mac, med Alva Premium.
 #
 #     node verktyg/rost-fraser.mjs
-#     ./verktyg/gor-rost.sh [--namn Adam] [--takt 160] [--rost "Alva (Premium)"]
+#     ./verktyg/gor-rost.sh [--namn Adam] [--takt 145] [--rost "Alva (Premium)"]
 #
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-TAKT=160; ROST=""; FORMAT="m4a"; NAMN=()
+TAKT=145; ROST=""; FORMAT="m4a"; NAMN=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --namn) NAMN+=("$2"); shift 2;;
