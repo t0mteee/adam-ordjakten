@@ -8,13 +8,12 @@ export const ALFABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ".split("");
 
 export const VOKALER = new Set(["A", "E", "I", "O", "U", "Y", "Å", "Ä", "Ö"]);
 
-/* Bokstavsljud för mjuk ljudning med svensk talsyntes.
-   Hållbara ljud (s, m, l, r, n, f, v) förlängs lite; klusiler hålls korta. */
+/* Bokstavsljud anpassade för mjuk uppläsning i svensk talsyntes utan klickljud */
 export const BOKSTAVSLJUD = {
-  A: "aa", B: "b", C: "s", D: "d", E: "ee", F: "fff", G: "g", H: "h",
-  I: "ii", J: "j", K: "k", L: "lll", M: "mmm", N: "nnn", O: "oo", P: "p",
-  Q: "k", R: "rrr", S: "sss", T: "t", U: "uu", V: "vvv", W: "vvv", X: "ks",
-  Y: "yy", Z: "sss", Å: "åå", Ä: "ää", Ö: "öö"
+  A: "a", B: "b", C: "s", D: "d", E: "e", F: "ff", G: "g", H: "h",
+  I: "i", J: "j", K: "k", L: "ll", M: "mm", N: "nn", O: "o", P: "p",
+  Q: "k", R: "rr", S: "ss", T: "t", U: "u", V: "vv", W: "vv", X: "ks",
+  Y: "y", Z: "ss", Å: "å", Ä: "ä", Ö: "ö"
 };
 
 /* Förväxlingsbara bokstäver — används som smarta felsvar i lucka och bygga ord */

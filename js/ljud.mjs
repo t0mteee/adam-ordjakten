@@ -42,16 +42,17 @@ export const SFX = {
     const g = ctx.createGain();
     osc.type = type;
     osc.frequency.setValueAtTime(freq, now);
-    g.gain.setValueAtTime(0.0001, now);
+    g.gain.setValueAtTime(0, now);
     g.gain.linearRampToValueAtTime(vol, now + 0.012);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    g.gain.exponentialRampToValueAtTime(0.0008, now + Math.max(0.02, dur - 0.012));
+    g.gain.linearRampToValueAtTime(0, now + dur);
     osc.connect(g);
     g.connect(ctx.destination);
     osc.start(now);
-    osc.stop(now + dur + 0.02);
+    osc.stop(now + dur + 0.015);
   },
   klick(){
-    this.tone(520, 0, 0.055, "triangle", 0.1);
+    this.tone(520, 0, 0.055, "triangle", 0.09);
   },
   ratt(){
     this.tone(523.25, 0, 0.16, "triangle", 0.16);
@@ -166,14 +167,16 @@ export function klippProva(){
     .catch(() => {});
 }
 
+/* Generös marginal i kanterna + mjuk in-/uttoning i spelaKlipp så klippen aldrig klickar */
 function klippKanter(buf){
-  const ch = buf.getChannelData(0), sr = buf.sampleRate, tr = 0.008;
+  const ch = buf.getChannelData(0), sr = buf.sampleRate, tr = 0.01;
   let a = 0, b = ch.length;
   while(a < b && Math.abs(ch[a]) < tr) a++;
   while(b > a && Math.abs(ch[b - 1]) < tr) b--;
-  const start = Math.max(0, a / sr - 0.012);
-  const slut = Math.min(buf.duration, b / sr + 0.025);
-  return { buf, start, dur: Math.max(0.05, slut - start) };
+  if(a >= b) return { buf, start: 0, dur: buf.duration };
+  const start = Math.max(0, a / sr - 0.025);
+  const slut = Math.min(buf.duration, b / sr + 0.085);
+  return { buf, start, dur: Math.max(0.06, slut - start) };
 }
 
 function klippHamta(id){
@@ -209,16 +212,27 @@ function spelaKlipp(delar, takt = 1, onDone = null, annars = null){
   const ids = [...new Set(delar.filter(d => typeof d === "string"))];
   Promise.all(ids.map(klippHamta)).then(() => {
     if(kor !== KLIPP.kor) return;
-    let t = ctx.currentTime + 0.02;
+    let t = ctx.currentTime + 0.025;
     let sistaNod = null;
     for(const d of delar){
       if(typeof d !== "string"){ t += (d.paus || 120) / 1000 / takt; continue; }
       const k = KLIPP.buffrar.get(d);
       if(!k) continue;
       const src = ctx.createBufferSource();
+      const gain = ctx.createGain();
+      const spelDur = k.dur / takt;
+      const fadeIn = Math.min(0.012, spelDur * 0.15);
+      const fadeOut = Math.min(0.035, spelDur * 0.25);
+
       src.buffer = k.buf;
       src.playbackRate.value = takt;
-      src.connect(ctx.destination);
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(1, t + fadeIn);
+      gain.gain.setValueAtTime(1, Math.max(t + fadeIn, t + spelDur - fadeOut));
+      gain.gain.linearRampToValueAtTime(0, t + spelDur);
+
+      src.connect(gain);
+      gain.connect(ctx.destination);
       src.start(t, k.start, k.dur);
       KLIPP.noder.push(src);
       src.onended = () => {
@@ -226,7 +240,7 @@ function spelaKlipp(delar, takt = 1, onDone = null, annars = null){
         if(i >= 0) KLIPP.noder.splice(i, 1);
       };
       sistaNod = src;
-      t += k.dur / takt + 0.035;
+      t += spelDur + 0.04;
     }
     if(sistaNod && onDone){
       const orig = sistaNod.onended;
@@ -241,7 +255,9 @@ function spelaKlipp(delar, takt = 1, onDone = null, annars = null){
 
 /* ── Talsyntes (SpeechSynthesis) ─────────────────────────────────────── */
 let talTimer = null;
+let ljudningTimers = [];
 let ljudningAvbruten = false;
+let avbrutetVid = 0;
 
 export function svenskaRoster(){
   if(typeof speechSynthesis === "undefined") return [];
@@ -259,9 +275,11 @@ export function svenskaRoster(){
 export function stoppaTal(){
   ljudningAvbruten = true;
   if(talTimer){ clearTimeout(talTimer); talTimer = null; }
+  for(const tm of ljudningTimers) clearTimeout(tm);
+  ljudningTimers = [];
   klippStopp();
   if(typeof speechSynthesis !== "undefined" && (speechSynthesis.speaking || speechSynthesis.pending)){
-    try{ speechSynthesis.cancel(); }catch(_){}
+    try{ speechSynthesis.cancel(); avbrutetVid = performance.now(); }catch(_){}
   }
 }
 
@@ -270,7 +288,7 @@ export function prata(text, opts = {}){
   if(opts.tyst) return;
   const s = opts.settings || {};
   if(s.voice === false) return;
-  const hastighet = [0.84, 0.96, 1.1][s.rate != null ? s.rate : 1] || 0.96;
+  const hastighet = [0.86, 0.96, 1.08][s.rate != null ? s.rate : 1] || 0.96;
   const klippTakt = [0.92, 1.0, 1.08][s.rate != null ? s.rate : 1] || 1.0;
 
   stoppaTal();
@@ -286,27 +304,33 @@ export function prata(text, opts = {}){
   prataTTS(text, hastighet, s, opts.onDone);
 }
 
-function prataTTS(text, rate, s = {}, onDone = null){
+function skapaUtsaga(text, rate, s = {}){
+  const u = new SpeechSynthesisUtterance(String(text));
+  u.lang = "sv-SE";
+  u.rate = rate;
+  u.pitch = 1;
+  const roster = svenskaRoster();
+  if(s.voiceURI && s.voiceURI !== "auto" && s.voiceURI !== "system"){
+    const v = roster.find(x => x.voiceURI === s.voiceURI);
+    if(v) u.voice = v;
+  }else if(s.voiceURI !== "system"){
+    const bast = roster[0];
+    if(bast && (!APPLE || /premium|enhanced|förbättrad|natural/i.test(bast.name + bast.voiceURI))){
+      u.voice = bast;
+    }
+  }
+  return u;
+}
+
+function prataTTS(text, rate, s = {}, onDone = null, onBoundary = null){
   if(typeof speechSynthesis === "undefined"){
     if(onDone) onDone();
     return;
   }
   const gor = () => {
     try{
-      const u = new SpeechSynthesisUtterance(String(text));
-      u.lang = "sv-SE";
-      u.rate = rate;
-      const roster = svenskaRoster();
-      if(s.voiceURI && s.voiceURI !== "auto" && s.voiceURI !== "system"){
-        const v = roster.find(x => x.voiceURI === s.voiceURI);
-        if(v) u.voice = v;
-      }else if(s.voiceURI !== "system"){
-        /* På Apple-enheter: peka inte ut liten inbyggd röst, då tar iPad Alva Premium från Uppläst innehåll */
-        const bast = roster[0];
-        if(bast && (!APPLE || /premium|enhanced|förbättrad|natural/i.test(bast.name + bast.voiceURI))){
-          u.voice = bast;
-        }
-      }
+      const u = skapaUtsaga(text, rate, s);
+      if(onBoundary) u.onboundary = onBoundary;
       if(onDone){
         u.onend = () => onDone();
         u.onerror = () => onDone();
@@ -316,8 +340,11 @@ function prataTTS(text, rate, s = {}, onDone = null){
       if(onDone) onDone();
     }
   };
-  /* Aldrig speak() i samma varv som cancel() på iOS */
-  talTimer = setTimeout(gor, APPLE ? 75 : 25);
+  /* Vänta bara efter cancel() om något faktiskt nyss avbröts */
+  const sedanAvbrott = performance.now() - avbrutetVid;
+  const vant = avbrutetVid && sedanAvbrott < 140 ? Math.max(20, (APPLE ? 130 : 40) - sedanAvbrott) : 0;
+  if(vant > 0) talTimer = setTimeout(gor, vant);
+  else gor();
 }
 
 /* Säg ett enstaka bokstavsljud när barnet trycker på en bricka eller bokstav */
@@ -328,41 +355,68 @@ export function sagBokstav(ch, settings = {}){
   prata(ljud, { settings, tvingaTTS: true });
 }
 
-/* Interaktiv ljudning: går igenom bokstav för bokstav, markerar rutan,
-   och läser sedan hela ordet tillsammans! */
+/* Interaktiv ljudning i EN sammanhängande talsyntes-utsaga (inga klick mellan
+   bokstäverna!). Synkar markeringen via onboundary med mjuk reserv-timer. */
 export function ljudaOrd(ord, settings = {}, onIndex = () => {}, onDone = () => {}){
   stoppaTal();
   ljudningAvbruten = false;
   const bokst = [...String(ord || "").toLocaleUpperCase("sv")];
-  let idx = 0;
+  if(!bokst.length){ onDone(); return; }
 
-  function nasta(){
-    if(ljudningAvbruten) return;
-    if(idx < bokst.length){
-      const ch = bokst[idx];
-      onIndex(idx);
-      const ljud = BOKSTAVSLJUD[ch] || ch.toLocaleLowerCase("sv");
-      idx++;
-      if(settings.voice === false){
-        talTimer = setTimeout(nasta, 480);
-      }else{
-        prataTTS(ljud, 0.85, settings, () => {
-          if(ljudningAvbruten) return;
-          talTimer = setTimeout(nasta, 210);
-        });
-      }
-    }else{
-      onIndex(-1);
-      talTimer = setTimeout(() => {
-        if(ljudningAvbruten) return;
-        onIndex("alla");
-        if(settings.voice === false){
-          talTimer = setTimeout(() => { onIndex(-1); onDone(); }, 550);
-        }else{
-          prata(ord, { settings, onDone: () => { onIndex(-1); onDone(); } });
-        }
-      }, 260);
-    }
+  if(settings.voice === false){
+    bokst.forEach((_, i) => {
+      ljudningTimers.push(setTimeout(() => { if(!ljudningAvbruten) onIndex(i); }, i * 420));
+    });
+    ljudningTimers.push(setTimeout(() => { if(!ljudningAvbruten) onIndex("alla"); }, bokst.length * 420 + 180));
+    ljudningTimers.push(setTimeout(() => { if(!ljudningAvbruten){ onIndex(-1); onDone(); } }, bokst.length * 420 + 750));
+    return;
   }
-  nasta();
+
+  /* Bygg en enda mjuk fras, t.ex. "ss, o, ll. Sol" och spara startposition per del */
+  const delar = bokst.map(ch => BOKSTAVSLJUD[ch] || ch.toLocaleLowerCase("sv"));
+  let fras = "";
+  const spann = [];
+  delar.forEach((d, i) => {
+    const start = fras.length;
+    fras += d;
+    spann.push({ start, idx: i });
+    fras += i + 1 < delar.length ? ", " : ". ";
+  });
+  const ordStart = fras.length;
+  fras += String(ord);
+
+  let fickBoundary = false;
+  onIndex(0);
+
+  /* Mjuk reserv-animation om webbläsarens röst inte skickar onboundary */
+  bokst.forEach((_, i) => {
+    if(i === 0) return;
+    ljudningTimers.push(setTimeout(() => {
+      if(!ljudningAvbruten && !fickBoundary) onIndex(i);
+    }, i * 460));
+  });
+  ljudningTimers.push(setTimeout(() => {
+    if(!ljudningAvbruten && !fickBoundary) onIndex("alla");
+  }, bokst.length * 460 + 220));
+
+  prataTTS(fras, 0.88, settings, () => {
+    if(ljudningAvbruten) return;
+    for(const tm of ljudningTimers) clearTimeout(tm);
+    ljudningTimers = [];
+    onIndex(-1);
+    onDone();
+  }, (ev) => {
+    if(ljudningAvbruten || typeof ev.charIndex !== "number") return;
+    fickBoundary = true;
+    const pos = ev.charIndex;
+    if(pos >= ordStart){
+      onIndex("alla");
+      return;
+    }
+    let vald = 0;
+    for(const sp of spann){
+      if(pos >= sp.start) vald = sp.idx;
+    }
+    onIndex(vald);
+  });
 }

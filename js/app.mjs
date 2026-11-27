@@ -940,8 +940,8 @@ function bindByggHandelser(q, stil){
 function laggByggBokstav(q, ch, brickId){
   const p = P();
   if(runda.byggIn.length >= q.svar.length) return;
-  SFX.klick();
-  sagBokstav(ch, p.settings);
+  if(p.settings.voice === false) SFX.klick();
+  else sagBokstav(ch, p.settings);
   runda.byggIn.push({ ch: ch.toLocaleUpperCase("sv"), brickId });
   if(runda.byggIn.length === q.svar.length){
     const ordIn = runda.byggIn.map(x => x.ch).join("");
@@ -1595,7 +1595,6 @@ function openMinaOrdOchMarken(flik = "ord"){
       const ord = b.dataset.horOrd;
       if(!klarade.has(ord)) return;
       aktiveraForstaTryck();
-      SFX.klick();
       ljudaOrd(ord, p.settings);
     };
   });
