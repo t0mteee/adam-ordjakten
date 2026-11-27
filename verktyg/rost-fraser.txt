@@ -1,0 +1,818 @@
+# Ordjaktens klippröst: fraser att läsa in med ./verktyg/gor-rost.sh
+# filnamn<tabb>text
+hej	Hej
+vaelkommen-till-ordjakten	Välkommen till Ordjakten!
+toppen	Toppen!
+snyggt-laest	Snyggt läst!
+heja	Heja!
+helt-raett	Helt rätt!
+suveraent	Suveränt!
+laes-ordet-vilken-bild-aer-det	Läs ordet! Vilken bild är det?
+vilket-ord-aer	Vilket ord är
+vilken-bokstav-boerjar	Vilken bokstav börjar
+paa	på?
+vilken-bokstav-fattas-i	Vilken bokstav fattas i
+bygg-ordet	Bygg ordet
+bygg-haallplatsen	Bygg hållplatsen
+vilken-vagn-aaker-mot	Vilken vagn åker mot
+hitta-skylten	Hitta skylten:
+naesta-haallplats	Nästa hållplats:
+aendstation	Ändstation!
+ta-dig-till	Ta dig till
+raett-svar-aer	Rätt svar är
+prova-igen	Prova igen!
+foersoek-igen	Försök igen!
+tut-tut-haer-kommer-spaarvagnen	Tut tut! Här kommer spårvagnen!
+mot	mot
+vagn	Vagn
+is	Is
+bygg-ordet-is	Bygg ordet Is!
+vilket-ord-aer-is	Vilket ord är Is?
+ko	Ko
+bygg-ordet-ko	Bygg ordet Ko!
+vilket-ord-aer-ko	Vilket ord är Ko?
+bi	Bi
+bygg-ordet-bi	Bygg ordet Bi!
+vilket-ord-aer-bi	Vilket ord är Bi?
+oe	Ö
+bygg-ordet-oe	Bygg ordet Ö!
+vilket-ord-aer-oe	Vilket ord är Ö?
+taa	Tå
+bygg-ordet-taa	Bygg ordet Tå!
+vilket-ord-aer-taa	Vilket ord är Tå?
+aal	Ål
+bygg-ordet-aal	Bygg ordet Ål!
+vilket-ord-aer-aal	Vilket ord är Ål?
+sol	Sol
+bygg-ordet-sol	Bygg ordet Sol!
+vilket-ord-aer-sol	Vilket ord är Sol?
+bil	Bil
+bygg-ordet-bil	Bygg ordet Bil!
+vilket-ord-aer-bil	Vilket ord är Bil?
+taag	Tåg
+bygg-ordet-taag	Bygg ordet Tåg!
+vilket-ord-aer-taag	Vilket ord är Tåg?
+baat	Båt
+bygg-ordet-baat	Bygg ordet Båt!
+vilket-ord-aer-baat	Vilket ord är Båt?
+hus	Hus
+bygg-ordet-hus	Bygg ordet Hus!
+vilket-ord-aer-hus	Vilket ord är Hus?
+bok	Bok
+bygg-ordet-bok	Bygg ordet Bok!
+vilket-ord-aer-bok	Vilket ord är Bok?
+apa	Apa
+bygg-ordet-apa	Bygg ordet Apa!
+vilket-ord-aer-apa	Vilket ord är Apa?
+orm	Orm
+bygg-ordet-orm	Bygg ordet Orm!
+vilket-ord-aer-orm	Vilket ord är Orm?
+mus	Mus
+bygg-ordet-mus	Bygg ordet Mus!
+vilket-ord-aer-mus	Vilket ord är Mus?
+sael	Säl
+bygg-ordet-sael	Bygg ordet Säl!
+vilket-ord-aer-sael	Vilket ord är Säl?
+raev	Räv
+bygg-ordet-raev	Bygg ordet Räv!
+vilket-ord-aer-raev	Vilket ord är Räv?
+aelg	Älg
+bygg-ordet-aelg	Bygg ordet Älg!
+vilket-ord-aer-aelg	Vilket ord är Älg?
+val	Val
+bygg-ordet-val	Bygg ordet Val!
+vilket-ord-aer-val	Vilket ord är Val?
+ros	Ros
+bygg-ordet-ros	Bygg ordet Ros!
+vilket-ord-aer-ros	Vilket ord är Ros?
+baer	Bär
+bygg-ordet-baer	Bygg ordet Bär!
+vilket-ord-aer-baer	Vilket ord är Bär?
+noet	Nöt
+bygg-ordet-noet	Bygg ordet Nöt!
+vilket-ord-aer-noet	Vilket ord är Nöt?
+loev	Löv
+bygg-ordet-loev	Bygg ordet Löv!
+vilket-ord-aer-loev	Vilket ord är Löv?
+bro	Bro
+bygg-ordet-bro	Bygg ordet Bro!
+vilket-ord-aer-bro	Vilket ord är Bro?
+saag	Såg
+bygg-ordet-saag	Bygg ordet Såg!
+vilket-ord-aer-saag	Vilket ord är Såg?
+sko	Sko
+bygg-ordet-sko	Bygg ordet Sko!
+vilket-ord-aer-sko	Vilket ord är Sko?
+oega	Öga
+bygg-ordet-oega	Bygg ordet Öga!
+vilket-ord-aer-oega	Vilket ord är Öga?
+oera	Öra
+bygg-ordet-oera	Bygg ordet Öra!
+vilket-ord-aer-oera	Vilket ord är Öra?
+fot	Fot
+bygg-ordet-fot	Bygg ordet Fot!
+vilket-ord-aer-fot	Vilket ord är Fot?
+mun	Mun
+bygg-ordet-mun	Bygg ordet Mun!
+vilket-ord-aer-mun	Vilket ord är Mun?
+ost	Ost
+bygg-ordet-ost	Bygg ordet Ost!
+vilket-ord-aer-ost	Vilket ord är Ost?
+aegg	Ägg
+bygg-ordet-aegg	Bygg ordet Ägg!
+vilket-ord-aer-aegg	Vilket ord är Ägg?
+kam	Kam
+bygg-ordet-kam	Bygg ordet Kam!
+vilket-ord-aer-kam	Vilket ord är Kam?
+naal	Nål
+bygg-ordet-naal	Bygg ordet Nål!
+vilket-ord-aer-naal	Vilket ord är Nål?
+pil	Pil
+bygg-ordet-pil	Bygg ordet Pil!
+vilket-ord-aer-pil	Vilket ord är Pil?
+vaeg	Väg
+bygg-ordet-vaeg	Bygg ordet Väg!
+vilket-ord-aer-vaeg	Vilket ord är Väg?
+tak	Tak
+bygg-ordet-tak	Bygg ordet Tak!
+vilket-ord-aer-tak	Vilket ord är Tak?
+bygg-ordet-vagn	Bygg ordet Vagn!
+vilket-ord-aer-vagn	Vilket ord är Vagn?
+spaar	Spår
+bygg-ordet-spaar	Bygg ordet Spår!
+vilket-ord-aer-spaar	Vilket ord är Spår?
+raels	Räls
+bygg-ordet-raels	Bygg ordet Räls!
+vilket-ord-aer-raels	Vilket ord är Räls?
+buss	Buss
+bygg-ordet-buss	Bygg ordet Buss!
+vilket-ord-aer-buss	Vilket ord är Buss?
+katt	Katt
+bygg-ordet-katt	Bygg ordet Katt!
+vilket-ord-aer-katt	Vilket ord är Katt?
+hund	Hund
+bygg-ordet-hund	Bygg ordet Hund!
+vilket-ord-aer-hund	Vilket ord är Hund?
+haest	Häst
+bygg-ordet-haest	Bygg ordet Häst!
+vilket-ord-aer-haest	Vilket ord är Häst?
+gris	Gris
+bygg-ordet-gris	Bygg ordet Gris!
+vilket-ord-aer-gris	Vilket ord är Gris?
+anka	Anka
+bygg-ordet-anka	Bygg ordet Anka!
+vilket-ord-aer-anka	Vilket ord är Anka?
+fisk	Fisk
+bygg-ordet-fisk	Bygg ordet Fisk!
+vilket-ord-aer-fisk	Vilket ord är Fisk?
+groda	Groda
+bygg-ordet-groda	Bygg ordet Groda!
+vilket-ord-aer-groda	Vilket ord är Groda?
+lejon	Lejon
+bygg-ordet-lejon	Bygg ordet Lejon!
+vilket-ord-aer-lejon	Vilket ord är Lejon?
+bjoern	Björn
+bygg-ordet-bjoern	Bygg ordet Björn!
+vilket-ord-aer-bjoern	Vilket ord är Björn?
+uggla	Uggla
+bygg-ordet-uggla	Bygg ordet Uggla!
+vilket-ord-aer-uggla	Vilket ord är Uggla?
+boll	Boll
+bygg-ordet-boll	Bygg ordet Boll!
+vilket-ord-aer-boll	Vilket ord är Boll?
+doerr	Dörr
+bygg-ordet-doerr	Bygg ordet Dörr!
+vilket-ord-aer-doerr	Vilket ord är Dörr?
+bord	Bord
+bygg-ordet-bord	Bygg ordet Bord!
+vilket-ord-aer-bord	Vilket ord är Bord?
+stol	Stol
+bygg-ordet-stol	Bygg ordet Stol!
+vilket-ord-aer-stol	Vilket ord är Stol?
+saeng	Säng
+bygg-ordet-saeng	Bygg ordet Säng!
+vilket-ord-aer-saeng	Vilket ord är Säng?
+kopp	Kopp
+bygg-ordet-kopp	Bygg ordet Kopp!
+vilket-ord-aer-kopp	Vilket ord är Kopp?
+sked	Sked
+bygg-ordet-sked	Bygg ordet Sked!
+vilket-ord-aer-sked	Vilket ord är Sked?
+hatt	Hatt
+bygg-ordet-hatt	Bygg ordet Hatt!
+vilket-ord-aer-hatt	Vilket ord är Hatt?
+ring	Ring
+bygg-ordet-ring	Bygg ordet Ring!
+vilket-ord-aer-ring	Vilket ord är Ring?
+kaka	Kaka
+bygg-ordet-kaka	Bygg ordet Kaka!
+vilket-ord-aer-kaka	Vilket ord är Kaka?
+glass	Glass
+bygg-ordet-glass	Bygg ordet Glass!
+vilket-ord-aer-glass	Vilket ord är Glass?
+aepple	Äpple
+bygg-ordet-aepple	Bygg ordet Äpple!
+vilket-ord-aer-aepple	Vilket ord är Äpple?
+banan	Banan
+bygg-ordet-banan	Bygg ordet Banan!
+vilket-ord-aer-banan	Vilket ord är Banan?
+paeron	Päron
+bygg-ordet-paeron	Bygg ordet Päron!
+vilket-ord-aer-paeron	Vilket ord är Päron?
+broed	Bröd
+bygg-ordet-broed	Bygg ordet Bröd!
+vilket-ord-aer-broed	Vilket ord är Bröd?
+moln	Moln
+bygg-ordet-moln	Bygg ordet Moln!
+vilket-ord-aer-moln	Vilket ord är Moln?
+regn	Regn
+bygg-ordet-regn	Bygg ordet Regn!
+vilket-ord-aer-regn	Vilket ord är Regn?
+maane	Måne
+bygg-ordet-maane	Bygg ordet Måne!
+vilket-ord-aer-maane	Vilket ord är Måne?
+gata	Gata
+bygg-ordet-gata	Bygg ordet Gata!
+vilket-ord-aer-gata	Vilket ord är Gata?
+torg	Torg
+bygg-ordet-torg	Bygg ordet Torg!
+vilket-ord-aer-torg	Vilket ord är Torg?
+park	Park
+bygg-ordet-park	Bygg ordet Park!
+vilket-ord-aer-park	Vilket ord är Park?
+skog	Skog
+bygg-ordet-skog	Bygg ordet Skog!
+vilket-ord-aer-skog	Vilket ord är Skog?
+hamn	Hamn
+bygg-ordet-hamn	Bygg ordet Hamn!
+vilket-ord-aer-hamn	Vilket ord är Hamn?
+kung	Kung
+bygg-ordet-kung	Bygg ordet Kung!
+vilket-ord-aer-kung	Vilket ord är Kung?
+cykel	Cykel
+bygg-ordet-cykel	Bygg ordet Cykel!
+vilket-ord-aer-cykel	Vilket ord är Cykel?
+kran	Kran
+bygg-ordet-kran	Bygg ordet Kran!
+vilket-ord-aer-kran	Vilket ord är Kran?
+spaarvagn	Spårvagn
+bygg-ordet-spaarvagn	Bygg ordet Spårvagn!
+vilket-ord-aer-spaarvagn	Vilket ord är Spårvagn?
+skylt	Skylt
+bygg-ordet-skylt	Bygg ordet Skylt!
+vilket-ord-aer-skylt	Vilket ord är Skylt?
+perrong	Perrong
+bygg-ordet-perrong	Bygg ordet Perrong!
+vilket-ord-aer-perrong	Vilket ord är Perrong?
+biljett	Biljett
+bygg-ordet-biljett	Bygg ordet Biljett!
+vilket-ord-aer-biljett	Vilket ord är Biljett?
+vagnhall	Vagnhall
+bygg-ordet-vagnhall	Bygg ordet Vagnhall!
+vilket-ord-aer-vagnhall	Vilket ord är Vagnhall?
+foerare	Förare
+bygg-ordet-foerare	Bygg ordet Förare!
+vilket-ord-aer-foerare	Vilket ord är Förare?
+stopp	Stopp
+bygg-ordet-stopp	Bygg ordet Stopp!
+vilket-ord-aer-stopp	Vilket ord är Stopp?
+klocka	Klocka
+bygg-ordet-klocka	Bygg ordet Klocka!
+vilket-ord-aer-klocka	Vilket ord är Klocka?
+skola	Skola
+bygg-ordet-skola	Bygg ordet Skola!
+vilket-ord-aer-skola	Vilket ord är Skola?
+kyrka	Kyrka
+bygg-ordet-kyrka	Bygg ordet Kyrka!
+vilket-ord-aer-kyrka	Vilket ord är Kyrka?
+slott	Slott
+bygg-ordet-slott	Bygg ordet Slott!
+vilket-ord-aer-slott	Vilket ord är Slott?
+blomma	Blomma
+bygg-ordet-blomma	Bygg ordet Blomma!
+vilket-ord-aer-blomma	Vilket ord är Blomma?
+stjaerna	Stjärna
+bygg-ordet-stjaerna	Bygg ordet Stjärna!
+vilket-ord-aer-stjaerna	Vilket ord är Stjärna?
+raket	Raket
+bygg-ordet-raket	Bygg ordet Raket!
+vilket-ord-aer-raket	Vilket ord är Raket?
+flygplan	Flygplan
+bygg-ordet-flygplan	Bygg ordet Flygplan!
+vilket-ord-aer-flygplan	Vilket ord är Flygplan?
+lastbil	Lastbil
+bygg-ordet-lastbil	Bygg ordet Lastbil!
+vilket-ord-aer-lastbil	Vilket ord är Lastbil?
+polis	Polis
+bygg-ordet-polis	Bygg ordet Polis!
+vilket-ord-aer-polis	Vilket ord är Polis?
+brandbil	Brandbil
+bygg-ordet-brandbil	Bygg ordet Brandbil!
+vilket-ord-aer-brandbil	Vilket ord är Brandbil?
+faerja	Färja
+bygg-ordet-faerja	Bygg ordet Färja!
+vilket-ord-aer-faerja	Vilket ord är Färja?
+nyckel	Nyckel
+bygg-ordet-nyckel	Bygg ordet Nyckel!
+vilket-ord-aer-nyckel	Vilket ord är Nyckel?
+gitarr	Gitarr
+bygg-ordet-gitarr	Bygg ordet Gitarr!
+vilket-ord-aer-gitarr	Vilket ord är Gitarr?
+trumma	Trumma
+bygg-ordet-trumma	Bygg ordet Trumma!
+vilket-ord-aer-trumma	Vilket ord är Trumma?
+pingvin	Pingvin
+bygg-ordet-pingvin	Bygg ordet Pingvin!
+vilket-ord-aer-pingvin	Vilket ord är Pingvin?
+elefant	Elefant
+bygg-ordet-elefant	Bygg ordet Elefant!
+vilket-ord-aer-elefant	Vilket ord är Elefant?
+giraff	Giraff
+bygg-ordet-giraff	Bygg ordet Giraff!
+vilket-ord-aer-giraff	Vilket ord är Giraff?
+delfin	Delfin
+bygg-ordet-delfin	Bygg ordet Delfin!
+vilket-ord-aer-delfin	Vilket ord är Delfin?
+krabba	Krabba
+bygg-ordet-krabba	Bygg ordet Krabba!
+vilket-ord-aer-krabba	Vilket ord är Krabba?
+fjaeril	Fjäril
+bygg-ordet-fjaeril	Bygg ordet Fjäril!
+vilket-ord-aer-fjaeril	Vilket ord är Fjäril?
+pizza	Pizza
+bygg-ordet-pizza	Bygg ordet Pizza!
+vilket-ord-aer-pizza	Vilket ord är Pizza?
+morot	Morot
+bygg-ordet-morot	Bygg ordet Morot!
+vilket-ord-aer-morot	Vilket ord är Morot?
+allhelgonakyrkan	Allhelgonakyrkan
+naesta-haallplats-allhelgonakyrkan	Nästa hållplats: Allhelgonakyrkan
+hitta-skylten-allhelgonakyrkan	Hitta skylten: Allhelgonakyrkan
+almedal	Almedal
+naesta-haallplats-almedal	Nästa hållplats: Almedal
+hitta-skylten-almedal	Hitta skylten: Almedal
+angered-centrum	Angered Centrum
+naesta-haallplats-angered-centrum	Nästa hållplats: Angered Centrum
+hitta-skylten-angered-centrum	Hitta skylten: Angered Centrum
+aprilgatan	Aprilgatan
+naesta-haallplats-aprilgatan	Nästa hållplats: Aprilgatan
+hitta-skylten-aprilgatan	Hitta skylten: Aprilgatan
+axel-dahlstroems-torg	Axel Dahlströms Torg
+naesta-haallplats-axel-dahlstroems-torg	Nästa hållplats: Axel Dahlströms Torg
+hitta-skylten-axel-dahlstroems-torg	Hitta skylten: Axel Dahlströms Torg
+bellevue	Bellevue
+naesta-haallplats-bellevue	Nästa hållplats: Bellevue
+hitta-skylten-bellevue	Hitta skylten: Bellevue
+berzeliigatan	Berzeliigatan
+naesta-haallplats-berzeliigatan	Nästa hållplats: Berzeliigatan
+hitta-skylten-berzeliigatan	Hitta skylten: Berzeliigatan
+bevaeringsgatan	Beväringsgatan
+naesta-haallplats-bevaeringsgatan	Nästa hållplats: Beväringsgatan
+hitta-skylten-bevaeringsgatan	Hitta skylten: Beväringsgatan
+bokekullsgatan	Bokekullsgatan
+naesta-haallplats-bokekullsgatan	Nästa hållplats: Bokekullsgatan
+hitta-skylten-bokekullsgatan	Hitta skylten: Bokekullsgatan
+botaniska-traedgaarden	Botaniska Trädgården
+naesta-haallplats-botaniska-traedgaarden	Nästa hållplats: Botaniska Trädgården
+hitta-skylten-botaniska-traedgaarden	Hitta skylten: Botaniska Trädgården
+briljantgatan	Briljantgatan
+naesta-haallplats-briljantgatan	Nästa hållplats: Briljantgatan
+hitta-skylten-briljantgatan	Hitta skylten: Briljantgatan
+brunnsgatan	Brunnsgatan
+naesta-haallplats-brunnsgatan	Nästa hållplats: Brunnsgatan
+hitta-skylten-brunnsgatan	Hitta skylten: Brunnsgatan
+brunnsparken	Brunnsparken
+naesta-haallplats-brunnsparken	Nästa hållplats: Brunnsparken
+hitta-skylten-brunnsparken	Hitta skylten: Brunnsparken
+boegatan	Bögatan
+naesta-haallplats-boegatan	Nästa hållplats: Bögatan
+hitta-skylten-boegatan	Hitta skylten: Bögatan
+chalmers	Chalmers
+naesta-haallplats-chalmers	Nästa hållplats: Chalmers
+hitta-skylten-chalmers	Hitta skylten: Chalmers
+chapmans-torg	Chapmans Torg
+naesta-haallplats-chapmans-torg	Nästa hållplats: Chapmans Torg
+hitta-skylten-chapmans-torg	Hitta skylten: Chapmans Torg
+domkyrkan	Domkyrkan
+naesta-haallplats-domkyrkan	Nästa hållplats: Domkyrkan
+hitta-skylten-domkyrkan	Hitta skylten: Domkyrkan
+dr-fries-torg	Dr. Fries Torg
+naesta-haallplats-dr-fries-torg	Nästa hållplats: Dr. Fries Torg
+hitta-skylten-dr-fries-torg	Hitta skylten: Dr. Fries Torg
+dr-sydows-gata	Dr. Sydows Gata
+naesta-haallplats-dr-sydows-gata	Nästa hållplats: Dr. Sydows Gata
+hitta-skylten-dr-sydows-gata	Hitta skylten: Dr. Sydows Gata
+drottningtorget	Drottningtorget
+naesta-haallplats-drottningtorget	Nästa hållplats: Drottningtorget
+hitta-skylten-drottningtorget	Hitta skylten: Drottningtorget
+ejdergatan	Ejdergatan
+naesta-haallplats-ejdergatan	Nästa hållplats: Ejdergatan
+hitta-skylten-ejdergatan	Hitta skylten: Ejdergatan
+ekedal	Ekedal
+naesta-haallplats-ekedal	Nästa hållplats: Ekedal
+hitta-skylten-ekedal	Hitta skylten: Ekedal
+eketraegatan	Eketrägatan
+naesta-haallplats-eketraegatan	Nästa hållplats: Eketrägatan
+hitta-skylten-eketraegatan	Hitta skylten: Eketrägatan
+ekmanska	Ekmanska
+naesta-haallplats-ekmanska	Nästa hållplats: Ekmanska
+hitta-skylten-ekmanska	Hitta skylten: Ekmanska
+elisedal	Elisedal
+naesta-haallplats-elisedal	Nästa hållplats: Elisedal
+hitta-skylten-elisedal	Hitta skylten: Elisedal
+fjaellgatan	Fjällgatan
+naesta-haallplats-fjaellgatan	Nästa hållplats: Fjällgatan
+hitta-skylten-fjaellgatan	Hitta skylten: Fjällgatan
+frihamnen	Frihamnen
+naesta-haallplats-frihamnen	Nästa hållplats: Frihamnen
+hitta-skylten-frihamnen	Hitta skylten: Frihamnen
+friskvaederstorget	Friskväderstorget
+naesta-haallplats-friskvaederstorget	Nästa hållplats: Friskväderstorget
+hitta-skylten-friskvaederstorget	Hitta skylten: Friskväderstorget
+froelunda-torg	Frölunda Torg
+naesta-haallplats-froelunda-torg	Nästa hållplats: Frölunda Torg
+hitta-skylten-froelunda-torg	Hitta skylten: Frölunda Torg
+galileis-gata	Galileis Gata
+naesta-haallplats-galileis-gata	Nästa hållplats: Galileis Gata
+hitta-skylten-galileis-gata	Hitta skylten: Galileis Gata
+gamlestads-torg	Gamlestads Torg
+naesta-haallplats-gamlestads-torg	Nästa hållplats: Gamlestads Torg
+hitta-skylten-gamlestads-torg	Hitta skylten: Gamlestads Torg
+godhemsgatan	Godhemsgatan
+naesta-haallplats-godhemsgatan	Nästa hållplats: Godhemsgatan
+hitta-skylten-godhemsgatan	Hitta skylten: Godhemsgatan
+gropegaardsgatan	Gropegårdsgatan
+naesta-haallplats-gropegaardsgatan	Nästa hållplats: Gropegårdsgatan
+hitta-skylten-gropegaardsgatan	Hitta skylten: Gropegårdsgatan
+groensakstorget	Grönsakstorget
+naesta-haallplats-groensakstorget	Nästa hållplats: Grönsakstorget
+hitta-skylten-groensakstorget	Hitta skylten: Grönsakstorget
+hagakyrkan	Hagakyrkan
+naesta-haallplats-hagakyrkan	Nästa hållplats: Hagakyrkan
+hitta-skylten-hagakyrkan	Hitta skylten: Hagakyrkan
+hagen	Hagen
+naesta-haallplats-hagen	Nästa hållplats: Hagen
+hitta-skylten-hagen	Hitta skylten: Hagen
+hammarkullen	Hammarkullen
+naesta-haallplats-hammarkullen	Nästa hållplats: Hammarkullen
+hitta-skylten-hammarkullen	Hitta skylten: Hammarkullen
+handelshoegskolan	Handelshögskolan
+naesta-haallplats-handelshoegskolan	Nästa hållplats: Handelshögskolan
+hitta-skylten-handelshoegskolan	Hitta skylten: Handelshögskolan
+hinsholmen	Hinsholmen
+naesta-haallplats-hinsholmen	Nästa hållplats: Hinsholmen
+hitta-skylten-hinsholmen	Hitta skylten: Hinsholmen
+hjalmar-brantingsplatsen	Hjalmar Brantingsplatsen
+naesta-haallplats-hjalmar-brantingsplatsen	Nästa hållplats: Hjalmar Brantingsplatsen
+hitta-skylten-hjalmar-brantingsplatsen	Hitta skylten: Hjalmar Brantingsplatsen
+hjaellbo	Hjällbo
+naesta-haallplats-hjaellbo	Nästa hållplats: Hjällbo
+hitta-skylten-hjaellbo	Hitta skylten: Hjällbo
+haerlanda	Härlanda
+naesta-haallplats-haerlanda	Nästa hållplats: Härlanda
+hitta-skylten-haerlanda	Hitta skylten: Härlanda
+hoegsbogatan	Högsbogatan
+naesta-haallplats-hoegsbogatan	Nästa hållplats: Högsbogatan
+hitta-skylten-hoegsbogatan	Hitta skylten: Högsbogatan
+jaegerdorffsplatsen	Jaegerdorffsplatsen
+naesta-haallplats-jaegerdorffsplatsen	Nästa hållplats: Jaegerdorffsplatsen
+hitta-skylten-jaegerdorffsplatsen	Hitta skylten: Jaegerdorffsplatsen
+januarigatan	Januarigatan
+naesta-haallplats-januarigatan	Nästa hållplats: Januarigatan
+hitta-skylten-januarigatan	Hitta skylten: Januarigatan
+jubileumsparken	Jubileumsparken
+naesta-haallplats-jubileumsparken	Nästa hållplats: Jubileumsparken
+hitta-skylten-jubileumsparken	Hitta skylten: Jubileumsparken
+jaerntorget	Järntorget
+naesta-haallplats-jaerntorget	Nästa hållplats: Järntorget
+hitta-skylten-jaerntorget	Hitta skylten: Järntorget
+kaggeledstorget	Kaggeledstorget
+naesta-haallplats-kaggeledstorget	Nästa hållplats: Kaggeledstorget
+hitta-skylten-kaggeledstorget	Hitta skylten: Kaggeledstorget
+kapellplatsen	Kapellplatsen
+naesta-haallplats-kapellplatsen	Nästa hållplats: Kapellplatsen
+hitta-skylten-kapellplatsen	Hitta skylten: Kapellplatsen
+kaptensgatan	Kaptensgatan
+naesta-haallplats-kaptensgatan	Nästa hållplats: Kaptensgatan
+hitta-skylten-kaptensgatan	Hitta skylten: Kaptensgatan
+klintens-vaeg	Klintens Väg
+naesta-haallplats-klintens-vaeg	Nästa hållplats: Klintens Väg
+hitta-skylten-klintens-vaeg	Hitta skylten: Klintens Väg
+komettorget	Komettorget
+naesta-haallplats-komettorget	Nästa hållplats: Komettorget
+hitta-skylten-komettorget	Hitta skylten: Komettorget
+korsvaegen	Korsvägen
+naesta-haallplats-korsvaegen	Nästa hållplats: Korsvägen
+hitta-skylten-korsvaegen	Hitta skylten: Korsvägen
+kortedala-torg	Kortedala Torg
+naesta-haallplats-kortedala-torg	Nästa hållplats: Kortedala Torg
+hitta-skylten-kortedala-torg	Hitta skylten: Kortedala Torg
+krokslaetts-fabriker	Krokslätts Fabriker
+naesta-haallplats-krokslaetts-fabriker	Nästa hållplats: Krokslätts Fabriker
+hitta-skylten-krokslaetts-fabriker	Hitta skylten: Krokslätts Fabriker
+krokslaetts-torg	Krokslätts torg
+naesta-haallplats-krokslaetts-torg	Nästa hållplats: Krokslätts torg
+hitta-skylten-krokslaetts-torg	Hitta skylten: Krokslätts torg
+kungsportsplatsen	Kungsportsplatsen
+naesta-haallplats-kungsportsplatsen	Nästa hållplats: Kungsportsplatsen
+hitta-skylten-kungsportsplatsen	Hitta skylten: Kungsportsplatsen
+kungssten	Kungssten
+naesta-haallplats-kungssten	Nästa hållplats: Kungssten
+hitta-skylten-kungssten	Hitta skylten: Kungssten
+kviberg	Kviberg
+naesta-haallplats-kviberg	Nästa hållplats: Kviberg
+hitta-skylten-kviberg	Hitta skylten: Kviberg
+kaeringberget	Käringberget
+naesta-haallplats-kaeringberget	Nästa hållplats: Käringberget
+hitta-skylten-kaeringberget	Hitta skylten: Käringberget
+lackarebaeck	Lackarebäck
+naesta-haallplats-lackarebaeck	Nästa hållplats: Lackarebäck
+hitta-skylten-lackarebaeck	Hitta skylten: Lackarebäck
+lana	Lana
+naesta-haallplats-lana	Nästa hållplats: Lana
+hitta-skylten-lana	Hitta skylten: Lana
+lantmilsgatan	Lantmilsgatan
+naesta-haallplats-lantmilsgatan	Nästa hållplats: Lantmilsgatan
+hitta-skylten-lantmilsgatan	Hitta skylten: Lantmilsgatan
+lilla-bommen	Lilla Bommen
+naesta-haallplats-lilla-bommen	Nästa hållplats: Lilla Bommen
+hitta-skylten-lilla-bommen	Hitta skylten: Lilla Bommen
+lindholmen	Lindholmen
+naesta-haallplats-lindholmen	Nästa hållplats: Lindholmen
+hitta-skylten-lindholmen	Hitta skylten: Lindholmen
+linneplatsen	Linnéplatsen
+naesta-haallplats-linneplatsen	Nästa hållplats: Linnéplatsen
+hitta-skylten-linneplatsen	Hitta skylten: Linnéplatsen
+liseberg-station	Liseberg Station
+naesta-haallplats-liseberg-station	Nästa hållplats: Liseberg Station
+hitta-skylten-liseberg-station	Hitta skylten: Liseberg Station
+liseberg-soedra	Liseberg Södra
+naesta-haallplats-liseberg-soedra	Nästa hållplats: Liseberg Södra
+hitta-skylten-liseberg-soedra	Hitta skylten: Liseberg Södra
+laangedrag	Långedrag
+naesta-haallplats-laangedrag	Nästa hållplats: Långedrag
+hitta-skylten-laangedrag	Hitta skylten: Långedrag
+majvallen	Majvallen
+naesta-haallplats-majvallen	Nästa hållplats: Majvallen
+hitta-skylten-majvallen	Hitta skylten: Majvallen
+mariaplan	Mariaplan
+naesta-haallplats-mariaplan	Nästa hållplats: Mariaplan
+hitta-skylten-mariaplan	Hitta skylten: Mariaplan
+marklandsgatan	Marklandsgatan
+naesta-haallplats-marklandsgatan	Nästa hållplats: Marklandsgatan
+hitta-skylten-marklandsgatan	Hitta skylten: Marklandsgatan
+masthuggstorget	Masthuggstorget
+naesta-haallplats-masthuggstorget	Nästa hållplats: Masthuggstorget
+hitta-skylten-masthuggstorget	Hitta skylten: Masthuggstorget
+medicinaregatan	Medicinaregatan
+naesta-haallplats-medicinaregatan	Nästa hållplats: Medicinaregatan
+hitta-skylten-medicinaregatan	Hitta skylten: Medicinaregatan
+mildvaedersgatan	Mildvädersgatan
+naesta-haallplats-mildvaedersgatan	Nästa hållplats: Mildvädersgatan
+hitta-skylten-mildvaedersgatan	Hitta skylten: Mildvädersgatan
+munkebaeckstorget	Munkebäckstorget
+naesta-haallplats-munkebaeckstorget	Nästa hållplats: Munkebäckstorget
+hitta-skylten-munkebaeckstorget	Hitta skylten: Munkebäckstorget
+musikvaegen	Musikvägen
+naesta-haallplats-musikvaegen	Nästa hållplats: Musikvägen
+hitta-skylten-musikvaegen	Hitta skylten: Musikvägen
+moelndals-innerstad	Mölndals Innerstad
+naesta-haallplats-moelndals-innerstad	Nästa hållplats: Mölndals Innerstad
+hitta-skylten-moelndals-innerstad	Hitta skylten: Mölndals Innerstad
+moelndals-sjukhus	Mölndals sjukhus
+naesta-haallplats-moelndals-sjukhus	Nästa hållplats: Mölndals sjukhus
+hitta-skylten-moelndals-sjukhus	Hitta skylten: Mölndals sjukhus
+nils-ericsonsplatsen	Nils Ericsonsplatsen
+naesta-haallplats-nils-ericsonsplatsen	Nästa hållplats: Nils Ericsonsplatsen
+hitta-skylten-nils-ericsonsplatsen	Hitta skylten: Nils Ericsonsplatsen
+nya-varvsallen	Nya Varvsallén
+naesta-haallplats-nya-varvsallen	Nästa hållplats: Nya Varvsallén
+hitta-skylten-nya-varvsallen	Hitta skylten: Nya Varvsallén
+nymilsgatan	Nymilsgatan
+naesta-haallplats-nymilsgatan	Nästa hållplats: Nymilsgatan
+hitta-skylten-nymilsgatan	Hitta skylten: Nymilsgatan
+nymaanegatan	Nymånegatan
+naesta-haallplats-nymaanegatan	Nästa hållplats: Nymånegatan
+hitta-skylten-nymaanegatan	Hitta skylten: Nymånegatan
+olivedalsgatan	Olivedalsgatan
+naesta-haallplats-olivedalsgatan	Nästa hållplats: Olivedalsgatan
+hitta-skylten-olivedalsgatan	Hitta skylten: Olivedalsgatan
+olskrokstorget	Olskrokstorget
+naesta-haallplats-olskrokstorget	Nästa hållplats: Olskrokstorget
+hitta-skylten-olskrokstorget	Hitta skylten: Olskrokstorget
+opaltorget	Opaltorget
+naesta-haallplats-opaltorget	Nästa hållplats: Opaltorget
+hitta-skylten-opaltorget	Hitta skylten: Opaltorget
+ostindiegatan	Ostindiegatan
+naesta-haallplats-ostindiegatan	Nästa hållplats: Ostindiegatan
+hitta-skylten-ostindiegatan	Hitta skylten: Ostindiegatan
+positivgatan	Positivgatan
+naesta-haallplats-positivgatan	Nästa hållplats: Positivgatan
+hitta-skylten-positivgatan	Hitta skylten: Positivgatan
+prinsgatan	Prinsgatan
+naesta-haallplats-prinsgatan	Nästa hållplats: Prinsgatan
+hitta-skylten-prinsgatan	Hitta skylten: Prinsgatan
+pumpgatan	Pumpgatan
+naesta-haallplats-pumpgatan	Nästa hållplats: Pumpgatan
+hitta-skylten-pumpgatan	Hitta skylten: Pumpgatan
+rambergsvallen	Rambergsvallen
+naesta-haallplats-rambergsvallen	Nästa hållplats: Rambergsvallen
+hitta-skylten-rambergsvallen	Hitta skylten: Rambergsvallen
+redbergsplatsen	Redbergsplatsen
+naesta-haallplats-redbergsplatsen	Nästa hållplats: Redbergsplatsen
+hitta-skylten-redbergsplatsen	Hitta skylten: Redbergsplatsen
+runstavsgatan	Runstavsgatan
+naesta-haallplats-runstavsgatan	Nästa hållplats: Runstavsgatan
+hitta-skylten-runstavsgatan	Hitta skylten: Runstavsgatan
+rymdtorget	Rymdtorget
+naesta-haallplats-rymdtorget	Nästa hållplats: Rymdtorget
+hitta-skylten-rymdtorget	Hitta skylten: Rymdtorget
+sahlgrenska-huvudentre	Sahlgrenska Huvudentré
+naesta-haallplats-sahlgrenska-huvudentre	Nästa hållplats: Sahlgrenska Huvudentré
+hitta-skylten-sahlgrenska-huvudentre	Hitta skylten: Sahlgrenska Huvudentré
+saltholmen	Saltholmen
+naesta-haallplats-saltholmen	Nästa hållplats: Saltholmen
+hitta-skylten-saltholmen	Hitta skylten: Saltholmen
+sandarna	Sandarna
+naesta-haallplats-sandarna	Nästa hållplats: Sandarna
+hitta-skylten-sandarna	Hitta skylten: Sandarna
+sankt-sigfrids-plan	Sankt Sigfrids Plan
+naesta-haallplats-sankt-sigfrids-plan	Nästa hållplats: Sankt Sigfrids Plan
+hitta-skylten-sankt-sigfrids-plan	Hitta skylten: Sankt Sigfrids Plan
+sannaplan	Sannaplan
+naesta-haallplats-sannaplan	Nästa hållplats: Sannaplan
+hitta-skylten-sannaplan	Hitta skylten: Sannaplan
+scandinavium	Scandinavium
+naesta-haallplats-scandinavium	Nästa hållplats: Scandinavium
+hitta-skylten-scandinavium	Hitta skylten: Scandinavium
+seminariegatan	Seminariegatan
+naesta-haallplats-seminariegatan	Nästa hållplats: Seminariegatan
+hitta-skylten-seminariegatan	Hitta skylten: Seminariegatan
+skf	SKF
+naesta-haallplats-skf	Nästa hållplats: SKF
+hitta-skylten-skf	Hitta skylten: SKF
+smaragdgatan	Smaragdgatan
+naesta-haallplats-smaragdgatan	Nästa hållplats: Smaragdgatan
+hitta-skylten-smaragdgatan	Hitta skylten: Smaragdgatan
+solrosgatan	Solrosgatan
+naesta-haallplats-solrosgatan	Nästa hållplats: Solrosgatan
+hitta-skylten-solrosgatan	Hitta skylten: Solrosgatan
+stenpiren	Stenpiren
+naesta-haallplats-stenpiren	Nästa hållplats: Stenpiren
+hitta-skylten-stenpiren	Hitta skylten: Stenpiren
+stigbergstorget	Stigbergstorget
+naesta-haallplats-stigbergstorget	Nästa hållplats: Stigbergstorget
+hitta-skylten-stigbergstorget	Hitta skylten: Stigbergstorget
+stockholmsgatan	Stockholmsgatan
+naesta-haallplats-stockholmsgatan	Nästa hållplats: Stockholmsgatan
+hitta-skylten-stockholmsgatan	Hitta skylten: Stockholmsgatan
+storaas	Storås
+naesta-haallplats-storaas	Nästa hållplats: Storås
+hitta-skylten-storaas	Hitta skylten: Storås
+svingeln	Svingeln
+naesta-haallplats-svingeln	Nästa hållplats: Svingeln
+hitta-skylten-svingeln	Hitta skylten: Svingeln
+saeloefjordsgatan	Sälöfjordsgatan
+naesta-haallplats-saeloefjordsgatan	Nästa hållplats: Sälöfjordsgatan
+hitta-skylten-saeloefjordsgatan	Hitta skylten: Sälöfjordsgatan
+teleskopgatan	Teleskopgatan
+naesta-haallplats-teleskopgatan	Nästa hållplats: Teleskopgatan
+hitta-skylten-teleskopgatan	Hitta skylten: Teleskopgatan
+temperaturgatan	Temperaturgatan
+naesta-haallplats-temperaturgatan	Nästa hållplats: Temperaturgatan
+hitta-skylten-temperaturgatan	Hitta skylten: Temperaturgatan
+tingvallsvaegen	Tingvallsvägen
+naesta-haallplats-tingvallsvaegen	Nästa hållplats: Tingvallsvägen
+hitta-skylten-tingvallsvaegen	Hitta skylten: Tingvallsvägen
+tranered	Tranered
+naesta-haallplats-tranered	Nästa hållplats: Tranered
+hitta-skylten-tranered	Hitta skylten: Tranered
+toepelsgatan	Töpelsgatan
+naesta-haallplats-toepelsgatan	Nästa hållplats: Töpelsgatan
+hitta-skylten-toepelsgatan	Hitta skylten: Töpelsgatan
+ullevi-norra	Ullevi Norra
+naesta-haallplats-ullevi-norra	Nästa hållplats: Ullevi Norra
+hitta-skylten-ullevi-norra	Hitta skylten: Ullevi Norra
+ullevi-soedra	Ullevi Södra
+naesta-haallplats-ullevi-soedra	Nästa hållplats: Ullevi Södra
+hitta-skylten-ullevi-soedra	Hitta skylten: Ullevi Södra
+vagnhallen-majorna	Vagnhallen Majorna
+naesta-haallplats-vagnhallen-majorna	Nästa hållplats: Vagnhallen Majorna
+hitta-skylten-vagnhallen-majorna	Hitta skylten: Vagnhallen Majorna
+valand	Valand
+naesta-haallplats-valand	Nästa hållplats: Valand
+hitta-skylten-valand	Hitta skylten: Valand
+varbergsgatan	Varbergsgatan
+naesta-haallplats-varbergsgatan	Nästa hållplats: Varbergsgatan
+hitta-skylten-varbergsgatan	Hitta skylten: Varbergsgatan
+varmfrontsgatan	Varmfrontsgatan
+naesta-haallplats-varmfrontsgatan	Nästa hållplats: Varmfrontsgatan
+hitta-skylten-varmfrontsgatan	Hitta skylten: Varmfrontsgatan
+vasa-viktoriagatan	Vasa Viktoriagatan
+naesta-haallplats-vasa-viktoriagatan	Nästa hållplats: Vasa Viktoriagatan
+hitta-skylten-vasa-viktoriagatan	Hitta skylten: Vasa Viktoriagatan
+vasaplatsen	Vasaplatsen
+naesta-haallplats-vasaplatsen	Nästa hållplats: Vasaplatsen
+hitta-skylten-vasaplatsen	Hitta skylten: Vasaplatsen
+virginsgatan	Virginsgatan
+naesta-haallplats-virginsgatan	Nästa hållplats: Virginsgatan
+hitta-skylten-virginsgatan	Hitta skylten: Virginsgatan
+vaagmaestareplatsen	Vågmästareplatsen
+naesta-haallplats-vaagmaestareplatsen	Nästa hållplats: Vågmästareplatsen
+hitta-skylten-vaagmaestareplatsen	Hitta skylten: Vågmästareplatsen
+vaarvaederstorget	Vårväderstorget
+naesta-haallplats-vaarvaederstorget	Nästa hållplats: Vårväderstorget
+hitta-skylten-vaarvaederstorget	Hitta skylten: Vårväderstorget
+vaederilsgatan	Väderilsgatan
+naesta-haallplats-vaederilsgatan	Nästa hållplats: Väderilsgatan
+hitta-skylten-vaederilsgatan	Hitta skylten: Väderilsgatan
+wavrinskys-plats	Wavrinskys Plats
+naesta-haallplats-wavrinskys-plats	Nästa hållplats: Wavrinskys Plats
+hitta-skylten-wavrinskys-plats	Hitta skylten: Wavrinskys Plats
+welandergatan	Welandergatan
+naesta-haallplats-welandergatan	Nästa hållplats: Welandergatan
+hitta-skylten-welandergatan	Hitta skylten: Welandergatan
+wieselgrensplatsen	Wieselgrensplatsen
+naesta-haallplats-wieselgrensplatsen	Nästa hållplats: Wieselgrensplatsen
+hitta-skylten-wieselgrensplatsen	Hitta skylten: Wieselgrensplatsen
+oenskevaedersgatan	Önskevädersgatan
+naesta-haallplats-oenskevaedersgatan	Nästa hållplats: Önskevädersgatan
+hitta-skylten-oenskevaedersgatan	Hitta skylten: Önskevädersgatan
+oestra-sjukhuset	Östra Sjukhuset
+naesta-haallplats-oestra-sjukhuset	Nästa hållplats: Östra Sjukhuset
+hitta-skylten-oestra-sjukhuset	Hitta skylten: Östra Sjukhuset
+bygg-haallplatsen-lana	Bygg hållplatsen Lana!
+bygg-haallplatsen-skf	Bygg hållplatsen SKF!
+bygg-haallplatsen-hagen	Bygg hållplatsen Hagen!
+bygg-haallplatsen-valand	Bygg hållplatsen Valand!
+bygg-haallplatsen-ekedal	Bygg hållplatsen Ekedal!
+bygg-haallplatsen-storaas	Bygg hållplatsen Storås!
+bygg-haallplatsen-kviberg	Bygg hållplatsen Kviberg!
+bygg-haallplatsen-almedal	Bygg hållplatsen Almedal!
+bygg-haallplatsen-hjaellbo	Bygg hållplatsen Hjällbo!
+bygg-haallplatsen-bellevue	Bygg hållplatsen Bellevue!
+bygg-haallplatsen-chalmers	Bygg hållplatsen Chalmers!
+bygg-haallplatsen-svingeln	Bygg hållplatsen Svingeln!
+bygg-haallplatsen-sandarna	Bygg hållplatsen Sandarna!
+bygg-haallplatsen-haerlanda	Bygg hållplatsen Härlanda!
+bygg-haallplatsen-tranered	Bygg hållplatsen Tranered!
+bygg-haallplatsen-elisedal	Bygg hållplatsen Elisedal!
+bygg-haallplatsen-majvallen	Bygg hållplatsen Majvallen!
+bygg-haallplatsen-mariaplan	Bygg hållplatsen Mariaplan!
+bygg-haallplatsen-domkyrkan	Bygg hållplatsen Domkyrkan!
+bygg-haallplatsen-stenpiren	Bygg hållplatsen Stenpiren!
+bygg-haallplatsen-korsvaegen	Bygg hållplatsen Korsvägen!
+bygg-haallplatsen-kungssten	Bygg hållplatsen Kungssten!
+bygg-haallplatsen-laangedrag	Bygg hållplatsen Långedrag!
+sirio	Sirio
+bebben	Bebben
+flexity	Flexity
+boggi	Boggi
+linje-1	Linje 1
+tynnered	Tynnered
+linje-2	Linje 2
+biskopsgaarden	Biskopsgården
+hoegsbotorp	Högsbotorp
+linje-3	Linje 3
+kaalltorp	Kålltorp
+linje-4	Linje 4
+moelndal	Mölndal
+angered	Angered
+linje-5	Linje 5
+laensmansgaarden	Länsmansgården
+linje-6	Linje 6
+kortedala	Kortedala
+linje-7	Linje 7
+bergsjoen	Bergsjön
+linje-8	Linje 8
+froelunda	Frölunda
+linje-9	Linje 9
+linje-10	Linje 10
+guldheden	Guldheden
+linje-11	Linje 11
+linje-12	Linje 12
+m28	M28
+boggivagnen	Boggivagnen
+m29	M29
+m31	M31
+ledvagnen	Ledvagnen
+m31b	M31B
+nya-ledvagnen	Nya ledvagnen
+m32	M32
+m33	M33
+m34	M34
+laanga-flexity	Långa Flexity
+gunnar-gren	Gunnar Gren
+gunnar-bergdahl	Gunnar Bergdahl
+claes-hylinger	Claes Hylinger
+lena-brogren	Lena Brogren
+galenskaparna-och-after-shave	Galenskaparna och After Shave
+per-andersson	Per Andersson
+kapten-boelja	Kapten Bölja
+marianne-moerck	Marianne Mörck
+helge-haerneman	Helge Härneman
+ronny-joensson	Ronny Jönsson
+lasse-dahlquist	Lasse Dahlquist
+ester-i-brunnsparken	Ester i Brunnsparken
+ninnan-santesson	Ninnan Santesson
+hulda-skoeldberg	Hulda Sköldberg
