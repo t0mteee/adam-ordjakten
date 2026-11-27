@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Ordjakten – ett färgglatt läs- och bokstavsspel på svenska i Göteborgs spårvagnsnät. Ljuda korta ord, bygg ord med brickor, läs hållplatsskyltar och samla Göteborgs spårvagnsmodeller.">
-<meta name="theme-color" content="#62CDF2">
+<meta name="description" content="Ordjakten – ett färgglatt läs- och bokstavsspel på svenska i Göteborgs spårvagnsnät. Ljuda korta ord, bygg ord med träbrickor, skriv egna destinationsskyltar och samla Göteborgs spårvagnsmodeller.">
+<meta name="theme-color" content="#1B68B3">
 
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
@@ -18,37 +18,74 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600..800&family=Lilita+One&family=Nunito:wght@700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=JetBrains+Mono:wght@700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<div class="world" aria-hidden="true">
-  <div class="hill a"></div>
-  <div class="hill b"></div>
-  <div class="hill c"></div>
+<!-- Göteborgs silhuett i mjuk kvällssol: hamnkranar, Karlatornet, Läppstiftet, Lisebergshjulet & Masthuggskyrkan -->
+<div class="gbg-skyline" aria-hidden="true">
+  <svg viewBox="0 0 1200 180" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 155 Q300 135 600 148 T1200 140 L1200 180 L0 180 Z" fill="#E6D9C2" opacity=".75"/>
+    <!-- Hamnkranar (Eriksberg / Lindholmen) -->
+    <g stroke="#C8B99F" stroke-width="4" fill="none" opacity=".75">
+      <path d="M70 155 L84 85 L98 155 M60 95 L138 72 M124 76 L124 108"/>
+      <path d="M165 155 L176 102 L188 155 M156 108 L215 92"/>
+    </g>
+    <!-- Karlatornet -->
+    <path d="M268 155 L272 22 L294 22 L298 155 Z" fill="#D4C5AA" opacity=".72"/>
+    <path d="M278 22 L288 22 L286 10 L280 10 Z" fill="#D4C5AA" opacity=".72"/>
+    <!-- Masthuggskyrkan på kullen -->
+    <g fill="#D8C9AE" opacity=".78">
+      <path d="M360 155 L360 112 L426 112 L426 155 Z"/>
+      <path d="M380 112 L380 68 L394 42 L408 68 L408 112 Z"/>
+    </g>
+    <!-- Läppstiftet (Lilla Bommen) -->
+    <g fill="#D4C2A6" opacity=".78">
+      <rect x="650" y="64" width="44" height="92" rx="3"/>
+      <path d="M650 64 L694 64 L694 44 L662 44 Z" fill="#DFCBB0"/>
+      <rect x="650" y="76" width="44" height="7" fill="#FBF6EC" opacity=".7"/>
+      <rect x="650" y="92" width="44" height="7" fill="#FBF6EC" opacity=".7"/>
+    </g>
+    <!-- Haga-hus -->
+    <g fill="#DFD1B8" opacity=".78">
+      <rect x="740" y="106" width="54" height="54" rx="2"/>
+      <path d="M736 106 L767 84 L798 106 Z"/>
+      <rect x="802" y="114" width="48" height="46" rx="2"/>
+      <path d="M798 114 L826 96 L854 114 Z"/>
+    </g>
+    <!-- Lisebergshjulet -->
+    <g stroke="#CBBBA0" stroke-width="3.5" fill="none" opacity=".78">
+      <circle cx="995" cy="96" r="46"/>
+      <path d="M995 50 V142 M949 96 H1041 M962 63 L1028 129 M1028 63 L962 129"/>
+      <path d="M968 156 L995 96 L1022 156"/>
+    </g>
+    <!-- Kontaktledning -->
+    <path d="M0 162 H1200" stroke="#13315C" stroke-width="2" opacity=".1"/>
+  </svg>
 </div>
+
 <canvas id="confetti" aria-hidden="true"></canvas>
 
 <div id="app">
-  <!-- Gemensam topprad (visas när spelare är vald) -->
+  <!-- Navigationsrad (visas när spelare är vald) -->
   <header id="top-bar" class="top-bar" style="display:none"></header>
 
-  <!-- 1. Välkomst & spelarval -->
   <main>
+    <!-- 1. Välkomst & Göteborgs-kompis -->
     <section id="screen-welcome" class="screen"></section>
 
-    <!-- 2. Spårvagnsstart (Göteborgs nät) -->
+    <!-- 2. Huvudvy: Spårvagnsresan & Förarhytten -->
     <section id="screen-home" class="screen"></section>
 
-    <!-- 3. Resan på Göteborgs spårvagnskarta -->
+    <!-- 3. Resevy: LED-tavla, spårbar, Göteborgskarta & vykort -->
     <section id="screen-resa" class="screen"></section>
 
-    <!-- 4. Läs- & bokstavsrundan (5 uppgifter per hållplats) -->
+    <!-- 4. Läs- & bokstavsrundan (träbrickor, ljudningståg & skyltar) -->
     <section id="screen-game" class="screen"></section>
   </main>
 </div>
 
-<!-- Delad modal/sheet för Perrongen, Min vagn, Skattkistan, Mina resor, Inställningar & Så går det -->
+<!-- Delad modal/sheet -->
 <div id="sheet-backdrop" class="sheet-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
   <div id="sheet" class="sheet"></div>
 </div>

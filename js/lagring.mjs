@@ -5,7 +5,7 @@
 import { TRAM_LINES, ALLA_VAGNKORT_NR, ALLA_STOPP } from "./gbg-data.mjs";
 
 export const STORAGE_KEY = "ordjakten_v1";
-export const SPELVERSION = "1.1";
+export const SPELVERSION = "2.0";
 
 export function standardSettings(){
   return {
@@ -29,11 +29,11 @@ export function standardSettings(){
   };
 }
 
-export function nySpelare(name, charId = "bloppy"){
+export function nySpelare(name, charId = "kaj"){
   return {
     id: "p_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 6),
     name: (name || "Kompis").trim() || "Kompis",
-    char: charId || "bloppy",
+    char: charId || "kaj",
     coins: 0,
     streak: 0,
     bestStreak: 0,
@@ -45,10 +45,9 @@ export function nySpelare(name, charId = "bloppy"){
     vagnkort: [],
     vagnModellerRatt: 0,
     badges: [],
-    kopta: [],
-    tillbehor: null,
-    minVagn: { typ: "M34", nr: 601, ref: "11", rikt: 1, flaggor: false, jul: false, byggd: false },
-    resa: null, // { ref, at, rikt, mal, sparr, resmalKlarade, omvagKlarade, nyss: [] }
+    kopta: ["gbg"],
+    minVagn: { typ: "M34", nr: 601, ref: "11", rikt: 1, tema: "gbg", flaggor: false, jul: false, stjarna: false, egenSkylt: "", byggd: false },
+    resa: null,
     resmalKlarade: 0,
     omvagKlarade: 0,
     stats: { dagar: {}, sorter: {} },
@@ -172,6 +171,7 @@ export function kollaMarken(p){
   lagg("resmal-5", (p.resmalKlarade || 0) >= 5);
   lagg("omvag", (p.omvagKlarade || 0) >= 1);
   lagg("egen-vagn", !!(p.minVagn && p.minVagn.byggd));
+  lagg("egen-skylt", !!(p.minVagn && p.minVagn.egenSkylt && p.minVagn.egenSkylt.trim().length >= 2));
   lagg("kort-5", (p.vagnkort || []).length >= 5);
   lagg("kort-alla", (p.vagnkort || []).length >= ALLA_VAGNKORT_NR.length);
   lagg("vagn-modell", (p.vagnModellerRatt || 0) >= 10);

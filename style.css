@@ -1,39 +1,44 @@
 /* ═══════════════════════════════════════════════════════════════
-   ORDJAKTEN — Göteborgs spårvagnsvärld i klistermärkesstil
+   ORDJAKTEN — Nordisk Göteborgs-design: Kustpapper, träbrickor,
+   spårvagnsblått, mässingsguld & glödande destinationsskyltar.
    ═══════════════════════════════════════════════════════════════ */
 
 :root{
   color-scheme: light;
-  --ink:        #2E1A66;
-  --ink-2:      #5B47A0;
-  --paper:      #FFFDF7;
-  --paper-2:    #F0EAFF;
-  --locked:     #C6BBDF;
+  --navy:       #13315C;
+  --slate:      #4A6282;
+  --muted:      #7A8CA3;
 
-  --sky:        #62CDF2;
-  --sky-hi:     #A6E7FF;
-  --sky-deep:   #2FA9D8;
-  --gbg:        #2F6FBF;
-  --gbg-dark:   #1F4E8C;
-  --grass:      #57C96B;
-  --grass-deep: #3E9E51;
-  --sun:        #FFC42E;
-  --sun-deep:   #E29A00;
-  --melon:      #FF6B6B;
-  --melon-deep: #DD4747;
-  --bubble:     #FF8AD0;
-  --grape:      #9061F9;
+  --cream:      #FBF6EC;
+  --linen:      #F2E9DA;
+  --card:       #FFFFFF;
+  --border:     #E1D5C1;
+  --border-hi:  #CBBBA0;
 
-  --lift:       0 6px 0 var(--ink), 0 12px 20px rgba(46,26,102,.22);
-  --lift-sm:    0 4px 0 var(--ink), 0 8px 14px rgba(46,26,102,.18);
-  --stroke:     3px solid var(--ink);
+  --gbg:        #1B68B3;
+  --gbg-deep:   #134E8A;
+  --brass:      #F2B705;
+  --brass-deep: #C48F00;
+  --terra:      #D95D39;
+  --terra-deep: #B54322;
+  --pine:       #2D8A56;
+  --pine-deep:  #1F6B40;
+  --teal:       #2A9D8F;
 
-  --t-xs: .8rem;
-  --t-sm: .95rem;
-  --t-md: 1.15rem;
-  --t-lg: 1.55rem;
-  --t-xl: 2.2rem;
-  --t-2xl: clamp(2.3rem, 8vw, 3.8rem);
+  --led-bg:     #141C2B;
+  --led-amber:  #FFB800;
+
+  --wood-top:   #FFF6DF;
+  --wood-bot:   #F2DCAD;
+  --wood-edge:  #C49A4F;
+
+  --shadow-sm:  0 2px 8px rgba(19,49,92,.07), 0 1px 2px rgba(19,49,92,.05);
+  --shadow-md:  0 10px 28px rgba(19,49,92,.10), 0 2px 6px rgba(19,49,92,.06);
+  --shadow-lg:  0 18px 44px rgba(19,49,92,.16), 0 4px 12px rgba(19,49,92,.08);
+
+  --r-sm: 12px;
+  --r-md: 18px;
+  --r-lg: 24px;
 }
 
 *{ box-sizing: border-box; }
@@ -41,265 +46,428 @@ html, body{ height: 100%; }
 
 body{
   margin: 0;
-  font-family: "Nunito", "Trebuchet MS", system-ui, sans-serif;
-  font-weight: 700;
-  color: var(--ink);
-  background: var(--sky);
-  background-image:
-    radial-gradient(circle at 18% 12%, rgba(255,255,255,.55) 0 42px, transparent 43px),
-    radial-gradient(circle at 24% 15%, rgba(255,255,255,.55) 0 30px, transparent 31px),
-    radial-gradient(circle at 82% 22%, rgba(255,255,255,.42) 0 34px, transparent 35px),
-    radial-gradient(circle at 76% 25%, rgba(255,255,255,.42) 0 24px, transparent 25px),
-    linear-gradient(180deg, var(--sky-hi) 0%, var(--sky) 46%, #7FD9F6 100%);
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  color: var(--navy);
+  background:
+    radial-gradient(ellipse 90% 45% at 50% -8%, #D7ECFA 0%, transparent 65%),
+    linear-gradient(180deg, #F4F9FC 0%, var(--cream) 36%, #F5ECDC 100%);
   background-attachment: fixed;
   -webkit-tap-highlight-color: transparent;
   overflow-x: hidden;
 }
 
-.world{ position: fixed; inset: auto 0 0 0; height: 24vh; min-height: 120px; pointer-events: none; z-index: 0; }
-.world .hill{ position: absolute; bottom: -42%; border-radius: 50% 50% 0 0; }
-.world .hill.a{ left: -12%; width: 62%; height: 150%; background: var(--grass); opacity: .85; }
-.world .hill.b{ right: -14%; width: 68%; height: 130%; background: var(--grass-deep); opacity: .8; }
-.world .hill.c{ left: 26%; width: 55%; height: 105%; background: #6BD97E; opacity: .9; }
+.gbg-skyline{
+  position: fixed;
+  inset: auto 0 0 0;
+  height: 150px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .85;
+}
+.gbg-skyline svg{ width: 100%; height: 100%; display: block; }
 
 #app{
   position: relative; z-index: 1;
-  max-width: 780px; margin: 0 auto;
-  padding: max(clamp(10px, 2.8vw, 20px), env(safe-area-inset-top))
-           max(clamp(12px, 3vw, 20px), env(safe-area-inset-right))
-           max(36px, calc(env(safe-area-inset-bottom) + 18px))
-           max(clamp(12px, 3vw, 20px), env(safe-area-inset-left));
+  max-width: 760px; margin: 0 auto;
+  padding: max(12px, env(safe-area-inset-top))
+           max(14px, env(safe-area-inset-right))
+           max(38px, calc(env(safe-area-inset-bottom) + 18px))
+           max(14px, env(safe-area-inset-left));
   min-height: 100%;
 }
 
-.screen{ display: none; animation: screen-in .3s cubic-bezier(.2,1.25,.5,1) both; }
+.screen{ display: none; animation: fade-up .26s cubic-bezier(.2,.9,.3,1) both; }
 .screen.is-active{ display: block; }
 body.minska-rorelse .screen,
 body.minska-rorelse *{ animation-duration: .001ms !important; transition-duration: .001ms !important; }
-@keyframes screen-in{ from{ opacity: 0; transform: translateY(12px) scale(.985); } to{ opacity: 1; transform: none; } }
+@keyframes fade-up{ from{ opacity: 0; transform: translateY(10px); } to{ opacity: 1; transform: none; } }
 
-h1, h2, h3{ font-family: "Baloo 2", system-ui, sans-serif; font-weight: 800; margin: 0; line-height: 1.08; text-wrap: balance; }
+h1, h2, h3{
+  font-family: "Fredoka", system-ui, sans-serif;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.12;
+  letter-spacing: -.01em;
+}
 p{ margin: 0; }
 
-.brand{ text-align: center; margin-bottom: 16px; }
-.brand h1{
-  font-size: var(--t-2xl); color: var(--paper); letter-spacing: -.01em;
-  -webkit-text-stroke: 8px var(--ink); paint-order: stroke fill;
-  text-shadow: 0 7px 0 var(--ink);
-}
-.brand .tagline{
-  margin: 10px auto 0; display: inline-block; padding: 5px 16px;
-  background: var(--sun); border: var(--stroke); border-radius: 999px;
-  box-shadow: var(--lift-sm); font-size: var(--t-sm);
-}
-
-.panel{
-  background: var(--paper); border: var(--stroke); border-radius: 26px;
-  box-shadow: var(--lift); padding: clamp(14px, 3vw, 20px);
+/* ── Topprad — luftig nordisk marin-list ─────────────────────────────── */
+.top-bar{
+  position: sticky; top: 8px; z-index: 25;
+  display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  padding: 8px 12px;
   margin-bottom: 16px;
 }
-.panel-title{ display: flex; align-items: center; gap: 10px; font-size: var(--t-lg); margin-bottom: 12px; }
-.step{
-  flex: none; width: 34px; height: 34px; display: grid; place-items: center;
-  background: var(--grape); color: #fff; border: var(--stroke); border-radius: 50%;
-  font-family: "Lilita One", system-ui, sans-serif; font-size: 1.15rem;
+.who{ display: flex; align-items: center; gap: 10px; min-width: 0; }
+.who-art{
+  background: none; border: none; padding: 0; cursor: pointer;
+  width: 44px; height: 44px; flex: none; border-radius: 50%; overflow: hidden;
+  box-shadow: 0 2px 6px rgba(19,49,92,.12);
 }
-
-/* ── Knappar ─────────────────────────────────────────────────────────── */
-.btn{
-  font-family: "Baloo 2", system-ui, sans-serif; font-weight: 800;
-  color: var(--ink); background: var(--paper);
-  border: var(--stroke); border-radius: 20px; box-shadow: var(--lift);
-  cursor: pointer; padding: 12px 18px; font-size: var(--t-md);
-  touch-action: manipulation;
-  transition: transform .09s ease, box-shadow .09s ease, background-color .15s ease;
-  -webkit-user-select: none; user-select: none;
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-}
-.btn:active{ transform: translateY(5px); box-shadow: 0 1px 0 var(--ink); }
-.btn:focus-visible{ outline: 4px dashed var(--grape); outline-offset: 4px; }
-.btn[disabled]{ opacity: .48; cursor: default; transform: none; }
-.btn-big{
-  display: flex; width: 100%; padding: 16px 20px;
-  font-size: clamp(1.35rem, 5vw, 1.85rem); background: var(--sun); border-radius: 24px;
-}
-.btn-big:hover{ background: #FFD35E; }
-.btn-gbg{ background: var(--gbg); color: #FFFDF7; }
-.btn-gbg:hover{ background: #3A7FD4; }
-.btn-green{ background: var(--grass); color: #FFFDF7; }
-.btn-green:hover{ background: #64D478; }
-.btn-soft{ background: var(--paper-2); box-shadow: var(--lift-sm); }
-.btn-danger{ background: var(--melon); color: #FFFDF7; }
-.btn-sm{ padding: 8px 14px; font-size: var(--t-sm); border-radius: 15px; box-shadow: var(--lift-sm); }
-
-.icon-btn{
-  width: 46px; height: 46px; padding: 0; display: grid; place-items: center;
-  border-radius: 16px; background: var(--paper); border: var(--stroke);
-  box-shadow: var(--lift-sm); cursor: pointer; touch-action: manipulation;
-  color: var(--ink); font-size: 1.35rem;
-  transition: transform .09s ease, box-shadow .09s ease;
-}
-.icon-btn:active{ transform: translateY(4px); box-shadow: 0 0 0 var(--ink); }
-
-/* ── Topprad ─────────────────────────────────────────────────────────── */
-.top-bar{
-  position: sticky; top: 0; z-index: 20;
-  display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 8px;
-  background: var(--paper); border: var(--stroke); border-radius: 22px;
-  box-shadow: var(--lift-sm); padding: 7px 10px;
-  margin-bottom: 14px;
-}
-.who{ display: flex; align-items: center; gap: 9px; min-width: 0; }
-.who-art{ background: none; border: none; padding: 0; cursor: pointer; width: 42px; flex: none; }
-.who-art svg{ width: 42px; height: auto; display: block; }
+.who-art svg{ width: 100%; height: 100%; display: block; }
 .who-txt{ display: grid; justify-items: start; min-width: 0; gap: 2px; }
 .who-name{
-  font-family: "Baloo 2", system-ui, sans-serif; font-weight: 800; font-size: var(--t-md);
+  font-family: "Fredoka", system-ui; font-weight: 700; font-size: 1.12rem;
   line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  background: none; border: none; padding: 0; cursor: pointer; color: inherit; max-width: 100%;
+  background: none; border: none; padding: 0; cursor: pointer; color: var(--navy); max-width: 100%;
 }
-.who-sub{
-  font-size: var(--t-xs); color: var(--ink); display: inline-flex; align-items: center; gap: 4px;
-  background: var(--sun); border: 2px solid var(--ink); border-radius: 999px;
-  padding: 1px 9px 1px 4px; cursor: pointer; font-family: inherit; font-weight: 800;
+.who-ticket{
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #FFF7DC; border: 1.5px solid #E8C563; border-radius: 999px;
+  padding: 2px 10px 2px 6px; cursor: pointer;
+  font-family: "Fredoka", system-ui; font-weight: 600; font-size: .82rem; color: var(--navy);
 }
-.who-sub svg{ width: 15px; height: 15px; }
+.who-ticket svg{ width: 20px; height: 15px; display: block; }
 
-.pill-btn{
+.nav-pill{
   display: inline-flex; align-items: center; gap: 6px;
-  background: var(--paper-2); border: var(--stroke); border-radius: 999px;
-  padding: 6px 12px; font-family: "Baloo 2", system-ui, sans-serif; font-weight: 800;
-  font-size: var(--t-sm); color: var(--ink); cursor: pointer; box-shadow: 0 3px 0 var(--ink);
-  white-space: nowrap;
+  background: var(--linen); border: 1.5px solid var(--border); border-radius: 14px;
+  padding: 7px 12px; font-family: "Fredoka", system-ui; font-weight: 600;
+  font-size: .92rem; color: var(--navy); cursor: pointer; white-space: nowrap;
+  transition: background-color .15s ease, transform .1s ease;
 }
-.pill-btn:active{ transform: translateY(3px); box-shadow: none; }
+.nav-pill:hover{ background: #E9DEC9; }
+.nav-pill:active{ transform: scale(.97); }
 
-/* ── Spelarval & Profil ──────────────────────────────────────────────── */
-.profile-list{ display: grid; gap: 10px; margin-bottom: 14px; }
-.profile-card{
-  display: grid; grid-template-columns: 60px 1fr auto; align-items: center; gap: 12px;
-  background: var(--paper-2); border: var(--stroke); border-radius: 22px;
-  box-shadow: var(--lift-sm); padding: 10px 14px; cursor: pointer;
-  font-family: inherit; color: inherit; text-align: left; width: 100%;
+.icon-btn{
+  width: 44px; height: 44px; padding: 0; display: grid; place-items: center;
+  border-radius: 14px; background: var(--card); border: 1.5px solid var(--border);
+  box-shadow: var(--shadow-sm); cursor: pointer; touch-action: manipulation;
+  color: var(--navy); font-size: 1.2rem;
+  transition: transform .1s ease, background-color .15s ease;
 }
-.profile-card:hover{ background: #FFF3C9; }
-.profile-card svg{ width: 60px; height: auto; }
-.p-name{ font-family: "Baloo 2", system-ui, sans-serif; font-weight: 800; font-size: var(--t-lg); }
-.p-meta{ font-size: var(--t-xs); color: var(--ink-2); }
+.icon-btn:hover{ background: var(--linen); }
+.icon-btn:active{ transform: scale(.95); }
+
+/* ── Kort & Paneler ──────────────────────────────────────────────────── */
+.card{
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+  padding: clamp(16px, 3.2vw, 22px);
+  margin-bottom: 16px;
+}
+.section-head{
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin-bottom: 12px;
+}
+.section-head h2{ font-size: 1.32rem; }
+.section-sub{ font-size: .88rem; color: var(--slate); margin-bottom: 12px; line-height: 1.4; }
+
+/* ── Knappar — taktila med mjuk 3D-kant ──────────────────────────────── */
+.btn{
+  font-family: "Fredoka", system-ui; font-weight: 600;
+  color: var(--navy); background: var(--card);
+  border: 1.5px solid var(--border-hi); border-radius: 16px;
+  box-shadow: 0 3px 0 #D4C5AA, var(--shadow-sm);
+  cursor: pointer; padding: 12px 18px; font-size: 1.05rem;
+  touch-action: manipulation; user-select: none; -webkit-user-select: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  transition: transform .08s ease, box-shadow .08s ease, background-color .15s ease;
+}
+.btn:hover{ background: #FCF8F0; }
+.btn:active{ transform: translateY(3px); box-shadow: 0 0 0 #D4C5AA; }
+.btn:focus-visible{ outline: 3px solid var(--gbg); outline-offset: 3px; }
+.btn[disabled]{ opacity: .48; cursor: default; transform: none; }
+
+.btn-brass{
+  background: linear-gradient(180deg, #FFD043 0%, var(--brass) 100%);
+  border-color: var(--brass-deep);
+  box-shadow: 0 4px 0 var(--brass-deep), 0 10px 22px rgba(242,183,5,.28);
+  color: var(--navy);
+}
+.btn-brass:hover{ background: linear-gradient(180deg, #FFD862 0%, #F7BF15 100%); }
+.btn-brass:active{ transform: translateY(4px); box-shadow: 0 0 0 var(--brass-deep); }
+
+.btn-gbg{
+  background: linear-gradient(180deg, #287ACC 0%, var(--gbg) 100%);
+  border-color: var(--gbg-deep);
+  box-shadow: 0 4px 0 var(--gbg-deep), 0 8px 20px rgba(27,104,179,.24);
+  color: #FFFFFF;
+}
+.btn-gbg:hover{ background: linear-gradient(180deg, #3285D9 0%, #2071BF 100%); }
+.btn-gbg:active{ transform: translateY(4px); box-shadow: 0 0 0 var(--gbg-deep); }
+
+.btn-pine{
+  background: linear-gradient(180deg, #38A367 0%, var(--pine) 100%);
+  border-color: var(--pine-deep);
+  box-shadow: 0 4px 0 var(--pine-deep);
+  color: #FFFFFF;
+}
+.btn-pine:active{ transform: translateY(4px); box-shadow: 0 0 0 var(--pine-deep); }
+
+.btn-terra{
+  background: linear-gradient(180deg, #E36B48 0%, var(--terra) 100%);
+  border-color: var(--terra-deep);
+  box-shadow: 0 4px 0 var(--terra-deep);
+  color: #FFFFFF;
+}
+.btn-terra:active{ transform: translateY(4px); box-shadow: 0 0 0 var(--terra-deep); }
+
+.btn-linen{
+  background: var(--linen); border-color: var(--border);
+  box-shadow: 0 2px 0 var(--border-hi);
+}
+.btn-big{
+  display: flex; width: 100%; padding: 16px 20px;
+  font-size: clamp(1.22rem, 4.4vw, 1.55rem); border-radius: 20px;
+}
+.btn-sm{ padding: 8px 13px; font-size: .9rem; border-radius: 13px; }
+
+/* ── 1. Välkomstskärm ────────────────────────────────────────────────── */
+.welcome-hero{
+  text-align: center;
+  padding: 18px 14px 12px;
+}
+.welcome-emblem{
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--led-bg); color: var(--led-amber);
+  padding: 7px 16px; border-radius: 12px;
+  font-family: "JetBrains Mono", monospace; font-weight: 800; font-size: .85rem;
+  letter-spacing: .08em; margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+}
+.welcome-hero h1{
+  font-size: clamp(2.4rem, 9vw, 3.6rem);
+  color: var(--navy);
+  letter-spacing: -.02em;
+}
+.welcome-hero p{
+  color: var(--slate); font-size: 1rem; margin-top: 6px;
+}
+
+.profile-list{ display: grid; gap: 10px; }
+.profile-card{
+  display: grid; grid-template-columns: 58px 1fr auto; align-items: center; gap: 12px;
+  background: var(--cream); border: 1.5px solid var(--border); border-radius: 18px;
+  padding: 10px 14px; cursor: pointer; font-family: inherit; color: inherit; text-align: left; width: 100%;
+  transition: transform .1s ease, border-color .15s ease, background-color .15s ease;
+}
+.profile-card:hover{ background: #FFF8E6; border-color: var(--brass-deep); }
+.profile-card svg{ width: 58px; height: 58px; display: block; border-radius: 50%; }
+.p-name{ font-family: "Fredoka", system-ui; font-weight: 700; font-size: 1.25rem; }
+.p-meta{ font-size: .82rem; color: var(--slate); }
 .p-go{
-  width: 40px; height: 40px; border-radius: 50%; background: var(--grass);
-  border: var(--stroke); display: grid; place-items: center; color: #FFFDF7; font-size: 1.2rem;
+  width: 38px; height: 38px; border-radius: 50%; background: var(--gbg);
+  color: #FFF; display: grid; place-items: center; font-size: 1rem;
 }
 
 .name-field{
   width: 100%; padding: 13px 16px;
-  font-family: "Baloo 2", system-ui, sans-serif; font-weight: 800;
-  font-size: clamp(1.35rem, 5.5vw, 1.85rem); text-align: center;
-  color: var(--ink); background: var(--paper-2);
-  border: var(--stroke); border-radius: 20px;
+  font-family: "Fredoka", system-ui; font-weight: 600;
+  font-size: clamp(1.3rem, 5vw, 1.7rem); text-align: center;
+  color: var(--navy); background: var(--cream);
+  border: 2px solid var(--border-hi); border-radius: 16px;
 }
-.name-field:focus{ outline: 4px dashed var(--grape); outline-offset: 3px; background: #FFF9E6; }
+.name-field:focus{ outline: none; border-color: var(--gbg); background: #FFFFFF; box-shadow: 0 0 0 4px rgba(27,104,179,.15); }
 
-.char-grid{ display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); margin-top: 10px; }
+.char-grid{ display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); margin-top: 14px; }
 @media (min-width: 560px){ .char-grid{ grid-template-columns: repeat(6, 1fr); } }
 .char-card{
-  background: var(--paper-2); border: var(--stroke); border-radius: 20px;
-  box-shadow: var(--lift-sm); padding: 8px 4px 6px;
-  display: grid; justify-items: center; gap: 2px; cursor: pointer;
+  background: var(--cream); border: 2px solid var(--border); border-radius: 18px;
+  padding: 8px 6px; display: grid; justify-items: center; gap: 4px; cursor: pointer;
   font-family: inherit; color: inherit;
+  transition: transform .12s ease, border-color .15s ease, background-color .15s ease;
 }
-.char-card svg{ width: 100%; max-width: 72px; height: auto; }
-.char-card .char-name{ font-size: var(--t-xs); font-weight: 800; }
-.char-card[aria-pressed="true"]{ background: var(--sun); transform: translateY(-3px); box-shadow: 0 7px 0 var(--ink); }
-
-/* ── Spårvagnsstart ──────────────────────────────────────────────────── */
-.hero-vagn{
-  display: flex; align-items: center; gap: 12px; justify-content: center;
-  background: linear-gradient(180deg, #E8F6FF 0%, #FFFDF7 100%);
-  border: var(--stroke); border-radius: 24px; padding: 14px; margin-bottom: 14px;
-  box-shadow: var(--lift-sm);
+.char-card svg{ width: 64px; height: 64px; display: block; }
+.char-card .char-name{ font-family: "Fredoka", system-ui; font-weight: 700; font-size: .92rem; }
+.char-card[aria-pressed="true"]{
+  background: #FFF6D6; border-color: var(--brass-deep);
+  transform: translateY(-3px); box-shadow: 0 6px 14px rgba(242,183,5,.25);
 }
-.hero-vagn .kompis-wrap{ width: 72px; flex: none; cursor: pointer; }
-.hero-vagn .kompis-wrap svg{ width: 100%; height: auto; display: block; }
-.hero-vagn .vagn-wrap{ flex: 1; min-width: 0; max-width: 340px; }
-.hero-vagn .vagn-wrap svg{ width: 100%; height: auto; display: block; }
 
-.start-choices{ display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); margin: 12px 0; }
-@media (max-width: 520px){ .start-choices{ grid-template-columns: 1fr; } }
-.start-choice{
-  background: var(--paper-2); border: var(--stroke); border-radius: 20px;
-  box-shadow: var(--lift-sm); padding: 12px; cursor: pointer;
-  font-family: inherit; color: inherit; text-align: left;
+/* ── 2. Startskärm: Depå-kort & Snabbstart ───────────────────────────── */
+.depot-banner{
+  background: linear-gradient(135deg, #13315C 0%, #1B5294 62%, #1E6BB5 100%);
+  color: #FFFFFF;
+  border-radius: var(--r-lg);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.depot-banner::after{
+  content: ""; position: absolute; inset: auto -40px -60px auto;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(242,183,5,.22), transparent 68%);
+  pointer-events: none;
+}
+.depot-top{
+  display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+}
+.depot-crew{
+  width: 66px; height: 66px; flex: none; cursor: pointer;
+  border-radius: 50%; border: 3px solid rgba(255,255,255,.35); overflow: hidden;
+  background: rgba(255,255,255,.12);
+}
+.depot-crew svg{ width: 100%; height: 100%; display: block; }
+.depot-title h2{ font-size: 1.38rem; color: #FFFFFF; }
+.depot-title small{ color: rgba(255,255,255,.82); font-size: .86rem; display: block; margin-top: 2px; }
+
+.depot-tram-stage{
+  background: rgba(255,255,255,.11);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 16px;
+  padding: 10px 12px 8px;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+.depot-tram-stage:hover{ background: rgba(255,255,255,.16); }
+.depot-tram-stage svg{ width: 100%; max-height: 82px; display: block; margin: 0 auto; }
+.depot-tram-meta{
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  margin-top: 6px; font-size: .8rem; color: rgba(255,255,255,.88);
+}
+.depot-led-mini{
+  background: #0E1522; color: var(--led-amber);
+  font-family: "JetBrains Mono", monospace; font-weight: 800; font-size: .74rem;
+  padding: 3px 9px; border-radius: 7px; letter-spacing: .04em;
+}
+
+.start-strip{ display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); margin: 12px 0; }
+@media (max-width: 540px){ .start-strip{ grid-template-columns: 1fr; } }
+.start-card{
+  background: var(--cream); border: 1.5px solid var(--border); border-radius: 16px;
+  padding: 11px 12px; cursor: pointer; font-family: inherit; color: inherit; text-align: left;
   display: flex; align-items: center; gap: 10px;
+  transition: transform .1s ease, border-color .15s ease, background-color .15s ease;
 }
-.start-choice:hover{ background: #FFF4CC; }
-.start-choice:active{ transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
-.start-choice .sc-badge{
-  width: 40px; height: 40px; border-radius: 12px; border: 2.5px solid var(--ink);
-  display: grid; place-items: center; font-family: "Lilita One", system-ui; font-size: 1.35rem; flex: none;
+.start-card:hover{ background: #FFF8E6; border-color: var(--brass-deep); }
+.start-card:active{ transform: scale(.98); }
+.line-num{
+  min-width: 38px; height: 38px; padding: 0 7px; border-radius: 11px;
+  border: 2px solid var(--navy); display: grid; place-items: center;
+  font-family: "Fredoka", system-ui; font-weight: 700; font-size: 1.25rem; flex: none;
 }
-.start-choice b{ display: block; font-family: "Baloo 2", system-ui; font-size: 1.05rem; line-height: 1.1; }
-.start-choice small{ font-size: .78rem; color: var(--ink-2); }
+.start-card b{ display: block; font-family: "Fredoka", system-ui; font-size: 1.02rem; }
+.start-card small{ font-size: .78rem; color: var(--slate); }
 
-.home-tiles{ display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); margin-top: 12px; }
-@media (max-width: 480px){ .home-tiles{ grid-template-columns: 1fr; } }
-.home-tile{
+.nav-deck{ display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); }
+.deck-tile{
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 18px;
+  box-shadow: var(--shadow-sm); padding: 14px; cursor: pointer;
+  font-family: inherit; color: inherit; text-align: left;
   display: flex; align-items: center; gap: 12px;
-  background: var(--paper); border: var(--stroke); border-radius: 22px;
-  box-shadow: var(--lift-sm); padding: 12px 14px; cursor: pointer;
-  font-family: inherit; color: inherit; text-align: left; width: 100%;
+  transition: transform .1s ease, border-color .15s ease;
 }
-.home-tile:hover{ background: #FFF8DF; }
-.home-tile:active{ transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
-.home-tile .ht-ico{
-  width: 46px; height: 46px; border-radius: 14px; border: 2.5px solid var(--ink);
-  background: var(--paper-2); display: grid; place-items: center; font-size: 1.55rem; flex: none;
+.deck-tile:hover{ border-color: var(--gbg); transform: translateY(-2px); }
+.deck-tile .dt-badge{
+  width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center;
+  font-size: 1.5rem; flex: none;
 }
-.home-tile b{ display: block; font-family: "Baloo 2", system-ui; font-size: 1.1rem; line-height: 1.1; }
-.home-tile small{ font-size: .78rem; color: var(--ink-2); }
+.deck-tile b{ display: block; font-family: "Fredoka", system-ui; font-size: 1.05rem; }
+.deck-tile small{ font-size: .78rem; color: var(--slate); line-height: 1.25; display: block; margin-top: 2px; }
+@media (max-width: 480px){ .nav-deck{ grid-template-columns: 1fr; } }
 
-/* ── Resevy & Nätkarta ───────────────────────────────────────────────── */
-.rese-head{
+/* ── 3. Resevy: LED-avgångstavla, rälsbar, Karta & Vykort ────────────── */
+.led-header{
+  background: var(--led-bg);
+  color: #FFFFFF;
+  border-radius: 22px;
+  padding: 14px 16px 12px;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 14px;
+}
+.led-header-top{
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  padding: 10px 14px; border-radius: 20px; border: var(--stroke);
-  box-shadow: var(--lift-sm); margin-bottom: 12px;
 }
-.rese-head .btn{ flex: none; white-space: nowrap; }
-.rese-head-left{ display: flex; align-items: center; gap: 10px; min-width: 0; }
-.linje-bricka{
-  min-width: 42px; height: 42px; padding: 0 8px; border-radius: 13px;
-  border: 3px solid var(--ink); display: grid; place-items: center;
-  font-family: "Lilita One", system-ui; font-size: 1.45rem; flex: none;
+.led-header-line{
+  display: flex; align-items: center; gap: 12px; min-width: 0;
 }
-.rese-head-txt b{ display: block; font-family: "Baloo 2", system-ui; font-size: 1.18rem; line-height: 1.1; }
-.rese-head-txt small{ font-size: .8rem; opacity: .9; }
+.led-dest-main{
+  font-family: "JetBrains Mono", "Fredoka", monospace;
+  font-weight: 800; font-size: clamp(1.05rem, 4.2vw, 1.38rem);
+  color: var(--led-amber); letter-spacing: .04em;
+  text-shadow: 0 0 12px rgba(255,184,0,.32);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.led-stop-sub{
+  font-size: .82rem; color: rgba(255,255,255,.72); margin-top: 2px;
+}
+.led-home-btn{
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22);
+  color: #FFFFFF; border-radius: 12px; padding: 7px 12px;
+  font-family: "Fredoka", system-ui; font-weight: 600; font-size: .88rem;
+  cursor: pointer; white-space: nowrap; flex: none;
+}
+.led-home-btn:hover{ background: rgba(255,255,255,.2); }
+
+/* Horisontell minispår-mätare inuti LED-huvudet */
+.rail-progress{
+  margin-top: 12px; padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+.rail-track{
+  position: relative; height: 10px; border-radius: 999px;
+  background: rgba(255,255,255,.14); overflow: visible;
+}
+.rail-fill{
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--brass) 0%, #FFE07D 100%);
+  transition: width .4s ease;
+}
+.rail-tram-dot{
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--gbg); border: 2.5px solid #FFFFFF;
+  display: grid; place-items: center; font-size: .78rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.4);
+  transition: left .4s ease;
+}
+.rail-labels{
+  display: flex; justify-content: space-between; gap: 8px;
+  margin-top: 6px; font-size: .74rem; color: rgba(255,255,255,.68);
+}
+
+/* Flikad vy: Göteborgskarta / Vykort / Linjelista */
+.view-tabs{
+  display: inline-flex; gap: 4px; background: var(--linen);
+  border: 1.5px solid var(--border); border-radius: 14px; padding: 4px;
+  margin-bottom: 10px;
+}
+.view-tab{
+  background: transparent; border: none; border-radius: 10px;
+  padding: 6px 13px; font-family: "Fredoka", system-ui; font-weight: 600;
+  font-size: .88rem; color: var(--slate); cursor: pointer;
+}
+.view-tab[aria-selected="true"]{
+  background: var(--card); color: var(--navy); box-shadow: var(--shadow-sm);
+}
 
 .natkarta-box{
   position: relative;
-  background: #F4FAFF; border: var(--stroke); border-radius: 24px;
-  box-shadow: var(--lift); overflow: hidden; margin-bottom: 12px;
+  background: #F6F0E2; border: 1.5px solid var(--border-hi); border-radius: 22px;
+  box-shadow: var(--shadow-md); overflow: hidden; margin-bottom: 14px;
   aspect-ratio: 16 / 10; min-height: 230px; max-height: 360px; width: 100%;
 }
 .natkarta-box svg{ width: 100%; height: 100%; display: block; touch-action: manipulation; }
 .nat-linje{ fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.nat-linje.annan{ opacity: .3; }
+.nat-linje.annan{ opacity: .34; }
 .nat-stopp{ cursor: pointer; }
 .nat-namn{
-  font-family: "Nunito", system-ui, sans-serif; font-weight: 800; fill: var(--ink);
-  paint-order: stroke fill; stroke: #FFFDF7; stroke-width: 4px; stroke-linejoin: round;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif; font-weight: 800; fill: var(--navy);
+  paint-order: stroke fill; stroke: #FBF6EC; stroke-width: 4px; stroke-linejoin: round;
   cursor: pointer; user-select: none;
 }
-.nat-namn.har{ font-family: "Baloo 2", system-ui; fill: var(--ink); }
-.nat-namn.nasta{ fill: var(--gbg-dark); }
-.nat-namn.mal{ fill: var(--melon-deep); font-family: "Baloo 2", system-ui; }
-.nat-ring{ transform-box: fill-box; transform-origin: center; animation: nat-puls 1.6s ease-in-out infinite; }
-@keyframes nat-puls{ 0%,100%{ transform: scale(1); opacity: .6; } 50%{ transform: scale(1.22); opacity: .2; } }
+.nat-namn.har{ font-family: "Fredoka", system-ui; fill: var(--navy); }
+.nat-namn.nasta{ fill: var(--gbg-deep); }
+.nat-namn.mal{ fill: var(--terra-deep); font-family: "Fredoka", system-ui; }
+.nat-ring{ transform-box: fill-box; transform-origin: center; animation: nat-puls 1.7s ease-in-out infinite; }
+@keyframes nat-puls{ 0%,100%{ transform: scale(1); opacity: .6; } 50%{ transform: scale(1.24); opacity: .18; } }
 
 .karta-zoom-btn{
   position: absolute; top: 10px; right: 10px; z-index: 4;
-  background: var(--paper); border: 2.5px solid var(--ink); border-radius: 999px;
-  padding: 5px 12px; font-family: "Baloo 2", system-ui; font-weight: 800;
-  font-size: .82rem; color: var(--ink); cursor: pointer; box-shadow: 0 3px 0 var(--ink);
+  background: rgba(255,255,255,.94); border: 1.5px solid var(--border-hi); border-radius: 12px;
+  padding: 5px 12px; font-family: "Fredoka", system-ui; font-weight: 600;
+  font-size: .84rem; color: var(--navy); cursor: pointer; box-shadow: var(--shadow-sm);
 }
 .karta-status{
   position: absolute; bottom: 10px; left: 10px; right: 10px; z-index: 4;
@@ -307,351 +475,410 @@ p{ margin: 0; }
   pointer-events: none;
 }
 .karta-pill{
-  background: rgba(255,253,247,.95); border: 2.5px solid var(--ink); border-radius: 999px;
-  padding: 3px 10px; font-size: .78rem; font-weight: 800; box-shadow: 0 2px 0 var(--ink);
+  background: rgba(255,255,255,.94); border: 1.5px solid var(--border-hi); border-radius: 11px;
+  padding: 4px 10px; font-size: .78rem; font-weight: 700; box-shadow: var(--shadow-sm);
   max-width: 49%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-.rese-actions{ display: grid; gap: 10px; margin-bottom: 12px; }
-.rese-sub-btns{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-@media (max-width: 460px){ .rese-sub-btns{ grid-template-columns: 1fr; } }
+/* Vykort för hållplatsfoton */
+.vykort{
+  background: #FFFFFF; border: 1.5px solid var(--border); border-radius: 22px;
+  box-shadow: var(--shadow-md); padding: 12px; margin-bottom: 14px;
+  position: relative;
+}
+.vykort-bild{
+  position: relative; border-radius: 14px; overflow: hidden; cursor: pointer;
+  background: #DDEEF9;
+}
+.vykort-bild img, .vykort-bild svg.scene{
+  width: 100%; height: auto; display: block; aspect-ratio: 320 / 150; object-fit: cover;
+}
+.vykort-stampel{
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(255,253,247,.92); color: var(--terra-deep);
+  border: 2px dashed var(--terra); border-radius: 50%;
+  width: 60px; height: 60px; display: grid; place-items: center;
+  font-family: "JetBrains Mono", monospace; font-size: .58rem; font-weight: 800;
+  text-align: center; line-height: 1.1; transform: rotate(12deg);
+  pointer-events: none;
+}
+.vykort-fot{
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  margin-top: 8px; font-size: .78rem; color: var(--slate);
+}
 
 .resmal-banner{
-  background: #FFF4CC; border: var(--stroke); border-radius: 20px;
-  box-shadow: var(--lift-sm); padding: 10px 14px; margin-bottom: 12px;
+  background: #FFF7DF; border: 1.5px solid #E5C158; border-radius: 18px;
+  padding: 11px 14px; margin-bottom: 12px;
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
 }
-.resmal-banner b{ font-family: "Baloo 2", system-ui; font-size: 1.05rem; display: block; }
-.resmal-banner small{ font-size: .82rem; color: var(--ink-2); }
+.resmal-banner b{ font-family: "Fredoka", system-ui; font-size: 1.04rem; display: block; }
+.resmal-banner small{ font-size: .82rem; color: var(--slate); }
 
 .beloning-rad{
-  background: #E8FCEB; border: var(--stroke); border-radius: 18px;
-  padding: 10px 14px; margin-bottom: 12px; font-size: .95rem;
+  background: #E7F7EE; border: 1.5px solid #8CD0A7; border-radius: 16px;
+  padding: 10px 14px; margin-bottom: 12px; font-size: .92rem;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
 }
 
-.fold-card{
-  background: var(--paper); border: var(--stroke); border-radius: 22px;
-  box-shadow: var(--lift-sm); margin-bottom: 12px; overflow: hidden;
-}
-.fold-card summary{
-  list-style: none; padding: 12px 16px; cursor: pointer;
-  font-family: "Baloo 2", system-ui; font-weight: 800; font-size: 1.08rem;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.fold-card summary::-webkit-details-marker{ display: none; }
-.fold-body{ padding: 0 14px 14px; }
+.rese-actions{ display: grid; gap: 10px; margin-bottom: 14px; }
+.rese-sub-btns{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.rese-sub-btns .btn{ padding: 9px 6px; font-size: .84rem; white-space: nowrap; }
 
-.stopp-foto-wrap{
-  position: relative; border-radius: 16px; overflow: hidden;
-  border: 2.5px solid var(--ink); background: #DDF4FF; cursor: pointer;
+/* ── 4. Spelskärm: Träbrickor, ljudningståg & glödande skyltar ────────── */
+.game-bar{
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
 }
-.stopp-foto-wrap img, .stopp-foto-wrap svg.scene{ width: 100%; height: auto; display: block; aspect-ratio: 320 / 150; object-fit: cover; }
-.foto-credit{ font-size: .72rem; color: var(--ink-2); margin-top: 5px; display: flex; justify-content: space-between; gap: 8px; }
-
-/* ── Spelskärm (Uppgifter!) ──────────────────────────────────────────── */
-.game-top{
-  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+.prog-rail{
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: rgba(255,255,255,.85); border: 1.5px solid var(--border);
+  border-radius: 999px; padding: 7px 14px;
 }
-.prog-dots{
-  flex: 1; display: flex; gap: 8px; justify-content: center; align-items: center;
+.prog-stop{
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--linen); border: 2.5px solid var(--border-hi);
+  transition: transform .2s ease, background-color .2s ease, border-color .2s ease;
 }
-.prog-dot{
-  width: 24px; height: 24px; border-radius: 50%;
-  background: var(--paper); border: 3px solid var(--ink);
-  transition: transform .2s ease, background-color .2s ease;
-}
-.prog-dot.done{ background: var(--grass); }
-.prog-dot.now{ background: var(--sun); transform: scale(1.22); }
-.prog-dot.hjalp{ background: #A6E7FF; }
+.prog-stop.done{ background: var(--pine); border-color: var(--pine-deep); }
+.prog-stop.hjalp{ background: var(--teal); border-color: var(--navy); }
+.prog-stop.now{ background: var(--brass); border-color: var(--navy); transform: scale(1.25); }
 
 .q-stage{
-  background: var(--paper); border: var(--stroke); border-radius: 28px;
-  box-shadow: var(--lift); padding: clamp(16px, 3.5vw, 24px);
-  position: relative;
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 26px; box-shadow: var(--shadow-lg);
+  padding: clamp(16px, 3.5vw, 24px);
 }
-.q-header{
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  margin-bottom: 14px;
+.kluring-badge{
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #FFF1E8; color: var(--terra-deep);
+  border: 1.5px solid #F0B69C; border-radius: 999px;
+  padding: 3px 11px; font-size: .78rem; font-weight: 800; margin-bottom: 8px;
 }
 .q-prompt{
-  font-family: "Baloo 2", system-ui; font-weight: 800;
-  font-size: clamp(1.15rem, 4vw, 1.45rem); line-height: 1.15;
+  font-family: "Fredoka", system-ui; font-weight: 700;
+  font-size: clamp(1.2rem, 4.2vw, 1.52rem); color: var(--navy);
+  text-align: center; margin-bottom: 12px;
 }
-.kluring-tag{
-  display: inline-block; background: var(--bubble); color: var(--ink);
-  border: 2.5px solid var(--ink); border-radius: 999px;
-  padding: 2px 10px; font-size: .78rem; font-weight: 800; margin-bottom: 6px;
-}
-
 .q-visual{
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 12px; margin: 10px 0 18px; min-height: 110px;
+  gap: 14px; margin: 8px 0 18px; min-height: 112px;
 }
 
-/* Ordbild-klistermärke */
+/* Ordbild på varmt illustrationskort */
 .ord-bild{
   display: grid; place-items: center;
-  width: 110px; height: 110px; border-radius: 24px;
-  border: 3px solid var(--ink); box-shadow: var(--lift-sm);
+  width: 108px; height: 108px; border-radius: 22px;
+  border: 2px solid rgba(19,49,92,.14); box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
-.ord-bild.stor{ width: 138px; height: 138px; border-radius: 28px; }
-.ord-bild.emoji{ font-size: 3.6rem; line-height: 1; }
-.ord-bild.stor.emoji{ font-size: 4.8rem; }
+.ord-bild.stor{ width: 136px; height: 136px; border-radius: 26px; }
+.ord-bild.emoji{ font-size: 3.5rem; line-height: 1; }
+.ord-bild.stor.emoji{ font-size: 4.7rem; }
 .ord-bild svg{ width: 88%; height: 88%; display: block; }
 
-/* Interaktivt ljudnings-ord */
+/* Träbrickor i ljudnings-spår med glidande minispårvagn! */
+.ljud-rack{
+  display: inline-flex; flex-direction: column; align-items: center; gap: 8px;
+  max-width: 100%;
+}
 .ljud-ord-rad{
   display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  padding: 10px 12px; border-radius: 20px;
+  background: var(--linen); border: 1.5px solid var(--border);
 }
 .ljud-bokstav{
-  min-width: clamp(46px, 12vw, 64px); height: clamp(56px, 14vw, 72px);
+  min-width: clamp(48px, 12vw, 66px); height: clamp(58px, 14vw, 74px);
   padding: 0 10px;
-  background: #FFF9E6; border: var(--stroke); border-radius: 18px;
-  box-shadow: var(--lift-sm); cursor: pointer;
-  font-family: "Baloo 2", system-ui; font-weight: 800;
-  font-size: clamp(1.7rem, 6vw, 2.35rem); color: var(--ink);
+  background: linear-gradient(180deg, var(--wood-top) 0%, var(--wood-bot) 100%);
+  border: 2px solid var(--wood-edge); border-radius: 16px;
+  box-shadow: 0 5px 0 var(--wood-edge), 0 8px 14px rgba(19,49,92,.12);
+  cursor: pointer;
+  font-family: "Fredoka", system-ui; font-weight: 700;
+  font-size: clamp(1.8rem, 6vw, 2.4rem); color: var(--navy);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: transform .12s ease, background-color .15s ease;
+  transition: transform .14s ease, box-shadow .14s ease, background .15s ease;
 }
-.ljud-bokstav .ljud-prick{
-  width: 8px; height: 8px; border-radius: 50%; background: var(--sky-deep); margin-top: -2px;
-}
+.ljud-bokstav:active{ transform: translateY(4px); box-shadow: 0 1px 0 var(--wood-edge); }
 .ljud-bokstav.aktiv{
-  background: var(--sun); transform: translateY(-6px) scale(1.08);
-  box-shadow: 0 8px 0 var(--ink);
+  background: linear-gradient(180deg, #FFE27A 0%, var(--brass) 100%);
+  border-color: var(--navy);
+  transform: translateY(-6px) scale(1.07);
+  box-shadow: 0 8px 0 var(--brass-deep), 0 12px 20px rgba(242,183,5,.32);
 }
 .ljud-bokstav.lucka-tom{
-  background: var(--paper-2); border-style: dashed; color: var(--grape);
+  background: #FFFFFF; border: 2.5px dashed var(--gbg);
+  box-shadow: inset 0 2px 6px rgba(27,104,179,.1);
+  color: var(--gbg);
 }
 .ljud-bokstav.ratt-fylld{
-  background: #C9F7D1; border-style: solid; color: var(--ink);
+  background: #D7F5E3; border-color: var(--pine); box-shadow: 0 4px 0 var(--pine-deep);
 }
 
+/* Minispårvagnen som rullar under bokstäverna när man ljudar! */
+.ljud-spar{
+  position: relative; width: 100%; height: 22px;
+  display: flex; align-items: center;
+}
+.ljud-spar-linje{
+  width: 100%; height: 4px; border-radius: 999px;
+  background: repeating-linear-gradient(90deg, var(--border-hi) 0 10px, transparent 10px 16px);
+}
+.ljud-spar-vagn{
+  position: absolute; top: 50%; left: 10%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem; line-height: 1;
+  transition: left .24s cubic-bezier(.3,1.2,.4,1), opacity .2s ease;
+  opacity: .55;
+}
+.ljud-spar-vagn.rullar{ opacity: 1; }
+
 .ljuda-btn{
-  background: #E8F6FF; border: 2.5px solid var(--ink); border-radius: 999px;
-  padding: 7px 16px; font-family: "Baloo 2", system-ui; font-weight: 800;
-  font-size: .98rem; color: var(--ink); cursor: pointer; box-shadow: 0 3px 0 var(--ink);
-  display: inline-flex; align-items: center; gap: 6px;
+  background: #EAF4FC; border: 1.5px solid #9EC9EA; border-radius: 999px;
+  padding: 8px 18px; font-family: "Fredoka", system-ui; font-weight: 600;
+  font-size: .98rem; color: var(--gbg-deep); cursor: pointer;
+  box-shadow: 0 3px 0 #B3D4EC;
+  display: inline-flex; align-items: center; gap: 7px;
 }
 .ljuda-btn:active{ transform: translateY(3px); box-shadow: none; }
 
-/* Svarsrutor (bild, text, skylt, vagn) */
-.choice-grid{
-  display: grid; gap: 12px;
-  grid-template-columns: repeat(2, 1fr);
+/* Vagnhalls-ritning (blueprint-kort för spårvagnsmodeller) */
+.ritning{
+  width: 100%; max-width: 400px;
+  background: linear-gradient(180deg, #173B66 0%, #112C4E 100%);
+  border: 2px solid var(--navy); border-radius: 18px;
+  padding: 14px 12px 10px; color: #FFFFFF;
+  box-shadow: var(--shadow-md);
 }
-.choice-grid.cols-3{ grid-template-columns: repeat(3, 1fr); }
+.ritning-skala{
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 8px; padding-top: 7px;
+  border-top: 1px dashed rgba(255,255,255,.28);
+  font-family: "JetBrains Mono", monospace; font-size: .76rem; color: #BCE3F7;
+}
+
+/* Svarsrutor */
+.choice-grid{ display: grid; gap: 11px; grid-template-columns: repeat(2, 1fr); }
+.choice-grid.cols-3{ grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
 .choice-grid.cols-1{ grid-template-columns: 1fr; }
+.choice-grid.cols-3 .ord-bild{ width: min(86px, 100%); height: auto; aspect-ratio: 1 / 1; border-radius: 18px; }
+.choice-grid.cols-3 .ord-bild.emoji{ font-size: clamp(2.1rem, 8vw, 3rem); }
 
 .choice-btn{
-  background: var(--paper-2); border: var(--stroke); border-radius: 22px;
-  box-shadow: var(--lift-sm); padding: 14px 10px; cursor: pointer;
-  font-family: "Baloo 2", system-ui; font-weight: 800; color: var(--ink);
-  font-size: clamp(1.25rem, 4.8vw, 1.75rem);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  min-width: 0;
+  background: var(--cream); border: 2px solid var(--border-hi); border-radius: 18px;
+  box-shadow: 0 4px 0 #D5C6AB; padding: 12px 8px; cursor: pointer;
+  font-family: "Fredoka", system-ui; font-weight: 700; color: var(--navy);
+  font-size: clamp(1.22rem, 4.5vw, 1.7rem);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px;
   min-height: 78px; touch-action: manipulation;
-  transition: transform .09s ease, box-shadow .09s ease, background-color .15s ease;
+  transition: transform .08s ease, box-shadow .08s ease, background-color .15s ease, border-color .15s ease;
 }
-.choice-btn:hover{ background: #FFF5D1; }
-.choice-btn:active{ transform: translateY(4px); box-shadow: 0 0 0 var(--ink); }
-.choice-btn.is-correct{ background: #B8F2C2 !important; border-color: var(--grass-deep); }
-.choice-btn.is-wrong{ background: #FFD6D6 !important; opacity: .65; animation: shake .35s ease; }
-@keyframes shake{ 0%,100%{ transform: translateX(0); } 25%{ transform: translateX(-6px); } 75%{ transform: translateX(6px); } }
+.choice-btn:hover{ background: #FFF8E6; border-color: var(--brass-deep); }
+.choice-btn:active{ transform: translateY(4px); box-shadow: 0 0 0 #D5C6AB; }
+.choice-btn.is-correct{ background: #D7F5E3 !important; border-color: var(--pine) !important; box-shadow: 0 4px 0 var(--pine-deep); }
+.choice-btn.is-wrong{ background: #FDE4DF !important; border-color: var(--terra) !important; opacity: .62; animation: shake .32s ease; }
+@keyframes shake{ 0%,100%{ transform: translateX(0); } 25%{ transform: translateX(-5px); } 75%{ transform: translateX(5px); } }
 
-/* LED-skylt & Hållplatsskylt */
+/* LED-skylt & Blåvit Hållplatsskylt */
 .led-board{
   display: inline-flex; align-items: center; gap: 12px;
-  background: #1A1F2B; border: 3.5px solid var(--ink); border-radius: 16px;
-  padding: 10px 16px; box-shadow: var(--lift-sm); max-width: 100%;
+  background: var(--led-bg); border: 2px solid #2A3954; border-radius: 14px;
+  padding: 10px 16px; box-shadow: inset 0 2px 8px rgba(0,0,0,.45), var(--shadow-sm);
+  max-width: 100%;
 }
 .led-line-badge{
-  min-width: 38px; height: 38px; padding: 0 6px; border-radius: 10px;
-  border: 2px solid #000; display: grid; place-items: center;
-  font-family: "Lilita One", system-ui; font-size: 1.35rem; flex: none;
+  min-width: 38px; height: 38px; padding: 0 7px; border-radius: 9px;
+  display: grid; place-items: center;
+  font-family: "Fredoka", system-ui; font-weight: 700; font-size: 1.3rem; flex: none;
 }
 .led-dest{
-  font-family: "Baloo 2", system-ui; font-weight: 800;
-  font-size: clamp(1.2rem, 4.5vw, 1.65rem); color: #FFB300;
-  letter-spacing: .04em; text-shadow: 0 0 10px rgba(255,179,0,.35);
+  font-family: "JetBrains Mono", "Fredoka", monospace; font-weight: 800;
+  font-size: clamp(1.1rem, 4.2vw, 1.55rem); color: var(--led-amber);
+  letter-spacing: .06em; text-shadow: 0 0 12px rgba(255,184,0,.4);
 }
 
 .stopp-skylt{
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--gbg); color: #FFFDF7;
-  border: 3px solid var(--ink); border-radius: 14px;
-  padding: 8px 12px; max-width: 100%;
-  font-size: clamp(.95rem, 3.6vw, 1.2rem);
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--gbg); color: #FFFFFF;
+  border: 2px solid var(--navy); border-radius: 12px;
+  padding: 9px 14px; max-width: 100%;
+  font-size: clamp(1rem, 3.6vw, 1.22rem);
 }
 .stopp-skylt-h{
-  width: 26px; height: 26px; border-radius: 50%;
-  background: #FFFDF7; color: var(--gbg);
-  display: grid; place-items: center; font-weight: 900; font-size: .95rem; flex: none;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #FFFFFF; color: var(--gbg);
+  display: grid; place-items: center; font-weight: 800; font-size: .96rem; flex: none;
 }
-.stopp-skylt-namn{ overflow-wrap: anywhere; line-height: 1.1; }
+.stopp-skylt-namn{ overflow-wrap: anywhere; line-height: 1.15; }
 
 .vagn-val-btn{ padding: 10px 8px; }
-.vagn-val-btn svg{ width: 64px; height: auto; }
-.vagn-val-dest{ font-size: clamp(.95rem, 3.5vw, 1.15rem); line-height: 1.1; }
+.vagn-val-btn svg{ width: 62px; height: auto; }
+.vagn-val-dest{ font-size: clamp(.94rem, 3.4vw, 1.12rem); line-height: 1.15; }
 
-/* ── Bygg ord: Bokstavsluckor, brickor & svenskt tangentbord ─────────── */
+/* ── Bygg ord: Träbrickor & Svenskt tangentbord ──────────────────────── */
 .bygg-slots{
   display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 14px; padding: 10px 12px; border-radius: 18px;
+  background: var(--led-bg); box-shadow: inset 0 2px 8px rgba(0,0,0,.4);
 }
 .bygg-slot{
-  width: clamp(46px, 12vw, 60px); height: clamp(54px, 13vw, 66px);
-  border: 3px dashed var(--ink-2); border-radius: 16px;
-  background: var(--paper-2); color: var(--ink);
-  font-family: "Baloo 2", system-ui; font-weight: 800;
-  font-size: clamp(1.6rem, 5.5vw, 2.1rem);
+  width: clamp(46px, 12vw, 58px); height: clamp(54px, 13vw, 64px);
+  border: 2px dashed rgba(255,184,0,.45); border-radius: 13px;
+  background: rgba(255,255,255,.06); color: var(--led-amber);
+  font-family: "Fredoka", system-ui; font-weight: 700;
+  font-size: clamp(1.65rem, 5.5vw, 2.15rem);
   display: grid; place-items: center; cursor: pointer;
 }
 .bygg-slot.fylld{
-  border-style: solid; border-color: var(--ink); background: #FFF5C7;
-  box-shadow: 0 4px 0 var(--ink);
+  border-style: solid; border-color: var(--led-amber);
+  background: rgba(255,184,0,.14);
+  text-shadow: 0 0 10px rgba(255,184,0,.4);
 }
-.bygg-slot.ratt{ background: #B8F2C2; border-style: solid; }
-.bygg-slot.fel{ background: #FFD6D6; animation: shake .35s ease; }
+.bygg-slot.ratt{
+  background: rgba(45,138,86,.32); border-style: solid; border-color: #6CE09C; color: #FFFFFF;
+}
 
-.brick-bank{
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
-  margin-top: 6px;
-}
+.brick-bank{ display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px; }
 .bricka{
-  min-width: 54px; height: 58px; padding: 0 12px;
-  background: var(--sun); border: var(--stroke); border-radius: 18px;
-  box-shadow: var(--lift-sm); cursor: pointer;
-  font-family: "Baloo 2", system-ui; font-weight: 800;
-  font-size: 1.65rem; color: var(--ink);
-  touch-action: manipulation;
-  transition: transform .09s ease, opacity .15s ease;
+  min-width: 54px; height: 58px; padding: 0 13px;
+  background: linear-gradient(180deg, var(--wood-top) 0%, var(--wood-bot) 100%);
+  border: 2px solid var(--wood-edge); border-radius: 15px;
+  box-shadow: 0 5px 0 var(--wood-edge), 0 6px 12px rgba(19,49,92,.12);
+  cursor: pointer; font-family: "Fredoka", system-ui; font-weight: 700;
+  font-size: 1.65rem; color: var(--navy); touch-action: manipulation;
+  transition: transform .08s ease, opacity .15s ease;
 }
-.bricka:active{ transform: translateY(4px); box-shadow: none; }
-.bricka.anvand{ opacity: .25; pointer-events: none; transform: scale(.92); }
+.bricka:active{ transform: translateY(4px); box-shadow: 0 1px 0 var(--wood-edge); }
+.bricka.anvand{ opacity: .22; pointer-events: none; transform: scale(.92); }
 
-.stava-mode-bar{
-  display: flex; justify-content: center; gap: 8px; margin-bottom: 12px;
-}
+.stava-mode-bar{ display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .mode-chip{
-  background: var(--paper-2); border: 2.5px solid var(--ink); border-radius: 999px;
-  padding: 4px 12px; font-family: "Baloo 2", system-ui; font-weight: 800;
-  font-size: .84rem; color: var(--ink); cursor: pointer;
+  background: var(--linen); border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 5px 13px; font-family: "Fredoka", system-ui; font-weight: 600;
+  font-size: .88rem; color: var(--slate); cursor: pointer;
 }
-.mode-chip[aria-pressed="true"]{ background: var(--sky-hi); }
+.mode-chip[aria-pressed="true"]{
+  background: var(--gbg); border-color: var(--gbg-deep); color: #FFFFFF;
+}
 
-.sv-tangentbord{
-  display: grid; gap: 6px; margin-top: 8px;
-}
-.kb-row{
-  display: flex; justify-content: center; gap: 4px;
-}
+.sv-tangentbord{ display: grid; gap: 6px; margin-top: 8px; }
+.kb-row{ display: flex; justify-content: center; gap: 4px; }
 .kb-key{
   flex: 1; max-width: 48px; min-width: 26px; height: 46px; padding: 0;
-  background: var(--paper-2); border: 2.5px solid var(--ink); border-radius: 12px;
-  box-shadow: 0 3px 0 var(--ink); cursor: pointer;
-  font-family: "Baloo 2", system-ui; font-weight: 800; font-size: 1.15rem; color: var(--ink);
+  background: var(--cream); border: 1.5px solid var(--border-hi); border-radius: 11px;
+  box-shadow: 0 3px 0 #D4C5AA; cursor: pointer;
+  font-family: "Fredoka", system-ui; font-weight: 700; font-size: 1.12rem; color: var(--navy);
   touch-action: manipulation;
 }
 .kb-key:active{ transform: translateY(3px); box-shadow: none; }
-.kb-key.wide{ max-width: 74px; flex: 1.5; background: #FFE2E2; }
+.kb-key.wide{ max-width: 74px; flex: 1.5; background: #FDE4DF; border-color: #E3A08E; }
 
-/* Feedback-ruta + kompis som hejar */
+/* Feedback-ruta med Göteborgs-kompisen */
 .feedback-bar{
-  margin-top: 14px; padding: 12px 14px; border-radius: 20px;
-  border: var(--stroke); background: #FFF8DD;
+  margin-top: 16px; padding: 11px 14px; border-radius: 18px;
+  border: 1.5px solid var(--border); background: var(--cream);
   display: flex; align-items: center; gap: 12px; min-height: 64px;
 }
-.feedback-bar.ok{ background: #D7FAD9; }
-.feedback-bar.fel{ background: #FFE6E6; }
-.feedback-bar .fb-kompis{ width: 52px; flex: none; cursor: pointer; }
-.feedback-bar .fb-kompis svg{ width: 100%; height: auto; display: block; }
-.feedback-bar .fb-text{ flex: 1; font-size: 1rem; line-height: 1.25; }
+.feedback-bar.ok{ background: #E7F7EE; border-color: #8CD0A7; }
+.feedback-bar.fel{ background: #FEF0EC; border-color: #F0B69C; }
+.feedback-bar .fb-kompis{ width: 52px; height: 52px; flex: none; cursor: pointer; }
+.feedback-bar .fb-kompis svg{ width: 100%; height: 100%; display: block; border-radius: 50%; }
+.feedback-bar .fb-text{ flex: 1; font-size: .96rem; line-height: 1.3; }
+
+/* ── Skyltverkstaden i Vagnhallen ────────────────────────────────────── */
+.skylt-verkstad-box{
+  background: var(--led-bg); border-radius: 20px; padding: 16px;
+  text-align: center; margin-bottom: 12px;
+  box-shadow: inset 0 2px 12px rgba(0,0,0,.5);
+}
+.skylt-preview-text{
+  font-family: "JetBrains Mono", monospace; font-weight: 800;
+  font-size: clamp(1.5rem, 6vw, 2.2rem); color: var(--led-amber);
+  letter-spacing: .08em; text-shadow: 0 0 16px rgba(255,184,0,.45);
+  min-height: 2.6rem; display: flex; align-items: center; justify-content: center;
+  word-break: break-word;
+}
 
 /* ── Modaler / Sheets ────────────────────────────────────────────────── */
 .sheet-backdrop{
   position: fixed; inset: 0; z-index: 60;
-  background: rgba(46,26,102,.52);
+  background: rgba(19,49,92,.48);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
   display: none; align-items: flex-end; justify-content: center; padding: 12px;
 }
 @media (min-width: 600px){ .sheet-backdrop{ align-items: center; } }
 .sheet-backdrop.open{ display: flex; }
 .sheet{
-  background: var(--paper); border: var(--stroke); border-radius: 28px;
-  box-shadow: 0 12px 34px rgba(46,26,102,.35);
+  background: var(--cream); border: 1.5px solid var(--border); border-radius: 26px;
+  box-shadow: var(--shadow-lg);
   width: 100%; max-width: 620px; max-height: 86vh; overflow-y: auto;
   padding: 18px;
-  animation: screen-in .22s ease both;
+  animation: fade-up .2s ease both;
 }
 .sheet-head{
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
   margin-bottom: 14px;
 }
-.sheet-head h2{ font-size: 1.45rem; }
+.sheet-head h2{ font-size: 1.38rem; }
 
 /* Inställningar & Statistik */
 .set-group{
-  background: var(--paper-2); border: 2.5px solid var(--ink); border-radius: 20px;
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 18px;
   margin-bottom: 10px; overflow: hidden;
 }
 .set-group summary{
-  padding: 11px 14px; cursor: pointer; font-family: "Baloo 2", system-ui;
-  font-weight: 800; font-size: 1.05rem; list-style: none;
+  padding: 12px 14px; cursor: pointer; font-family: "Fredoka", system-ui;
+  font-weight: 700; font-size: 1.04rem; list-style: none;
   display: flex; justify-content: space-between; align-items: center;
 }
 .set-group summary::-webkit-details-marker{ display: none; }
-.set-body{ padding: 0 14px 14px; display: grid; gap: 10px; }
+.set-body{ padding: 0 14px 14px; display: grid; gap: 9px; }
 .set-row{
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  background: var(--paper); border: 2px solid var(--ink); border-radius: 14px;
+  background: var(--cream); border: 1.5px solid var(--border); border-radius: 13px;
   padding: 9px 12px;
 }
-.set-row small{ display: block; font-size: .76rem; color: var(--ink-2); font-weight: 700; }
+.set-row small{ display: block; font-size: .76rem; color: var(--slate); font-weight: 600; }
 
 .seg-group{ display: inline-flex; gap: 4px; flex-wrap: wrap; }
 .seg-btn{
-  border: 2px solid var(--ink); border-radius: 10px; background: var(--paper-2);
-  padding: 5px 10px; font-family: "Baloo 2", system-ui; font-weight: 800;
-  font-size: .85rem; color: var(--ink); cursor: pointer;
+  border: 1.5px solid var(--border-hi); border-radius: 10px; background: var(--card);
+  padding: 5px 10px; font-family: "Fredoka", system-ui; font-weight: 600;
+  font-size: .85rem; color: var(--navy); cursor: pointer;
 }
-.seg-btn[aria-pressed="true"]{ background: var(--sun); }
+.seg-btn[aria-pressed="true"]{ background: var(--gbg); border-color: var(--gbg-deep); color: #FFFFFF; }
 
-.niva-meter{
-  display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 8px 0;
-}
-.niva-pip{
-  height: 16px; border-radius: 999px; border: 2px solid var(--ink); background: var(--paper);
-}
+.niva-meter{ display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 8px 0; }
+.niva-pip{ height: 12px; border-radius: 999px; border: 1.5px solid var(--border-hi); background: var(--card); }
 
-/* Butik, Mina ord, Vagnkort, Linjelista */
 .grid-cards{ display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); }
 .mini-card{
-  background: var(--paper-2); border: 2.5px solid var(--ink); border-radius: 18px;
-  padding: 10px; text-align: center; display: grid; gap: 6px; justify-items: center;
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 16px;
+  padding: 11px; text-align: center; display: grid; gap: 6px; justify-items: center;
+  box-shadow: var(--shadow-sm);
 }
-.mini-card.locked{ opacity: .52; filter: grayscale(.6); }
+.mini-card.locked{ opacity: .52; filter: grayscale(.65); }
 
 .linje-rad{
   display: flex; align-items: center; gap: 10px; padding: 9px 12px;
-  background: var(--paper-2); border: 2.5px solid var(--ink); border-radius: 16px;
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 14px;
   margin-bottom: 8px;
 }
 .linje-bar{
-  flex: 1; height: 12px; background: var(--paper); border: 2px solid var(--ink);
-  border-radius: 999px; overflow: hidden; margin-top: 4px;
+  flex: 1; height: 10px; background: var(--linen); border-radius: 999px;
+  overflow: hidden; margin-top: 4px;
 }
 .linje-bar > span{ display: block; height: 100%; border-radius: 999px; }
 
 .avgang-card{
   display: flex; align-items: center; gap: 12px; width: 100%;
-  background: var(--paper-2); border: var(--stroke); border-radius: 20px;
-  box-shadow: var(--lift-sm); padding: 10px 14px; cursor: pointer;
-  text-align: left; font-family: inherit; color: inherit; margin-bottom: 10px;
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 18px;
+  box-shadow: var(--shadow-sm); padding: 10px 14px; cursor: pointer;
+  text-align: left; font-family: inherit; color: inherit; margin-bottom: 9px;
 }
-.avgang-card.tips{ background: #D7FAD9; }
-.avgang-card.sparrad{ opacity: .52; background: #ECE8F5; cursor: not-allowed; }
-.avgang-card svg{ width: 46px; height: auto; flex: none; }
+.avgang-card:hover{ border-color: var(--gbg); }
+.avgang-card.tips{ background: #E7F7EE; border-color: #8CD0A7; }
+.avgang-card.sparrad{ opacity: .5; background: var(--linen); cursor: not-allowed; }
+.avgang-card svg{ width: 44px; height: auto; flex: none; }
 
-/* Konfetti-canvas */
 #confetti{ position: fixed; inset: 0; pointer-events: none; z-index: 80; }

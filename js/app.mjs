@@ -9,12 +9,12 @@ import {
   vagnTypAv, stegaVagnNummer, vagnkortFor, vagnFoto, avstand
 } from "./gbg-data.mjs";
 import {
-  NIVAAER, ORDBANK, formatOrd, hittaOrd
+  NIVAAER, ORDBANK, formatOrd
 } from "./ord-data.mjs";
 import {
-  CHARACTERS, TILLBEHOR, VAGN_PYNT, LEKSAKER, MARKEN,
-  INK, escapeHtml, ljusFarg, charSVG, kompisSVG, coinSVG,
-  tramSVG, vagnSidoSVG, ledSkyltHTML, stoppSkyltHTML, ordBildHTML, sceneSVG
+  CHARACTERS, VAGN_TEMAN, VAGN_PYNT, MARKEN,
+  INK, escapeHtml, ljusFarg, charSVG, kompisSVG, biljettSVG, vagnTemaAv,
+  tramSVG, vagnSidoSVG, stoppSkyltHTML, ordBildHTML, sceneSVG
 } from "./konst.mjs";
 import {
   byggRunda, forklaraFel, uppdateraNiva, pick
@@ -34,12 +34,11 @@ import {
 /* ── Globalt tillstånd ──────────────────────────────────────────────── */
 let DATA = laddaData();
 let aktivSkarm = "welcome";
+let resaFlik = "karta"; // "karta" | "vykort" | "linje"
 let fotonMiss = 0;
 let visaTecknadScen = false;
 let sistaBeloning = null;
 let rullarNu = false;
-
-/* Pågående omgång (5 uppgifter för en hållplatssträcka) */
 let runda = null;
 
 const $ = (sel) => document.querySelector(sel);
@@ -71,15 +70,15 @@ function konfetti(){
   const ctx = canvas.getContext("2d");
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  const farger = ["#FFC42E", "#57C96B", "#62CDF2", "#FF6B6B", "#FF8AD0", "#9061F9"];
-  const bitar = Array.from({ length: 72 }, () => ({
+  const farger = ["#F2B705", "#1B68B3", "#2D8A56", "#D95D39", "#2A9D8F", "#BCE3F7"];
+  const bitar = Array.from({ length: 68 }, () => ({
     x: Math.random() * canvas.width,
     y: -20 - Math.random() * 140,
     vx: (Math.random() - 0.5) * 4,
     vy: 3 + Math.random() * 5,
     r: 5 + Math.random() * 6,
     a: Math.random() * Math.PI * 2,
-    va: (Math.random() - 0.5) * 0.25,
+    va: (Math.random() - 0.5) * 0.24,
     col: pick(farger)
   }));
   let frame = 0;
@@ -96,7 +95,7 @@ function konfetti(){
       ctx.fillRect(-b.r / 2, -b.r / 2, b.r, b.r * 0.65);
       ctx.restore();
     }
-    if(kvar > 0 && frame++ < 140) requestAnimationFrame(tick);
+    if(kvar > 0 && frame++ < 135) requestAnimationFrame(tick);
     else ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
   requestAnimationFrame(tick);
@@ -140,15 +139,15 @@ function renderTopBar(){
       <button class="who-art" id="tb-kompis" type="button" aria-label="Hej ${escapeHtml(p.name)}">${kompisSVG(p, "idle")}</button>
       <div class="who-txt">
         <button class="who-name" id="tb-namn" type="button">${escapeHtml(p.name)}</button>
-        <button class="who-sub" id="tb-mynt" type="button" aria-label="Öppna Skattkistan">${coinSVG} <span>${p.coins}</span></button>
+        <button class="who-ticket" id="tb-biljetter" type="button" aria-label="Öppna Vagnhallen">${biljettSVG} <span>${p.coins} biljetter</span></button>
       </div>
     </div>
-    <button class="pill-btn" id="tb-resor" type="button" aria-label="Besökta hållplatser">🚋 ${bes}/${ALLA_STOPP.length}</button>
+    <button class="nav-pill" id="tb-resor" type="button" aria-label="Besökta hållplatser">🗺️ ${bes}/${ALLA_STOPP.length}</button>
     <button class="icon-btn" id="tb-gear" type="button" aria-label="Inställningar">⚙️</button>
   `;
   $("#tb-kompis").onclick = () => { aktiveraForstaTryck(); SFX.klick(); sagKompisReplik(); };
   $("#tb-namn").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openMinaOrdOchMarken(); };
-  $("#tb-mynt").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openSkattkistan(); };
+  $("#tb-biljetter").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openVagnhallen("lack"); };
   $("#tb-resor").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openMinaResor(); };
   $("#tb-gear").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openInstallningar(); };
 }
@@ -157,40 +156,42 @@ function sagKompisReplik(){
   const p = P();
   if(!p) return;
   const repliker = [
-    `Hej ${p.name}! Ska vi åka spårvagn i Göteborg?`,
+    `Hej ${p.name}! Ska vi ut och jaga ord i Göteborg?`,
     `M34 är 45 meter lång — längst i hela stan!`,
-    `Du har läst ${(p.klaradeOrd || []).length} olika ord. Heja ${p.name}!`,
-    `Tut tut! Här kommer spårvagnen!`,
+    `Du har samlat ${(p.klaradeOrd || []).length} ord i din ordbok. Heja ${p.name}!`,
+    `Tut tut! Nästa spårvagn rullar snart!`,
     `M32 heter Sirio, precis som stjärnan Sirius!`,
-    `Vilken hållplats ska vi till nästa gång?`
+    `Har du provat att skriva en egen destinationsskylt i Skyltverkstaden?`
   ];
   prata(pick(repliker), { settings: p.settings, namn: p.name });
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   1. VÄLKOMST & SPELARVAL
+   1. VÄLKOMST & GÖTEBORGS-KOMPIS
    ═══════════════════════════════════════════════════════════════ */
-let nyValdChar = "bloppy";
+let nyValdChar = "kaj";
 
 function renderWelcome(){
   visaSkarm("welcome");
   const el = $("#screen-welcome");
   const harSpelare = DATA.players.length > 0;
   el.innerHTML = `
-    <div class="brand">
+    <div class="welcome-hero">
+      <div class="welcome-emblem">🚋 LINJE ABC · GÖTEBORG</div>
       <h1>Ordjakten</h1>
-      <div class="tagline">🚋 Göteborgs spårvagnar · Bokstäver &amp; ord</div>
+      <p>Ljuda ord, bygg bokstäver och kör genom Göteborgs spårvagnsnät</p>
     </div>
+
     ${harSpelare ? `
-      <div class="panel">
-        <div class="panel-title"><span class="step">1</span> Vem ska åka idag?</div>
+      <div class="card">
+        <div class="section-head"><h2>Vem ska köra idag?</h2></div>
         <div class="profile-list">
           ${DATA.players.map(pl => `
             <button class="profile-card" data-pick-player="${escapeHtml(pl.id)}" type="button">
               ${kompisSVG(pl, "happy")}
               <div>
                 <div class="p-name">${escapeHtml(pl.name)}</div>
-                <div class="p-meta">🚋 ${(pl.visitedStops || []).length} hållplatser · 📖 ${(pl.klaradeOrd || []).length} ord · 🪙 ${pl.coins}</div>
+                <div class="p-meta">🗺️ ${(pl.visitedStops || []).length} hållplatser · 📖 ${(pl.klaradeOrd || []).length} ord · 🎫 ${pl.coins}</div>
               </div>
               <span class="p-go" aria-hidden="true">▶</span>
             </button>
@@ -198,23 +199,28 @@ function renderWelcome(){
         </div>
       </div>
     ` : ""}
-    <div class="panel">
-      <div class="panel-title"><span class="step">${harSpelare ? "2" : "1"}</span> ${harSpelare ? "Ny förare" : "Skapa din förare"}</div>
+
+    <div class="card">
+      <div class="section-head"><h2>${harSpelare ? "Ny spårvagnsförare" : "Välj namn och Göteborgs-kompis"}</h2></div>
       <input id="ny-namn" class="name-field" type="text" maxlength="20" placeholder="Adam" autocomplete="off" aria-label="Ditt namn">
       <div class="char-grid" id="char-grid">
         ${CHARACTERS.map(c => `
-          <button class="char-card" type="button" data-char="${c.id}" aria-pressed="${c.id === nyValdChar}">
+          <button class="char-card" type="button" data-char="${c.id}" aria-pressed="${c.id === nyValdChar}" title="${escapeHtml(c.roll)}">
             ${charSVG(c.id, c.id === nyValdChar ? "happy" : "idle")}
             <span class="char-name">${c.name}</span>
           </button>
         `).join("")}
       </div>
+      <div style="text-align:center;font-size:.82rem;color:var(--slate);margin-top:8px" id="char-roll">
+        ${escapeHtml((CHARACTERS.find(c => c.id === nyValdChar) || CHARACTERS[0]).roll)}
+      </div>
       <div style="margin-top:16px">
-        <button class="btn btn-big" id="skapa-btn" type="button">🚋 Börja åka!</button>
+        <button class="btn btn-brass btn-big" id="skapa-btn" type="button">🔔 Hoppa på spårvagnen!</button>
       </div>
     </div>
+
     <div style="text-align:center">
-      <button class="btn btn-soft btn-sm" id="welcome-import" type="button">📂 Läs in säkerhetskopia</button>
+      <button class="btn btn-linen btn-sm" id="welcome-import" type="button">📂 Läs in säkerhetskopia</button>
     </div>
   `;
 
@@ -236,6 +242,8 @@ function renderWelcome(){
       aktiveraForstaTryck();
       SFX.klick();
       nyValdChar = btn.dataset.char;
+      const obj = CHARACTERS.find(c => c.id === nyValdChar);
+      if($("#char-roll") && obj) $("#char-roll").textContent = obj.roll;
       el.querySelectorAll("[data-char]").forEach(b => {
         const vald = b.dataset.char === nyValdChar;
         b.setAttribute("aria-pressed", String(vald));
@@ -261,17 +269,20 @@ function renderWelcome(){
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   2. STARTSKÄRM — GÖTEBORGS SPÅRVAGNSNÄT
+   2. STARTSKÄRM — SPÅRVAGNSDEPÅN
    ═══════════════════════════════════════════════════════════════ */
 function minVagnSVG(p, stor = false){
-  const mv = p.minVagn || { typ: "M34", nr: 601, ref: "11", rikt: 1 };
+  const mv = p.minVagn || { typ: "M34", nr: 601, ref: "11", rikt: 1, tema: "gbg" };
   const typ = vagnTypAv(mv.typ) || VAGNTYPER[VAGNTYPER.length - 1];
   const linje = linjeAv(mv.ref || "11");
-  const mot = mv.rikt === -1 ? linje.a : linje.b;
+  const kopta = p.kopta || ["gbg"];
   return vagnSidoSVG(typ, {
-    nr: mv.nr, linje, mot,
-    flaggor: !!mv.flaggor && p.kopta.includes("flaggor"),
-    jul: !!mv.jul && p.kopta.includes("jul"),
+    nr: mv.nr,
+    linje,
+    tema: kopta.includes(mv.tema) ? mv.tema : "gbg",
+    flaggor: !!mv.flaggor && kopta.includes("flaggor"),
+    jul: !!mv.jul && kopta.includes("jul"),
+    stjarna: !!mv.stjarna && kopta.includes("stjarna"),
     stor
   });
 }
@@ -287,41 +298,49 @@ function renderHome(){
   const rMot = rLinje ? (resa.rikt === -1 ? rLinje.a : rLinje.b) : null;
   const stil = stilAv(p);
   const nivaObj = NIVAAER[Math.max(0, Math.min(5, Math.round(p.settings.niva || 2) - 1))];
-  const leksaker = (p.kopta || []).map(id => LEKSAKER.find(x => x.id === id)).filter(Boolean);
+  const mv = p.minVagn || { typ: "M34", nr: 601, ref: "11", rikt: 1, tema: "gbg", egenSkylt: "" };
+  const mvLinje = linjeAv(mv.ref || "11");
+  const skyltText = mv.egenSkylt && mv.egenSkylt.trim()
+    ? mv.egenSkylt.trim()
+    : (mv.rikt === -1 ? mvLinje.a : mvLinje.b);
 
   el.innerHTML = `
-    <div class="hero-vagn">
-      <div class="kompis-wrap" id="home-kompis" title="Tryck på kompisen">${kompisSVG(p, "happy")}</div>
-      <div class="vagn-wrap" id="home-vagn-preview" style="cursor:pointer" title="Öppna Min vagn">
+    <div class="depot-banner">
+      <div class="depot-top">
+        <div class="depot-crew" id="home-kompis" title="Tryck för att prata">${kompisSVG(p, "happy")}</div>
+        <div class="depot-title">
+          <h2>Hej ${escapeHtml(p.name)}!</h2>
+          <small>Läsnivå: <b>${escapeHtml(nivaObj.namn)}</b> · ${(p.klaradeOrd || []).length} lästa ord</small>
+        </div>
+      </div>
+      <div class="depot-tram-stage" id="home-vagn-preview" title="Öppna Vagnhallen">
         ${minVagnSVG(p, false)}
-        <div style="text-align:center;font-size:.78rem;color:var(--ink-2);margin-top:2px">
-          ${escapeHtml(p.minVagn.typ)} #${p.minVagn.nr} · Linje ${escapeHtml(p.minVagn.ref)}
-          ${leksaker.length ? " · " + leksaker.map(l => l.bild).join(" ") : ""}
+        <div class="depot-tram-meta">
+          <span>${escapeHtml(mv.typ)} #${mv.nr} · ${escapeHtml(vagnTemaAv(mv.tema).name)}</span>
+          <span class="depot-led-mini">${escapeHtml(mvLinje.ref)} ${escapeHtml(formatOrd(skyltText, stil))}</span>
         </div>
       </div>
     </div>
 
-    <div class="panel">
+    <div class="card">
       ${resa && rStopp ? `
-        <button class="btn btn-big" id="fortsatt-btn" type="button" style="margin-bottom:12px">
-          🚋 Fortsätt från ${escapeHtml(formatOrd(rStopp, stil))}!
+        <button class="btn btn-brass btn-big" id="fortsatt-btn" type="button" style="margin-bottom:10px">
+          🔔 Fortsätt från ${escapeHtml(formatOrd(rStopp, stil))}!
         </button>
-        <div style="text-align:center;font-size:.88rem;color:var(--ink-2);margin-bottom:14px">
-          Linje ${escapeHtml(rLinje.ref)} mot ${escapeHtml(formatOrd(rMot, stil))} · Nivå: <b>${escapeHtml(nivaObj.namn)}</b>
+        <div style="text-align:center;font-size:.86rem;color:var(--slate);margin-bottom:14px">
+          Linje ${escapeHtml(rLinje.ref)} mot ${escapeHtml(formatOrd(rMot, stil))}
         </div>
       ` : `
-        <div class="panel-title">🚋 Välj var resan börjar</div>
-        <p style="font-size:.9rem;color:var(--ink-2);margin-bottom:10px">
-          Läs ord, bygg med bokstäver och åk hållplats för hållplats genom Göteborg!
-        </p>
+        <div class="section-head"><h2>Välj var turen startar</h2></div>
+        <p class="section-sub">Läs ord med träbrickor, bygg bokstäver och rulla genom Göteborg.</p>
       `}
 
-      <div class="start-choices">
+      <div class="start-strip">
         ${STARTPLATSER.map(s => {
           const l = linjeAv(s.ref);
           const dark = ljusFarg(l.col);
-          return `<button class="start-choice" data-start-stopp="${escapeHtml(s.namn)}" data-start-ref="${l.ref}" data-start-rikt="${s.rikt}" type="button">
-            <span class="sc-badge" style="background:${l.col};color:${dark ? INK : "#FFFDF7"}">${l.ref}</span>
+          return `<button class="start-card" data-start-stopp="${escapeHtml(s.namn)}" data-start-ref="${l.ref}" data-start-rikt="${s.rikt}" type="button">
+            <span class="line-num" style="background:${l.col};color:${dark ? INK : "#FFFFFF"}">${l.ref}</span>
             <span>
               <b>${escapeHtml(formatOrd(s.namn, stil))}</b>
               <small>${escapeHtml(s.beskrivning)}</small>
@@ -330,52 +349,44 @@ function renderHome(){
         }).join("")}
       </div>
 
-      <button class="btn btn-soft" id="valj-annan-start" type="button" style="width:100%">
-        🗺️ Välj en annan linje eller hållplats
+      <button class="btn btn-linen" id="valj-annan-start" type="button" style="width:100%">
+        🗺️ Välj bland alla 12 linjer &amp; 132 hållplatser
       </button>
     </div>
 
-    <div class="home-tiles">
-      <button class="home-tile" id="tile-vagn" type="button">
-        <span class="ht-ico">🚃</span>
-        <span><b>Min vagn &amp; vagnkort</b><small>${escapeHtml(p.minVagn.typ)} · ${(p.vagnkort || []).length}/${ALLA_VAGNKORT_NR.length} kort</small></span>
+    <div class="nav-deck">
+      <button class="deck-tile" id="tile-skylt" type="button">
+        <span class="dt-badge" style="background:#141C2B;color:#FFB800">🪧</span>
+        <span><b>Skyltverkstaden</b><small>Skriv en egen destinationsskylt och hör vagnen ropa ut den!</small></span>
       </button>
-      <button class="home-tile" id="tile-ord" type="button">
-        <span class="ht-ico">📖</span>
-        <span><b>Mina ord &amp; märken</b><small>${(p.klaradeOrd || []).length} lästa ord · ${(p.badges || []).length}/${MARKEN.length} märken</small></span>
+      <button class="deck-tile" id="tile-vagn" type="button">
+        <span class="dt-badge" style="background:#DCEEFB">🚃</span>
+        <span><b>Vagnhallen &amp; Kort</b><small>${escapeHtml(mv.typ)} · Lackteman &amp; ${(p.vagnkort || []).length}/${ALLA_VAGNKORT_NR.length} kort</small></span>
       </button>
-      <button class="home-tile" id="tile-resor" type="button">
-        <span class="ht-ico">🗺️</span>
-        <span><b>Mina resor</b><small>${(p.visitedStops || []).length}/${ALLA_STOPP.length} hållplatser · Väggkarta</small></span>
+      <button class="deck-tile" id="tile-ord" type="button">
+        <span class="dt-badge" style="background:#FBF0D5">📖</span>
+        <span><b>Ordboken &amp; Stämplar</b><small>${(p.klaradeOrd || []).length} lästa ord · ${(p.badges || []).length}/${MARKEN.length} stämplar</small></span>
       </button>
-      <button class="home-tile" id="tile-kista" type="button">
-        <span class="ht-ico">🪙</span>
-        <span><b>Skattkistan</b><small>${p.coins} guldmynt att handla för</small></span>
+      <button class="deck-tile" id="tile-resor" type="button">
+        <span class="dt-badge" style="background:#E6EFE0">🗺️</span>
+        <span><b>Mina resor &amp; Väggkarta</b><small>${(p.visitedStops || []).length}/${ALLA_STOPP.length} hållplatser i Göteborg</small></span>
       </button>
     </div>
   `;
 
   $("#home-kompis").onclick = () => { aktiveraForstaTryck(); SFX.klick(); sagKompisReplik(); };
-  $("#home-vagn-preview").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openMinVagn(); };
+  $("#home-vagn-preview").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openVagnhallen("bygg"); };
   if($("#fortsatt-btn")){
-    $("#fortsatt-btn").onclick = () => {
-      aktiveraForstaTryck();
-      SFX.klocka();
-      sistaBeloning = null;
-      renderResa();
-    };
+    $("#fortsatt-btn").onclick = () => { aktiveraForstaTryck(); SFX.klocka(); sistaBeloning = null; renderResa(); };
   }
   el.querySelectorAll("[data-start-stopp]").forEach(btn => {
-    btn.onclick = () => {
-      aktiveraForstaTryck();
-      startaResaVid(btn.dataset.startStopp, btn.dataset.startRef, Number(btn.dataset.startRikt));
-    };
+    btn.onclick = () => { aktiveraForstaTryck(); startaResaVid(btn.dataset.startStopp, btn.dataset.startRef, Number(btn.dataset.startRikt)); };
   });
   $("#valj-annan-start").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openValjStartplats(); };
-  $("#tile-vagn").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openMinVagn(); };
+  $("#tile-skylt").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openSkyltverkstaden(); };
+  $("#tile-vagn").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openVagnhallen("bygg"); };
   $("#tile-ord").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openMinaOrdOchMarken(); };
   $("#tile-resor").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openMinaResor(); };
-  $("#tile-kista").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openSkattkistan(); };
 }
 
 function startaResaVid(stoppNamn, ref, rikt = 1){
@@ -404,7 +415,7 @@ function startaResaVid(stoppNamn, ref, rikt = 1){
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   3. RESEVY — KARTAN I CENTRUM
+   3. RESEVY — LED-AVGÅNGSTAVLA, SPÅRBAR, KARTA & VYKORT
    ═══════════════════════════════════════════════════════════════ */
 function renderResa(){
   const p = P();
@@ -423,161 +434,174 @@ function renderResa(){
   const besokta = new Set(p.visitedStops || []);
   const tips = r.mal ? tipsForMal(l, r.at, r.rikt, r.mal, r.sparr) : null;
 
-  /* Foto eller tecknad scen för aktuell hållplats */
+  /* Spår-progress längst upp i LED-huvudet */
+  const pct = l.stops.length > 1 ? Math.round((r.at / (l.stops.length - 1)) * 100) : 0;
+
   const fotoPost = STOP_PHOTOS[nuStopp] || vagnFoto(nuStopp);
   const harEgetFoto = !!STOP_PHOTOS[nuStopp];
   const visaFoto = p.settings.foton !== false && !visaTecknadScen && fotonMiss < 3;
 
   el.innerHTML = `
-    <div class="rese-head" style="background:${l.col};color:${dark ? INK : "#FFFDF7"}">
-      <div class="rese-head-left">
-        <span class="linje-bricka" style="background:${dark ? "#FFFDF7" : "rgba(0,0,0,.22)"};color:${dark ? INK : "#FFFDF7"}">${l.ref}</span>
-        <div class="rese-head-txt">
-          <b>mot ${escapeHtml(formatOrd(mot, stil))}</b>
-          <small>Hållplats ${r.at + 1} av ${l.stops.length} · ${escapeHtml(formatOrd(nuStopp, stil))}</small>
+    <div class="led-header">
+      <div class="led-header-top">
+        <div class="led-header-line">
+          <span class="line-num" style="background:${l.col};color:${dark ? INK : "#FFFFFF"};border-color:rgba(255,255,255,.3)">${l.ref}</span>
+          <div style="min-width:0">
+            <div class="led-dest-main">MOT ${escapeHtml(formatOrd(mot, stil))}</div>
+            <div class="led-stop-sub">Nu: ${escapeHtml(formatOrd(nuStopp, stil))} · Hållplats ${r.at + 1}/${l.stops.length}</div>
+          </div>
         </div>
+        <button class="led-home-btn" id="resa-hem" type="button">Depån</button>
       </div>
-      <button class="btn btn-sm" id="resa-hem" type="button">🏠 Start</button>
-    </div>
-
-    <div class="natkarta-box" id="natkarta-box" aria-label="Göteborgs spårvagnskarta">
-      ${natkartaSVG(l, r.at, {
-        rikt: r.rikt,
-        besokta,
-        utzoomad: !!p.settings.utzoomad,
-        mal: r.mal,
-        sparr: r.sparr,
-        bokstavsStil: stil
-      })}
-      <button class="karta-zoom-btn" id="karta-zoom" type="button">
-        ${p.settings.utzoomad ? "🔍 Närbild" : "🗺️ Hela nätet"}
-      </button>
-      <div class="karta-status">
-        <span class="karta-pill">Nu: ${escapeHtml(formatOrd(nuStopp, stil))}</span>
-        ${nastaStopp ? `<span class="karta-pill">Nästa: ${escapeHtml(formatOrd(nastaStopp, stil))}</span>` : `<span class="karta-pill">Ändstation!</span>`}
+      <div class="rail-progress">
+        <div class="rail-track">
+          <div class="rail-fill" style="width:${pct}%"></div>
+          <div class="rail-tram-dot" style="left:${pct}%">🚋</div>
+        </div>
+        <div class="rail-labels">
+          <span>${escapeHtml(formatOrd(l.a, stil))}</span>
+          <span>${escapeHtml(formatOrd(l.b, stil))}</span>
+        </div>
       </div>
     </div>
 
     ${r.mal && tips ? `
       <div class="resmal-banner">
         <div>
-          <b>🚩 Resmål: ${escapeHtml(formatOrd(r.mal, stil))} ${r.sparr ? "· 🚧 Spårarbete!" : ""}</b>
+          <b>🚩 Resmål: ${escapeHtml(formatOrd(r.mal, stil))} ${r.sparr ? "· 🚧 Spårarbete" : ""}</b>
           <small>${tips.kvar} hållplatser kvar · <b>${escapeHtml(tips.text)}</b></small>
         </div>
-        <button class="btn btn-sm btn-soft" id="resmal-hantera" type="button">Byt</button>
+        <button class="btn btn-sm btn-linen" id="resmal-hantera" type="button">Ändra</button>
       </div>
     ` : ""}
 
     ${sistaBeloning ? `
       <div class="beloning-rad">
-        <span>🎉 <b>${escapeHtml(sistaBeloning.rubrik)}</b> · +${sistaBeloning.mynt} 🪙 ${sistaBeloning.extra ? "· " + escapeHtml(sistaBeloning.extra) : ""}</span>
-        ${sistaBeloning.kortNr ? `<button class="btn btn-sm" id="visa-nytt-kort" type="button">🃏 Se vagnkort!</button>` : ""}
+        <span>🎉 <b>${escapeHtml(sistaBeloning.rubrik)}</b> · +${sistaBeloning.mynt} 🎫 ${sistaBeloning.extra ? "· " + escapeHtml(sistaBeloning.extra) : ""}</span>
+        ${sistaBeloning.kortNr ? `<button class="btn btn-sm btn-gbg" id="visa-nytt-kort" type="button">🃏 Se vagnkort</button>` : ""}
       </div>
     ` : ""}
 
-    <div class="rese-actions">
-      ${nastaStopp && !sparradFram ? `
-        <button class="btn btn-big" id="ak-nasta" type="button" ${rullarNu ? "disabled" : ""}>
-          🔔 Åk till ${escapeHtml(formatOrd(nastaStopp, stil))}!
-        </button>
-      ` : `
-        <button class="btn btn-big btn-gbg" id="byt-vagn-prim" type="button">
-          ${sparradFram ? "🚧 Spårarbete! Byt vagn eller vänd" : "🔄 Ändstation! Välj nästa vagn"}
-        </button>
-      `}
-      <div class="rese-sub-btns">
-        <button class="btn btn-soft" id="byt-vagn" type="button">🔄 Byt vagn eller riktning</button>
-        <button class="btn btn-soft" id="valj-resmal" type="button">🚩 ${r.mal ? "Nytt resmål" : "Välj ett resmål"}</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+      <div class="view-tabs" role="tablist">
+        <button class="view-tab" data-rflik="karta" role="tab" aria-selected="${resaFlik === "karta"}" type="button">🗺️ Karta</button>
+        <button class="view-tab" data-rflik="vykort" role="tab" aria-selected="${resaFlik === "vykort"}" type="button">📮 Vykort</button>
+        <button class="view-tab" data-rflik="linje" role="tab" aria-selected="${resaFlik === "linje"}" type="button">📋 Linje ${l.ref}</button>
       </div>
     </div>
 
-    <details class="fold-card">
-      <summary>📸 Se hållplatsen: ${escapeHtml(formatOrd(nuStopp, stil))} <span>▾</span></summary>
-      <div class="fold-body">
-        <div class="stopp-foto-wrap" id="foto-toggle" title="Tryck för att växla mellan foto och tecknad bild">
+    ${resaFlik === "karta" ? `
+      <div class="natkarta-box" id="natkarta-box" aria-label="Göteborgs spårvagnskarta">
+        ${natkartaSVG(l, r.at, {
+          rikt: r.rikt,
+          besokta,
+          utzoomad: !!p.settings.utzoomad,
+          mal: r.mal,
+          sparr: r.sparr,
+          bokstavsStil: stil
+        })}
+        <button class="karta-zoom-btn" id="karta-zoom" type="button">
+          ${p.settings.utzoomad ? "🔍 Närbild" : "🗺️ Hela Göteborg"}
+        </button>
+        <div class="karta-status">
+          <span class="karta-pill">Nu: ${escapeHtml(formatOrd(nuStopp, stil))}</span>
+          ${nastaStopp ? `<span class="karta-pill">Nästa: ${escapeHtml(formatOrd(nastaStopp, stil))}</span>` : `<span class="karta-pill">Ändstation!</span>`}
+        </div>
+      </div>
+    ` : resaFlik === "vykort" ? `
+      <div class="vykort">
+        <div class="vykort-bild" id="foto-toggle" title="Tryck för att byta mellan riktigt foto och illustration">
           ${visaFoto
             ? `<img id="stopp-img" src="./bilder/${fotoPost.f}.jpg" alt="${escapeHtml(nuStopp)}">`
             : sceneSVG(nuStopp)}
+          <span class="vykort-stampel">GÖTEBORG<br>LINJE ${escapeHtml(l.ref)}</span>
         </div>
-        <div class="foto-credit">
-          <span>${visaFoto ? (harEgetFoto ? `Foto: ${escapeHtml(fotoPost.by)} (${escapeHtml(fotoPost.lic)})` : `Spårvagnsfoto: ${escapeHtml(fotoPost.by)} (${escapeHtml(fotoPost.lic)})`) : "Tecknad hållplatsbild"}</span>
-          <span>Tryck på bilden för att byta</span>
+        <div class="vykort-fot">
+          <span><b>${escapeHtml(formatOrd(nuStopp, stil))}</b> · ${visaFoto ? (harEgetFoto ? `Foto: ${escapeHtml(fotoPost.by)}` : `Vagnfoto: ${escapeHtml(fotoPost.by)}`) : "Tecknat vykort"}</span>
+          <span>Tryck på bilden</span>
         </div>
       </div>
-    </details>
-
-    <details class="fold-card">
-      <summary>📋 Alla hållplatser på linje ${l.ref} (${l.stops.filter(s => besokta.has(s)).length}/${l.stops.length}) <span>▾</span></summary>
-      <div class="fold-body">
+    ` : `
+      <div class="card" style="padding:14px;margin-bottom:14px">
+        <div style="font-size:.86rem;color:var(--slate);margin-bottom:8px">Tryck på en hållplats för att höra namnet:</div>
         <div style="display:flex;flex-wrap:wrap;gap:6px">
           ${l.stops.map((s, idx) => `
             <button class="mode-chip" data-hoppa-stopp="${idx}" type="button"
-              style="${idx === r.at ? "background:var(--sun)" : besokta.has(s) ? "background:#D7FAD9" : ""}">
+              style="${idx === r.at ? "background:var(--brass);color:var(--navy);border-color:var(--brass-deep)" : besokta.has(s) ? "background:#E7F7EE;color:var(--pine-deep);border-color:#8CD0A7" : ""}">
               ${idx === r.at ? "🚋 " : besokta.has(s) ? "✓ " : ""}${escapeHtml(formatOrd(s, stil))}
             </button>
           `).join("")}
         </div>
       </div>
-    </details>
+    `}
+
+    <div class="rese-actions">
+      ${nastaStopp && !sparradFram ? `
+        <button class="btn btn-brass btn-big" id="ak-nasta" type="button" ${rullarNu ? "disabled" : ""}>
+          🔔 Kör till ${escapeHtml(formatOrd(nastaStopp, stil))}!
+        </button>
+      ` : `
+        <button class="btn btn-gbg btn-big" id="byt-vagn-prim" type="button">
+          ${sparradFram ? "🚧 Spårarbete! Byt vagn eller vänd" : "🔄 Ändstation! Välj nästa vagn"}
+        </button>
+      `}
+      <div class="rese-sub-btns">
+        <button class="btn btn-linen btn-sm" id="byt-vagn" type="button">🔄 Byt linje</button>
+        <button class="btn btn-linen btn-sm" id="valj-resmal" type="button">🚩 ${r.mal ? "Nytt resmål" : "Resmål"}</button>
+        <button class="btn btn-linen btn-sm" id="resa-skylt" type="button">🪧 Skyltverkstad</button>
+      </div>
+    </div>
   `;
 
   $("#resa-hem").onclick = () => { aktiveraForstaTryck(); SFX.klick(); renderHome(); };
-  $("#karta-zoom").onclick = () => {
-    aktiveraForstaTryck(); SFX.klick();
-    p.settings.utzoomad = !p.settings.utzoomad;
-    spara();
-    renderResa();
-  };
+  el.querySelectorAll("[data-rflik]").forEach(b => {
+    b.onclick = () => { aktiveraForstaTryck(); SFX.klick(); resaFlik = b.dataset.rflik; renderResa(); };
+  });
 
-  /* Tryck på hållplats på kartan säger namnet */
-  $("#natkarta-box").addEventListener("click", (e) => {
-    const t = e.target.closest("[data-stopp-namn]");
-    if(t){
-      aktiveraForstaTryck();
-      SFX.klick();
-      prata(t.dataset.stoppNamn, { settings: p.settings, namn: p.name });
-    }
+  if($("#karta-zoom")){
+    $("#karta-zoom").onclick = () => {
+      aktiveraForstaTryck(); SFX.klick();
+      p.settings.utzoomad = !p.settings.utzoomad;
+      spara();
+      renderResa();
+    };
+  }
+  if($("#natkarta-box")){
+    $("#natkarta-box").addEventListener("click", (e) => {
+      const t = e.target.closest("[data-stopp-namn]");
+      if(t){
+        aktiveraForstaTryck();
+        prata(t.dataset.stoppNamn, { settings: p.settings, namn: p.name });
+      }
+    });
+  }
+  if($("#foto-toggle")){
+    $("#foto-toggle").onclick = () => { aktiveraForstaTryck(); SFX.klick(); visaTecknadScen = !visaTecknadScen; renderResa(); };
+  }
+  const img = $("#stopp-img");
+  if(img){
+    img.onerror = () => { fotonMiss++; const wrap = $("#foto-toggle"); if(wrap) wrap.innerHTML = sceneSVG(nuStopp); };
+  }
+  el.querySelectorAll("[data-hoppa-stopp]").forEach(b => {
+    b.onclick = () => { aktiveraForstaTryck(); prata(l.stops[Number(b.dataset.hoppaStopp)], { settings: p.settings, namn: p.name }); };
   });
 
   if($("#ak-nasta")){
-    $("#ak-nasta").onclick = () => {
-      aktiveraForstaTryck();
-      SFX.klocka();
-      startaOrdRunda(l, r.at, r.rikt, nastaStopp);
-    };
+    $("#ak-nasta").onclick = () => { aktiveraForstaTryck(); SFX.klocka(); startaOrdRunda(l, r.at, r.rikt, nastaStopp); };
   }
   if($("#byt-vagn-prim")) $("#byt-vagn-prim").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openPerrongen(); };
   $("#byt-vagn").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openPerrongen(); };
   $("#valj-resmal").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openResmalDialog(); };
+  $("#resa-skylt").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openSkyltverkstaden(); };
   if($("#resmal-hantera")) $("#resmal-hantera").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openResmalDialog(); };
   if($("#visa-nytt-kort")){
     const nr = sistaBeloning.kortNr;
-    $("#visa-nytt-kort").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openMinVagn("kort", nr); };
+    $("#visa-nytt-kort").onclick = () => { aktiveraForstaTryck(); SFX.klick(); openVagnhallen("kort", nr); };
   }
-  $("#foto-toggle").onclick = () => {
-    aktiveraForstaTryck(); SFX.klick();
-    visaTecknadScen = !visaTecknadScen;
-    renderResa();
-  };
-  const img = $("#stopp-img");
-  if(img){
-    img.onerror = () => {
-      fotonMiss++;
-      const wrap = $("#foto-toggle");
-      if(wrap) wrap.innerHTML = sceneSVG(nuStopp);
-    };
-  }
-  el.querySelectorAll("[data-hoppa-stopp]").forEach(b => {
-    b.onclick = () => {
-      aktiveraForstaTryck(); SFX.klick();
-      const idx = Number(b.dataset.hoppaStopp);
-      prata(l.stops[idx], { settings: p.settings, namn: p.name });
-    };
-  });
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   4. SPELRUNDA — 5 LÄS- & BOKSTAVSUPPGIFTER PER HÅLLPLATS
+   4. SPELRUNDA — TRÄBRICKOR, LJUDNINGSTÅG & SKYLTAR
    ═══════════════════════════════════════════════════════════════ */
 function startaOrdRunda(linje, at, rikt, nastaStopp){
   const p = P();
@@ -609,7 +633,7 @@ function startaOrdRunda(linje, at, rikt, nastaStopp){
     forsokKvar: 0,
     las: false,
     felValda: new Set(),
-    byggIn: [], // [{ ch, brickId }]
+    byggIn: [],
     stavaLage: p.settings.stavaLage || "brickor",
     feedback: null,
     kompisMood: "idle"
@@ -639,23 +663,21 @@ function renderGame(lasUpp = false){
   const arBygg = q.typ === "bygg-ord" || q.typ === "bygg-hallplats";
 
   el.innerHTML = `
-    <div class="game-top">
+    <div class="game-bar">
       <button class="icon-btn" id="game-back" type="button" aria-label="Tillbaka till kartan">←</button>
-      <div class="prog-dots" aria-label="Fråga ${runda.index + 1} av ${runda.fragor.length}">
+      <div class="prog-rail" aria-label="Fråga ${runda.index + 1} av ${runda.fragor.length}">
         ${runda.fragor.map((_, i) => {
           const u = runda.utfall[i];
           const cls = u === "direkt" ? "done" : u ? "hjalp" : i === runda.index ? "now" : "";
-          return `<span class="prog-dot ${cls}"></span>`;
+          return `<span class="prog-stop ${cls}"></span>`;
         }).join("")}
       </div>
       <button class="icon-btn" id="game-say" type="button" aria-label="Lyssna igen">🔊</button>
     </div>
 
     <div class="q-stage">
-      ${q.kluring ? `<span class="kluring-tag">💡 Kluring! +5 extra mynt</span>` : ""}
-      <div class="q-header">
-        <div class="q-prompt">${escapeHtml(q.fragaText)}</div>
-      </div>
+      ${q.kluring ? `<div style="text-align:center"><span class="kluring-badge">💡 Kluring! +5 extra biljetter</span></div>` : ""}
+      <div class="q-prompt">${escapeHtml(q.fragaText)}</div>
 
       <div class="q-visual" id="q-visual">
         ${renderFragaVisuell(q, stil)}
@@ -672,7 +694,7 @@ function renderGame(lasUpp = false){
             ? escapeHtml(runda.feedback.text)
             : `På väg mot <b>${escapeHtml(fmt(runda.nastaStopp))}</b>! Tryck på 🔊 om du vill höra igen.`}
         </div>
-        ${runda.las ? `<button class="btn btn-green btn-sm" id="nasta-fraga-btn" type="button">${runda.index + 1 < runda.fragor.length ? "Nästa ▶" : "Rulla! 🚋"}</button>` : ""}
+        ${runda.las ? `<button class="btn btn-pine btn-sm" id="nasta-fraga-btn" type="button">${runda.index + 1 < runda.fragor.length ? "Nästa ▶" : "Rulla! 🚋"}</button>` : ""}
       </div>
     </div>
   `;
@@ -692,18 +714,33 @@ function renderGame(lasUpp = false){
   $("#fb-kompis").onclick = lasFragan;
 
   if($("#nasta-fraga-btn")){
-    $("#nasta-fraga-btn").onclick = () => {
-      aktiveraForstaTryck(); SFX.klick();
-      gaVidareIrunda();
-    };
+    $("#nasta-fraga-btn").onclick = () => { aktiveraForstaTryck(); SFX.klick(); gaVidareIrunda(); };
   }
 
-  /* Ljudning per bokstav i las-bild */
-  el.querySelectorAll("[data-ljud-idx]").forEach(btn => {
+  /* Ljudning per träbricka + glidande minispårvagn! */
+  const tiles = el.querySelectorAll("[data-ljud-idx]");
+  const sparVagn = $("#ljud-spar-vagn");
+  const flyttaSparVagn = (idx) => {
+    if(!sparVagn || !tiles.length) return;
+    if(idx === "alla"){
+      sparVagn.style.left = "92%";
+      sparVagn.classList.add("rullar");
+    }else if(typeof idx === "number" && idx >= 0){
+      const pct = ((idx + 0.5) / tiles.length) * 100;
+      sparVagn.style.left = `${pct.toFixed(1)}%`;
+      sparVagn.classList.add("rullar");
+    }else{
+      sparVagn.classList.remove("rullar");
+    }
+  };
+
+  tiles.forEach(btn => {
     btn.onclick = () => {
       aktiveraForstaTryck();
+      const i = Number(btn.dataset.ljudIdx);
       const ch = btn.dataset.ljudCh;
       btn.classList.add("aktiv");
+      flyttaSparVagn(i);
       setTimeout(() => btn.classList.remove("aktiv"), 380);
       sagBokstav(ch, p.settings);
     };
@@ -712,14 +749,13 @@ function renderGame(lasUpp = false){
   if(ljudaBtn){
     ljudaBtn.onclick = () => {
       aktiveraForstaTryck();
-      const tiles = el.querySelectorAll("[data-ljud-idx]");
       ljudaOrd(q.ord, p.settings, (idx) => {
         tiles.forEach((t, i) => t.classList.toggle("aktiv", idx === "alla" || i === idx));
+        flyttaSparVagn(idx);
       });
     };
   }
 
-  /* Interaktion för flerval eller bygg-ord */
   if(arBygg){
     bindByggHandelser(q, stil);
   }else{
@@ -742,15 +778,20 @@ function renderFragaVisuell(q, stil){
   if(q.typ === "las-bild"){
     const bokst = [...q.ord.toLocaleUpperCase("sv")];
     return `
-      <div class="ljud-ord-rad">
-        ${bokst.map((ch, i) => `
-          <button class="ljud-bokstav" type="button" data-ljud-idx="${i}" data-ljud-ch="${ch}">
-            <span>${escapeHtml(fmt(ch))}</span>
-            <span class="ljud-prick" aria-hidden="true"></span>
-          </button>
-        `).join("")}
+      <div class="ljud-rack">
+        <div class="ljud-ord-rad">
+          ${bokst.map((ch, i) => `
+            <button class="ljud-bokstav" type="button" data-ljud-idx="${i}" data-ljud-ch="${ch}">
+              ${escapeHtml(fmt(ch))}
+            </button>
+          `).join("")}
+        </div>
+        <div class="ljud-spar" aria-hidden="true">
+          <div class="ljud-spar-linje"></div>
+          <span class="ljud-spar-vagn" id="ljud-spar-vagn">🚋</span>
+        </div>
       </div>
-      <button class="ljuda-btn" id="ljuda-ord-btn" type="button">🔊 Ljuda ordet</button>
+      <button class="ljuda-btn" id="ljuda-ord-btn" type="button">🔊 Ljuda ordet längs spåret</button>
     `;
   }
   if(q.typ === "bild-ord" || q.typ === "forsta-ljud"){
@@ -775,20 +816,26 @@ function renderFragaVisuell(q, stil){
   if(q.typ === "bygg-hallplats"){
     if(q.arVagnOrd && q.vagnTyp){
       const t = vagnTypAv(q.vagnTyp) || VAGNTYPER[4];
-      return `<div style="width:100%;max-width:340px">${vagnSidoSVG(t, { stor: true })}</div>`;
+      return `<div class="ritning">${vagnSidoSVG(t, { stor: true })}</div>`;
     }
-    return `<div style="font-size:.95rem;color:var(--ink-2)">📍 Göteborgs spårvagnsnät</div>`;
+    return `<div style="font-size:.92rem;color:var(--slate)">📍 Stava hållplatsskylten!</div>`;
   }
   if(q.typ === "skylt-las"){
-    return `<div style="font-size:1rem;color:var(--ink-2)">Lyssna och titta på destinationsskylten!</div>`;
+    return `<div style="font-size:.98rem;color:var(--slate)">Titta noga på destinationsskyltarna på perrongen!</div>`;
   }
   if(q.typ === "hallplats-skylt"){
     return `<div style="font-size:2.4rem" aria-hidden="true">🔊 🚏</div>`;
   }
   if(q.typ === "vagn-modell"){
     return `
-      <div style="width:100%;max-width:360px">${vagnSidoSVG(q.vagnTyp, { stor: true })}</div>
-      <div style="font-size:.92rem;color:var(--ink-2);text-align:center">${escapeHtml(q.ledtrad)}</div>
+      <div class="ritning">
+        ${vagnSidoSVG(q.vagnTyp, { stor: true })}
+        <div class="ritning-skala">
+          <span>${q.vagnTyp.delar.length === 1 ? "1 DEL" : `${q.vagnTyp.delar.length} DELAR`}</span>
+          <span>LÄNGD: ${q.vagnTyp.langd} M</span>
+          <span>${q.vagnTyp.band === "svart" ? "SVART BAND" : "VITT BAND"}</span>
+        </div>
+      </div>
     `;
   }
   return "";
@@ -821,7 +868,7 @@ function renderValOmrade(q, stil){
       if(q.typ === "vagn-modell"){
         return `<button class="choice-btn ${cls}" data-choice="${escapeHtml(a.varde)}" type="button" ${arFel || runda.las ? "disabled" : ""}>
           <span>${escapeHtml(fmt(a.kortText))}</span>
-          <small style="font-size:.82rem;color:var(--ink-2)">${escapeHtml(fmt(a.smek))}</small>
+          <small style="font-size:.82rem;color:var(--slate)">${escapeHtml(fmt(a.smek))}</small>
         </button>`;
       }
       return `<button class="choice-btn ${cls}" data-choice="${escapeHtml(a.varde)}" type="button" ${arFel || runda.las ? "disabled" : ""}>
@@ -843,7 +890,7 @@ function renderByggOmrade(q, stil){
 
   return `
     <div class="stava-mode-bar">
-      <button class="mode-chip" id="mode-brickor" type="button" aria-pressed="${runda.stavaLage === "brickor"}">🧱 Brickor</button>
+      <button class="mode-chip" id="mode-brickor" type="button" aria-pressed="${runda.stavaLage === "brickor"}">🪵 Träbrickor</button>
       <button class="mode-chip" id="mode-kb" type="button" aria-pressed="${runda.stavaLage === "tangentbord"}">⌨️ Tangentbord</button>
     </div>
 
@@ -880,27 +927,18 @@ function renderByggOmrade(q, stil){
   `;
 }
 
-function bindByggHandelser(q, stil){
+function bindByggHandelser(q){
   const p = P();
   const mb = $("#mode-brickor"), mk = $("#mode-kb");
   if(mb) mb.onclick = () => {
     aktiveraForstaTryck(); SFX.klick();
-    runda.stavaLage = "brickor";
-    p.settings.stavaLage = "brickor";
-    runda.byggIn = [];
-    spara();
-    renderGame(false);
+    runda.stavaLage = "brickor"; p.settings.stavaLage = "brickor"; runda.byggIn = []; spara(); renderGame(false);
   };
   if(mk) mk.onclick = () => {
     aktiveraForstaTryck(); SFX.klick();
-    runda.stavaLage = "tangentbord";
-    p.settings.stavaLage = "tangentbord";
-    runda.byggIn = [];
-    spara();
-    renderGame(false);
+    runda.stavaLage = "tangentbord"; p.settings.stavaLage = "tangentbord"; runda.byggIn = []; spara(); renderGame(false);
   };
 
-  /* Tryck på fylld ruta tar bort den bokstaven */
   document.querySelectorAll("[data-slot]").forEach(btn => {
     btn.onclick = () => {
       if(runda.las) return;
@@ -912,8 +950,6 @@ function bindByggHandelser(q, stil){
       }
     };
   });
-
-  /* Brickor */
   document.querySelectorAll("[data-brick-id]").forEach(btn => {
     btn.onclick = () => {
       if(runda.las) return;
@@ -921,8 +957,6 @@ function bindByggHandelser(q, stil){
       laggByggBokstav(q, btn.dataset.brickCh, Number(btn.dataset.brickId));
     };
   });
-
-  /* Skärmtangentbord */
   document.querySelectorAll("[data-kb]").forEach(btn => {
     btn.onclick = () => {
       if(runda.las) return;
@@ -944,14 +978,12 @@ function laggByggBokstav(q, ch, brickId){
   else sagBokstav(ch, p.settings);
   runda.byggIn.push({ ch: ch.toLocaleUpperCase("sv"), brickId });
   if(runda.byggIn.length === q.svar.length){
-    const ordIn = runda.byggIn.map(x => x.ch).join("");
-    bedomBygg(q, ordIn);
+    bedomBygg(q, runda.byggIn.map(x => x.ch).join(""));
   }else{
     renderGame(false);
   }
 }
 
-/* Fysiskt tangentbord på dator/iPad-tangentbord */
 document.addEventListener("keydown", (e) => {
   if(aktivSkarm !== "game" || !runda || sheetBackdrop.classList.contains("open")) return;
   const q = runda.fragor[runda.index];
@@ -1008,12 +1040,10 @@ function registreraRatt(q, direkt){
     laggKluring(p, q);
   }
 
-  /* Spara i Mina ord */
   if(q.ordObj && !p.klaradeOrd.includes(q.ordObj.ord)){
     p.klaradeOrd.push(q.ordObj.ord);
     runda.nyaOrd.push(q.ordObj.ord);
   }
-  /* Spara vagnmodell & vagnkort */
   if(q.typ === "vagn-modell"){
     p.vagnModellerRatt = (p.vagnModellerRatt || 0) + 1;
     if(q.bonusKortNr && !p.vagnkort.includes(q.bonusKortNr)){
@@ -1021,7 +1051,6 @@ function registreraRatt(q, direkt){
       runda.nyttKortNr = q.bonusKortNr;
     }
   }
-
   if(p.settings.nivaLage !== "fast"){
     p.settings.niva = uppdateraNiva(p.settings.niva, utfall, p.settings.nivaGolv || 1);
   }
@@ -1050,28 +1079,20 @@ function registreraVisad(q){
     p.settings.niva = uppdateraNiva(p.settings.niva, "visad", p.settings.nivaGolv || 1);
   }
   spara();
-  const rattVis = formatOrd(q.ord || q.svar, stil);
-  runda.feedback = {
-    typ: "fel",
-    text: `Rätt svar är ${rattVis}! Nu tar vi nästa.`
-  };
+  runda.feedback = { typ: "fel", text: `Rätt svar är ${formatOrd(q.ord || q.svar, stil)}! Nu rullar vi vidare.` };
   renderGame(false);
   prata(`Rätt svar är ${q.ord || q.svar}!`, { settings: p.settings, namn: p.name });
 }
 
 function bedomVal(q, valt){
   const p = P();
-  if(valt === q.svar){
-    registreraRatt(q, runda.felValda.size === 0);
-    return;
-  }
+  if(valt === q.svar){ registreraRatt(q, runda.felValda.size === 0); return; }
   runda.felValda.add(valt);
   runda.forsokKvar--;
   runda.kompisMood = "sad";
   SFX.fel();
-  if(runda.forsokKvar <= 0){
-    registreraVisad(q);
-  }else{
+  if(runda.forsokKvar <= 0){ registreraVisad(q); }
+  else{
     const hint = forklaraFel(q, valt, stilAv(p));
     runda.feedback = { typ: "fel", text: hint.text };
     renderGame(false);
@@ -1081,19 +1102,14 @@ function bedomVal(q, valt){
 
 function bedomBygg(q, ordIn){
   const p = P();
-  if(ordIn === q.svar){
-    registreraRatt(q, runda.forsokKvar === (q.forsok || 3));
-    return;
-  }
+  if(ordIn === q.svar){ registreraRatt(q, runda.forsokKvar === (q.forsok || 3)); return; }
   runda.forsokKvar--;
   runda.kompisMood = "sad";
   SFX.fel();
-  if(runda.forsokKvar <= 0){
-    registreraVisad(q);
-  }else{
+  if(runda.forsokKvar <= 0){ registreraVisad(q); }
+  else{
     const hint = forklaraFel(q, ordIn, stilAv(p));
     runda.feedback = { typ: "fel", text: hint.text };
-    /* Behåll bara de rätta bokstäverna från början så det blir lättare att rätta! */
     const behall = [];
     for(let i = 0; i < runda.byggIn.length; i++){
       if(runda.byggIn[i].ch === q.svar[i]) behall.push(runda.byggIn[i]);
@@ -1115,7 +1131,6 @@ async function gaVidareIrunda(){
     return;
   }
 
-  /* Hela sträckan klar! Rulla spårvagnen till nästa hållplats på kartan! */
   const klarRunda = runda;
   runda = null;
   statTid(p, (Date.now() - klarRunda.startTid) / 1000);
@@ -1123,11 +1138,9 @@ async function gaVidareIrunda(){
   if(felfri && p.settings.nivaLage !== "fast"){
     p.settings.niva = uppdateraNiva(p.settings.niva, "felfri-hallplats", p.settings.nivaGolv || 1);
   }
-  /* Spara nyss använda nycklar så nästa hållplats inte upprepar ord */
-  const nyss = [...(p.resa.nyss || []), ...klarRunda.fragor.map(f => f.nyckel).filter(Boolean)].slice(-24);
-  p.resa.nyss = nyss;
+  p.resa.nyss = [...(p.resa.nyss || []), ...klarRunda.fragor.map(f => f.nyckel).filter(Boolean)].slice(-24);
 
-  /* Först visa kartan vid gamla hållplatsen, rulla vagnen till den nya! */
+  resaFlik = "karta";
   rullarNu = true;
   sistaBeloning = null;
   renderResa();
@@ -1144,11 +1157,10 @@ async function gaVidareIrunda(){
     minskaRorelse: !!p.settings.minskaRorelse
   });
 
-  /* Ankomst! */
   p.resa.at = klarRunda.tillAt;
   if(!p.visitedStops.includes(nyttStopp)) p.visitedStops.push(nyttStopp);
 
-  let extra = [];
+  const extra = [];
   if(klarRunda.nyaOrd.length) extra.push(`${klarRunda.nyaOrd.length} nya ord`);
   if(p.resa.mal && nyttStopp === p.resa.mal){
     const bonus = p.resa.sparr ? 60 : 40;
@@ -1166,10 +1178,7 @@ async function gaVidareIrunda(){
   }
 
   const nyaMarken = kollaMarken(p);
-  if(nyaMarken.length){
-    extra.push(`🏆 Nytt märke!`);
-    konfetti();
-  }
+  if(nyaMarken.length){ extra.push("🎫 Ny stämpel!"); konfetti(); }
 
   sistaBeloning = {
     rubrik: `Framme vid ${formatOrd(nyttStopp, stilAv(p))}!`,
@@ -1183,8 +1192,105 @@ async function gaVidareIrunda(){
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   MODALER: PERRONGEN, STARTPLATS, RESMÅL, MIN VAGN, SKATTKISTAN,
-   MINA ORD & MÄRKEN, MINA RESOR, INSTÄLLNINGAR & SÅ GÅR DET
+   SKYLTVERKSTADEN — Skriv din egen destinationsskylt på spårvagnen!
+   ═══════════════════════════════════════════════════════════════ */
+function openSkyltverkstaden(){
+  const p = P();
+  const mv = p.minVagn;
+  const linje = linjeAv(mv.ref || "11");
+  const stil = stilAv(p);
+  const dark = ljusFarg(linje.col);
+  let text = (mv.egenSkylt || "").toLocaleUpperCase("sv");
+
+  const kbRader = [
+    ["Q","W","E","R","T","Y","U","I","O","P","Å"],
+    ["A","S","D","F","G","H","J","K","L","Ö","Ä"],
+    ["Z","X","C","V","B","N","M"," ","⌫"]
+  ];
+
+  const rita = () => {
+    const visText = text.trim() || (mv.rikt === -1 ? linje.a : linje.b);
+    oppnaSheet(`
+      <div class="sheet-head">
+        <h2>🪧 Skyltverkstaden</h2>
+        <button class="icon-btn" id="stang-sheet" type="button" aria-label="Stäng">✕</button>
+      </div>
+      <p class="section-sub">Skriv vilket ord eller namn du vill på din spårvagns destinationsskylt och lyssna på utropet!</p>
+
+      <div class="skylt-verkstad-box">
+        <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+          <span class="line-num" style="background:${linje.col};color:${dark ? INK : "#FFFFFF"};border-color:rgba(255,255,255,.3)">${linje.ref}</span>
+          <div class="skylt-preview-text">${escapeHtml(formatOrd(visText, stil))}</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+        <button class="btn btn-brass btn-sm" id="skylt-ropa" type="button">🔊 Ropa ut skylten!</button>
+        <button class="btn btn-gbg btn-sm" id="skylt-spara" type="button">✓ Sätt på min vagn</button>
+      </div>
+
+      <div class="sv-tangentbord">
+        ${kbRader.map(rad => `
+          <div class="kb-row">
+            ${rad.map(k => `
+              <button class="kb-key ${k === "⌫" || k === " " ? "wide" : ""}" data-sk="${k}" type="button">
+                ${k === "⌫" ? "⌫" : k === " " ? "␣" : escapeHtml(formatOrd(k, stil))}
+              </button>
+            `).join("")}
+          </div>
+        `).join("")}
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:8px">
+        <button class="btn btn-linen btn-sm" id="skylt-rensa" type="button">Rensa</button>
+        <div class="seg-group">
+          ${[p.name, "SOL", "GLASS", "LISEBERG"].map(f => `
+            <button class="seg-btn" data-forslag="${escapeHtml(f)}" type="button">${escapeHtml(formatOrd(f, stil))}</button>
+          `).join("")}
+        </div>
+      </div>
+    `);
+
+    $("#stang-sheet").onclick = () => { stangSheet(); if(aktivSkarm === "home") renderHome(); };
+    $("#skylt-ropa").onclick = () => {
+      aktiveraForstaTryck();
+      const t = text.trim() || (mv.rikt === -1 ? linje.a : linje.b);
+      SFX.utrop();
+      setTimeout(() => prata(`Linje ${linje.ref} mot ${t}!`, { settings: p.settings, namn: p.name }), 380);
+    };
+    $("#skylt-spara").onclick = () => {
+      aktiveraForstaTryck();
+      mv.egenSkylt = text.trim().slice(0, 18);
+      kollaMarken(p);
+      spara();
+      SFX.fanfar();
+      if(mv.egenSkylt) prata(`Snyggt! Nu åker din vagn mot ${mv.egenSkylt}!`, { settings: p.settings, namn: p.name });
+      stangSheet();
+      if(aktivSkarm === "home") renderHome();
+    };
+    $("#skylt-rensa").onclick = () => { SFX.klick(); text = ""; rita(); };
+    sheetEl.querySelectorAll("[data-forslag]").forEach(b => {
+      b.onclick = () => { aktiveraForstaTryck(); text = b.dataset.forslag.toLocaleUpperCase("sv"); prata(text, { settings: p.settings }); rita(); };
+    });
+    sheetEl.querySelectorAll("[data-sk]").forEach(b => {
+      b.onclick = () => {
+        aktiveraForstaTryck();
+        const k = b.dataset.sk;
+        if(k === "⌫"){ text = text.slice(0, -1); }
+        else if(text.length < 18){
+          text += k;
+          if(k !== " ") sagBokstav(k, p.settings);
+        }
+        rita();
+      };
+    });
+  };
+  rita();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODALER: PERRONGEN, STARTPLATS, RESMÅL, VAGNHALLEN,
+   ORDBOKEN & STÄMPLAR, MINA RESOR, INSTÄLLNINGAR
    ═══════════════════════════════════════════════════════════════ */
 function openPerrongen(){
   const p = P();
@@ -1196,7 +1302,6 @@ function openPerrongen(){
   const sparr = p.resa.sparr;
   const nuDist = mal ? avstand(nuStopp, mal, sparr) : Infinity;
 
-  /* Sortera avgångar som tar en närmare resmålet först! */
   const sorterade = avg.map(a => {
     const blokk = arSparrad(nuStopp, a.nasta, sparr);
     const d = mal && !blokk ? avstand(a.nasta, mal, sparr) : Infinity;
@@ -1208,33 +1313,29 @@ function openPerrongen(){
       <h2>🚉 Perrongen: ${escapeHtml(formatOrd(nuStopp, stil))}</h2>
       <button class="icon-btn" id="stang-sheet" type="button" aria-label="Stäng">✕</button>
     </div>
-    <p style="font-size:.9rem;color:var(--ink-2);margin-bottom:12px">Välj vilken spårvagn och riktning du vill hoppa på!</p>
+    <p class="section-sub">Välj vilken linje och riktning du vill hoppa på!</p>
     ${sorterade.map((a, idx) => `
       <button class="avgang-card ${a.narmare ? "tips" : ""} ${a.blokk ? "sparrad" : ""}" data-avg="${idx}" type="button" ${a.blokk ? "disabled" : ""}>
         ${tramSVG(a.col, a.ref)}
         <div>
-          <div style="font-family:'Baloo 2',system-ui;font-size:1.18rem;font-weight:800">
+          <div style="font-family:'Fredoka',system-ui;font-size:1.12rem;font-weight:700">
             Linje ${a.ref} mot ${escapeHtml(formatOrd(a.mot, stil))}
           </div>
-          <small style="color:var(--ink-2)">
+          <small style="color:var(--slate)">
             ${a.blokk ? "🚧 Spårarbete på sträckan!" : `Nästa: ${escapeHtml(formatOrd(a.nasta, stil))}${a.narmare ? " · ⭐ Närmare målet!" : ""}`}
           </small>
         </div>
       </button>
     `).join("")}
-    <button class="btn btn-soft" id="perrong-annan" type="button" style="width:100%;margin-top:6px">🗺️ Hoppa till en annan plats i stan</button>
+    <button class="btn btn-linen" id="perrong-annan" type="button" style="width:100%;margin-top:6px">🗺️ Hoppa till en annan plats i stan</button>
   `);
   $("#stang-sheet").onclick = stangSheet;
   $("#perrong-annan").onclick = () => openValjStartplats();
   sheetEl.querySelectorAll("[data-avg]").forEach(b => {
     b.onclick = () => {
       const a = sorterade[Number(b.dataset.avg)];
-      p.resa.ref = a.ref;
-      p.resa.at = a.at;
-      p.resa.rikt = a.rikt;
-      spara();
-      stangSheet();
-      SFX.klocka();
+      p.resa.ref = a.ref; p.resa.at = a.at; p.resa.rikt = a.rikt;
+      spara(); stangSheet(); SFX.klocka();
       prata(`Linje ${a.ref} mot ${a.mot}`, { settings: p.settings, namn: p.name });
       renderResa();
     };
@@ -1255,19 +1356,19 @@ function openValjStartplats(valdRef = null){
         ${TRAM_LINES.map(l => {
           const dark = ljusFarg(l.col);
           return `<button class="avgang-card" data-pick-line="${l.ref}" type="button" style="margin:0">
-            <span class="linje-bricka" style="background:${l.col};color:${dark ? INK : "#FFFDF7"}">${l.ref}</span>
+            <span class="line-num" style="background:${l.col};color:${dark ? INK : "#FFFFFF"}">${l.ref}</span>
             <div>
               <b>${escapeHtml(formatOrd(l.a, stil))} – ${escapeHtml(formatOrd(l.b, stil))}</b>
-              <div><small style="color:var(--ink-2)">${l.stops.length} hållplatser</small></div>
+              <div><small style="color:var(--slate)">${l.stops.length} hållplatser</small></div>
             </div>
           </button>`;
         }).join("")}
       </div>
     ` : `
-      <button class="btn btn-sm btn-soft" id="tillbaka-linjer" type="button" style="margin-bottom:12px">← Alla 12 linjer</button>
+      <button class="btn btn-sm btn-linen" id="tillbaka-linjer" type="button" style="margin-bottom:12px">← Alla 12 linjer</button>
       <div style="display:flex;flex-wrap:wrap;gap:8px">
         ${linje.stops.map(s => `
-          <button class="btn btn-sm btn-soft" data-pick-stop="${escapeHtml(s)}" type="button">${escapeHtml(formatOrd(s, stil))}</button>
+          <button class="btn btn-sm btn-linen" data-pick-stop="${escapeHtml(s)}" type="button">${escapeHtml(formatOrd(s, stil))}</button>
         `).join("")}
       </div>
     `}
@@ -1278,10 +1379,7 @@ function openValjStartplats(valdRef = null){
     b.onclick = () => { SFX.klick(); openValjStartplats(b.dataset.pickLine); };
   });
   sheetEl.querySelectorAll("[data-pick-stop]").forEach(b => {
-    b.onclick = () => {
-      stangSheet();
-      startaResaVid(b.dataset.pickStop, linje.ref, 1);
-    };
+    b.onclick = () => { stangSheet(); startaResaVid(b.dataset.pickStop, linje.ref, 1); };
   });
 }
 
@@ -1290,67 +1388,65 @@ function openResmalDialog(){
   const l = linjeAv(p.resa.ref);
   const nu = l.stops[p.resa.at];
   const stil = stilAv(p);
-  const nyttMal = () => {
-    const mal = valjResmal(nu, new Set(p.visitedStops), p.resmalKlarade || 0);
-    const gorSparr = (p.resmalKlarade || 0) >= 2 && Math.random() < 0.5;
-    p.resa.mal = mal;
-    p.resa.sparr = gorSparr ? valjSparr(nu, mal) : null;
-    spara();
-    stangSheet();
-    SFX.fanfar();
-    prata(p.resa.sparr ? `Ta dig till ${mal}! Obs, det är spårarbete på vägen!` : `Ta dig till ${mal}!`, { settings: p.settings, namn: p.name });
-    renderResa();
-  };
   oppnaSheet(`
     <div class="sheet-head">
       <h2>🚩 Resmål i Göteborg</h2>
       <button class="icon-btn" id="stang-sheet" type="button" aria-label="Stäng">✕</button>
     </div>
-    <p style="margin-bottom:14px">
+    <p class="section-sub">
       ${p.resa.mal
-        ? `Ditt resmål just nu är <b>${escapeHtml(formatOrd(p.resa.mal, stil))}</b>. Vill du lotta ett nytt resmål eller åka fritt utan mål?`
-        : `Vill du ha ett spännande resmål några hållplatser bort? Kartan visar flaggan och tipsar när du ska byta linje!`}
+        ? `Ditt resmål just nu är <b>${escapeHtml(formatOrd(p.resa.mal, stil))}</b>. Vill du lotta ett nytt mål eller åka fritt?`
+        : `Lotta ett resmål några hållplatser bort! Kartan sätter ut en röd flagga och hjälper dig hitta rätt linjebyte.`}
     </p>
     <div style="display:grid;gap:10px">
-      <button class="btn btn-big" id="lotta-resmal" type="button">🚩 ${p.resa.mal ? "Lotta nytt resmål" : "Ge mig ett resmål!"}</button>
-      ${p.resa.mal ? `<button class="btn btn-soft" id="avsluta-resmal" type="button">Åk fritt utan resmål</button>` : ""}
+      <button class="btn btn-brass btn-big" id="lotta-resmal" type="button">🚩 ${p.resa.mal ? "Lotta nytt resmål" : "Ge mig ett resmål!"}</button>
+      ${p.resa.mal ? `<button class="btn btn-linen" id="avsluta-resmal" type="button">Åk fritt utan resmål</button>` : ""}
     </div>
   `);
   $("#stang-sheet").onclick = stangSheet;
-  $("#lotta-resmal").onclick = nyttMal;
+  $("#lotta-resmal").onclick = () => {
+    const mal = valjResmal(nu, new Set(p.visitedStops), p.resmalKlarade || 0);
+    const gorSparr = (p.resmalKlarade || 0) >= 2 && Math.random() < 0.5;
+    p.resa.mal = mal;
+    p.resa.sparr = gorSparr ? valjSparr(nu, mal) : null;
+    spara(); stangSheet(); SFX.fanfar();
+    prata(p.resa.sparr ? `Ta dig till ${mal}! Obs, det är spårarbete på vägen!` : `Ta dig till ${mal}!`, { settings: p.settings, namn: p.name });
+    renderResa();
+  };
   if($("#avsluta-resmal")){
-    $("#avsluta-resmal").onclick = () => {
-      p.resa.mal = null; p.resa.sparr = null; spara(); stangSheet(); renderResa();
-    };
+    $("#avsluta-resmal").onclick = () => { p.resa.mal = null; p.resa.sparr = null; spara(); stangSheet(); renderResa(); };
   }
 }
 
-/* ── Min vagn & Vagnkort ─────────────────────────────────────────────── */
-function openMinVagn(flik = "bygg", fokusKortNr = null){
+/* ── Vagnhallen: Bygg vagn + Lackverkstad + Modeller + Vagnkort ──────── */
+function openVagnhallen(flik = "bygg", fokusKortNr = null){
   const p = P();
   const mv = p.minVagn;
   const typ = vagnTypAv(mv.typ) || VAGNTYPER[6];
-  const linje = linjeAv(mv.ref);
+  const linje = linjeAv(mv.ref || "11");
+  const kopta = p.kopta || ["gbg"];
   const stil = stilAv(p);
 
   oppnaSheet(`
     <div class="sheet-head">
-      <h2>🚃 Min vagn &amp; vagnkort</h2>
+      <h2>🚃 Vagnhallen · ${p.coins} 🎫</h2>
       <button class="icon-btn" id="stang-sheet" type="button" aria-label="Stäng">✕</button>
     </div>
     <div class="stava-mode-bar">
-      <button class="mode-chip" id="flik-bygg" type="button" aria-pressed="${flik === "bygg"}">🛠️ Bygg min vagn</button>
-      <button class="mode-chip" id="flik-modeller" type="button" aria-pressed="${flik === "modeller"}">🚃 Alla 7 modeller</button>
-      <button class="mode-chip" id="flik-kort" type="button" aria-pressed="${flik === "kort"}">🃏 Vagnkort (${(p.vagnkort || []).length}/${ALLA_VAGNKORT_NR.length})</button>
+      <button class="mode-chip" id="flik-bygg" type="button" aria-pressed="${flik === "bygg"}">🛠️ Min vagn</button>
+      <button class="mode-chip" id="flik-lack" type="button" aria-pressed="${flik === "lack"}">🎨 Lack &amp; Pynt</button>
+      <button class="mode-chip" id="flik-modeller" type="button" aria-pressed="${flik === "modeller"}">📐 7 modeller</button>
+      <button class="mode-chip" id="flik-kort" type="button" aria-pressed="${flik === "kort"}">🃏 Kort (${(p.vagnkort || []).length}/${ALLA_VAGNKORT_NR.length})</button>
     </div>
 
     ${flik === "bygg" ? `
-      <div class="panel" style="background:#E8F6FF;margin-bottom:12px;text-align:center">
+      <div class="ritning" style="max-width:none;margin-bottom:12px">
         ${minVagnSVG(p, true)}
-        <div style="margin-top:6px;font-family:'Baloo 2',system-ui;font-size:1.15rem">
-          <b>${escapeHtml(typ.typ)} ${escapeHtml(typ.smek)}</b> · Vagn #${mv.nr}
+        <div class="ritning-skala">
+          <span>${escapeHtml(typ.typ)} ${escapeHtml(typ.smek.toUpperCase())}</span>
+          <span>#${mv.nr}</span>
+          <span>${typ.langd} METER</span>
         </div>
-        <small style="color:var(--ink-2)">${typ.langd} m · ${typ.delar.length === 1 ? "1 del" : `${typ.delar.length} delar`} · ${typ.platser} platser</small>
       </div>
 
       <div class="set-row" style="margin-bottom:8px;flex-wrap:wrap">
@@ -1378,199 +1474,143 @@ function openMinVagn(flik = "bygg", fokusKortNr = null){
         </div>
       </div>
 
-      <div class="set-row" style="margin-bottom:8px">
-        <b>Skyltad riktning</b>
-        <button class="seg-btn" id="vagn-vand" type="button">mot ${escapeHtml(formatOrd(mv.rikt === -1 ? linje.a : linje.b, stil))} 🔄</button>
+      <div class="set-row">
+        <span><b>Destinationsskylt</b><small>${escapeHtml(formatOrd(mv.egenSkylt || (mv.rikt === -1 ? linje.a : linje.b), stil))}</small></span>
+        <button class="btn btn-sm btn-gbg" id="vagn-till-skylt" type="button">🪧 Ändra skylt</button>
+      </div>
+    ` : flik === "lack" ? `
+      <p class="section-sub">Lås upp nya lackteman och takpynt till din Göteborgsvagn med dina guldbiljetter!</p>
+      <h3 style="margin-bottom:8px">Lackteman</h3>
+      <div class="grid-cards" style="margin-bottom:14px">
+        ${VAGN_TEMAN.map(t => {
+          const ager = t.pris === 0 || kopta.includes(t.id);
+          const vald = (mv.tema || "gbg") === t.id;
+          return `<div class="mini-card">
+            <span style="width:44px;height:22px;border-radius:8px;background:${t.kaross};border:2px solid var(--navy);display:inline-block"></span>
+            <b>${t.name}</b>
+            <small style="font-size:.74rem;color:var(--slate)">${t.desc}</small>
+            ${ager
+              ? `<button class="btn btn-sm ${vald ? "btn-pine" : "btn-linen"}" data-tema="${t.id}" type="button">${vald ? "Vald ✓" : "Välj"}</button>`
+              : `<button class="btn btn-sm btn-brass" data-kop="${t.id}" data-pris="${t.pris}" type="button" ${p.coins < t.pris ? "disabled" : ""}>🎫 ${t.pris}</button>`}
+          </div>`;
+        }).join("")}
       </div>
 
-      ${p.kopta.includes("flaggor") || p.kopta.includes("jul") ? `
-        <div class="set-row">
-          <b>Takpynt</b>
-          <div class="seg-group">
-            ${p.kopta.includes("flaggor") ? `<button class="seg-btn" id="tog-flaggor" type="button" aria-pressed="${!!mv.flaggor}">🇸🇪 Flaggor</button>` : ""}
-            ${p.kopta.includes("jul") ? `<button class="seg-btn" id="tog-jul" type="button" aria-pressed="${!!mv.jul}">✨ Lampor</button>` : ""}
-          </div>
-        </div>
-      ` : `<p style="font-size:.82rem;color:var(--ink-2);text-align:center">Tips: Köp flaggor och julbelysning i Skattkistan!</p>`}
+      <h3 style="margin-bottom:8px">Takpynt</h3>
+      <div class="grid-cards">
+        ${VAGN_PYNT.map(v => {
+          const ager = kopta.includes(v.id);
+          const pa = !!mv[v.id];
+          return `<div class="mini-card">
+            <div style="font-size:2rem">${v.bild}</div>
+            <b>${v.name}</b>
+            <small style="font-size:.74rem;color:var(--slate)">${v.desc}</small>
+            ${ager
+              ? `<button class="btn btn-sm ${pa ? "btn-pine" : "btn-linen"}" data-pynt="${v.id}" type="button">${pa ? "På ✓" : "Sätt på"}</button>`
+              : `<button class="btn btn-sm btn-brass" data-kop="${v.id}" data-pris="${v.pris}" type="button" ${p.coins < v.pris ? "disabled" : ""}>🎫 ${v.pris}</button>`}
+          </div>`;
+        }).join("")}
+      </div>
     ` : flik === "modeller" ? `
       <div style="display:grid;gap:10px">
         ${VAGNTYPER.map(t => `
-          <div class="panel" style="margin:0;padding:12px">
+          <div class="card" style="margin:0;padding:12px">
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
               <h3>${t.typ} · ${escapeHtml(t.smek)}</h3>
-              <small style="color:var(--ink-2)">${t.langd} m · ${t.byggd}</small>
+              <small style="color:var(--slate)">${t.langd} m · ${t.byggd}</small>
             </div>
             ${vagnSidoSVG(t, { stor: false })}
-            <p style="font-size:.86rem;margin-top:6px;line-height:1.35">${escapeHtml(t.om)}</p>
+            <p style="font-size:.86rem;margin-top:6px;line-height:1.4;color:var(--slate)">${escapeHtml(t.om)}</p>
           </div>
         `).join("")}
       </div>
     ` : `
-      <p style="font-size:.88rem;color:var(--ink-2);margin-bottom:10px">
-        Känn igen spårvagnsmodeller under resan för att samla Göteborgs namngivna vagnar!
-      </p>
+      <p class="section-sub">Känn igen spårvagnsmodeller under resan för att låsa upp Göteborgs namngivna vagnkort!</p>
       <div class="grid-cards">
         ${ALLA_VAGNKORT_NR.map(nr => {
           const har = (p.vagnkort || []).includes(nr);
           const k = vagnkortFor(nr);
-          return `<div class="mini-card ${har ? "" : "locked"}" style="${nr === fokusKortNr ? "background:#FFF3BF" : ""}">
-            <b style="font-family:'Baloo 2',system-ui;font-size:1.1rem">#${nr} · ${k.typ.typ}</b>
+          return `<div class="mini-card ${har ? "" : "locked"}" style="${nr === fokusKortNr ? "background:#FFF7DF;border-color:var(--brass-deep)" : ""}">
+            <b style="font-family:'Fredoka',system-ui;font-size:1.05rem">#${nr} · ${k.typ.typ}</b>
             ${vagnSidoSVG(k.typ, { nr, stor: true })}
-            <div style="font-size:.85rem;font-weight:800">${har ? escapeHtml(k.namn || k.typ.smek) : "???"}</div>
-            ${har && k.namnOm ? `<small style="font-size:.74rem;color:var(--ink-2)">${escapeHtml(k.namnOm)}</small>` : ""}
+            <div style="font-size:.85rem;font-weight:700">${har ? escapeHtml(k.namn || k.typ.smek) : "???"}</div>
+            ${har && k.namnOm ? `<small style="font-size:.73rem;color:var(--slate)">${escapeHtml(k.namnOm)}</small>` : ""}
           </div>`;
         }).join("")}
       </div>
     `}
   `);
 
-  $("#stang-sheet").onclick = () => { stangSheet(); if(aktivSkarm === "home") renderHome(); };
-  $("#flik-bygg").onclick = () => { SFX.klick(); openMinVagn("bygg"); };
-  $("#flik-modeller").onclick = () => { SFX.klick(); openMinVagn("modeller"); };
-  $("#flik-kort").onclick = () => { SFX.klick(); openMinVagn("kort"); };
+  $("#stang-sheet").onclick = () => { stangSheet(); renderTopBar(); if(aktivSkarm === "home") renderHome(); };
+  $("#flik-bygg").onclick = () => { SFX.klick(); openVagnhallen("bygg"); };
+  $("#flik-lack").onclick = () => { SFX.klick(); openVagnhallen("lack"); };
+  $("#flik-modeller").onclick = () => { SFX.klick(); openVagnhallen("modeller"); };
+  $("#flik-kort").onclick = () => { SFX.klick(); openVagnhallen("kort"); };
+  if($("#vagn-till-skylt")) $("#vagn-till-skylt").onclick = () => { SFX.klick(); openSkyltverkstaden(); };
 
   sheetEl.querySelectorAll("[data-vtyp]").forEach(b => {
     b.onclick = () => {
       SFX.klick();
       const nt = vagnTypAv(b.dataset.vtyp);
-      mv.typ = nt.typ;
-      mv.nr = nt.fran;
-      mv.byggd = true;
-      kollaMarken(p);
-      spara();
+      mv.typ = nt.typ; mv.nr = nt.fran; mv.byggd = true;
+      kollaMarken(p); spara();
       prata(`${nt.typ}, ${nt.smek}!`, { settings: p.settings });
-      openMinVagn("bygg");
+      openVagnhallen("bygg");
     };
   });
   sheetEl.querySelectorAll("[data-steg]").forEach(b => {
     b.onclick = () => {
       SFX.klick();
       mv.nr = stegaVagnNummer(typ, mv.nr, Number(b.dataset.steg));
-      mv.byggd = true;
-      kollaMarken(p);
-      spara();
+      mv.byggd = true; kollaMarken(p); spara();
       const k = vagnkortFor(mv.nr);
       prata(k && k.namn ? `Vagn ${mv.nr}, ${k.namn}` : `Vagn ${mv.nr}`, { settings: p.settings });
-      openMinVagn("bygg");
+      openVagnhallen("bygg");
     };
   });
   sheetEl.querySelectorAll("[data-vlinje]").forEach(b => {
-    b.onclick = () => {
-      SFX.klick();
-      mv.ref = b.dataset.vlinje;
-      mv.byggd = true;
-      spara();
-      openMinVagn("bygg");
-    };
+    b.onclick = () => { SFX.klick(); mv.ref = b.dataset.vlinje; mv.byggd = true; spara(); openVagnhallen("bygg"); };
   });
-  if($("#vagn-vand")) $("#vagn-vand").onclick = () => { SFX.klick(); mv.rikt = mv.rikt === -1 ? 1 : -1; spara(); openMinVagn("bygg"); };
-  if($("#tog-flaggor")) $("#tog-flaggor").onclick = () => { SFX.klick(); mv.flaggor = !mv.flaggor; spara(); openMinVagn("bygg"); };
-  if($("#tog-jul")) $("#tog-jul").onclick = () => { SFX.klick(); mv.jul = !mv.jul; spara(); openMinVagn("bygg"); };
-}
-
-/* ── Skattkistan ─────────────────────────────────────────────────────── */
-function openSkattkistan(){
-  const p = P();
-  oppnaSheet(`
-    <div class="sheet-head">
-      <h2>🪙 Skattkistan (${p.coins} mynt)</h2>
-      <button class="icon-btn" id="stang-sheet" type="button" aria-label="Stäng">✕</button>
-    </div>
-    <h3 style="margin-bottom:8px">Till kompisen</h3>
-    <div class="grid-cards" style="margin-bottom:14px">
-      ${TILLBEHOR.map(t => {
-        const ager = p.kopta.includes(t.id);
-        const pa = p.tillbehor === t.id;
-        return `<div class="mini-card">
-          <div style="width:68px">${charSVG(p.char, "happy", t.id)}</div>
-          <b>${t.name}</b>
-          ${ager
-            ? `<button class="btn btn-sm ${pa ? "btn-green" : "btn-soft"}" data-hatt="${t.id}" type="button">${pa ? "På ✓" : "Ta på"}</button>`
-            : `<button class="btn btn-sm" data-kop="${t.id}" data-pris="${t.pris}" type="button" ${p.coins < t.pris ? "disabled" : ""}>🪙 ${t.pris}</button>`}
-        </div>`;
-      }).join("")}
-    </div>
-
-    <h3 style="margin-bottom:8px">Till min spårvagn</h3>
-    <div class="grid-cards" style="margin-bottom:14px">
-      ${VAGN_PYNT.map(v => {
-        const ager = p.kopta.includes(v.id);
-        return `<div class="mini-card">
-          <div style="font-size:2.2rem">${v.bild}</div>
-          <b>${v.name}</b>
-          <small style="font-size:.75rem;color:var(--ink-2)">${v.desc}</small>
-          ${ager
-            ? `<span style="color:var(--grass-deep);font-weight:800">Köpt ✓</span>`
-            : `<button class="btn btn-sm" data-kop="${v.id}" data-pris="${v.pris}" type="button" ${p.coins < v.pris ? "disabled" : ""}>🪙 ${v.pris}</button>`}
-        </div>`;
-      }).join("")}
-    </div>
-
-    <h3 style="margin-bottom:8px">Saker på startskärmen</h3>
-    <div class="grid-cards">
-      ${LEKSAKER.map(l => {
-        const ager = p.kopta.includes(l.id);
-        return `<div class="mini-card">
-          <div style="font-size:2.2rem">${l.bild}</div>
-          <b>${l.name}</b>
-          ${ager
-            ? `<span style="color:var(--grass-deep);font-weight:800">Äger ✓</span>`
-            : `<button class="btn btn-sm" data-kop="${l.id}" data-pris="${l.pris}" type="button" ${p.coins < l.pris ? "disabled" : ""}>🪙 ${l.pris}</button>`}
-        </div>`;
-      }).join("")}
-    </div>
-  `);
-  $("#stang-sheet").onclick = () => { stangSheet(); renderTopBar(); if(aktivSkarm === "home") renderHome(); };
   sheetEl.querySelectorAll("[data-kop]").forEach(b => {
     b.onclick = () => {
       const id = b.dataset.kop, pris = Number(b.dataset.pris);
       if(p.coins < pris || p.kopta.includes(id)) return;
-      p.coins -= pris;
-      p.kopta.push(id);
-      if(TILLBEHOR.some(t => t.id === id)) p.tillbehor = id;
-      if(id === "flaggor") p.minVagn.flaggor = true;
-      if(id === "jul") p.minVagn.jul = true;
-      spara();
-      SFX.fanfar();
-      konfetti();
-      renderTopBar();
-      openSkattkistan();
+      p.coins -= pris; p.kopta.push(id);
+      if(VAGN_TEMAN.some(t => t.id === id)) mv.tema = id;
+      if(VAGN_PYNT.some(v => v.id === id)) mv[id] = true;
+      spara(); SFX.fanfar(); konfetti(); renderTopBar(); openVagnhallen("lack");
     };
   });
-  sheetEl.querySelectorAll("[data-hatt]").forEach(b => {
-    b.onclick = () => {
-      SFX.klick();
-      const id = b.dataset.hatt;
-      p.tillbehor = p.tillbehor === id ? null : id;
-      spara();
-      renderTopBar();
-      openSkattkistan();
-    };
+  sheetEl.querySelectorAll("[data-tema]").forEach(b => {
+    b.onclick = () => { SFX.klick(); mv.tema = b.dataset.tema; spara(); openVagnhallen("lack"); };
+  });
+  sheetEl.querySelectorAll("[data-pynt]").forEach(b => {
+    b.onclick = () => { SFX.klick(); const k = b.dataset.pynt; mv[k] = !mv[k]; spara(); openVagnhallen("lack"); };
   });
 }
 
-/* ── Mina ord & Märken ───────────────────────────────────────────────── */
+/* ── Ordboken & Stämplar ─────────────────────────────────────────────── */
 function openMinaOrdOchMarken(flik = "ord"){
   const p = P();
   const stil = stilAv(p);
   const klarade = new Set(p.klaradeOrd || []);
   oppnaSheet(`
     <div class="sheet-head">
-      <h2>📖 Mina ord &amp; märken</h2>
+      <h2>📖 Ordboken &amp; Stämplar</h2>
       <button class="icon-btn" id="stang-sheet" type="button" aria-label="Stäng">✕</button>
     </div>
     <div class="stava-mode-bar">
       <button class="mode-chip" id="flik-ord" type="button" aria-pressed="${flik === "ord"}">📖 Mina ord (${klarade.size}/${ORDBANK.length})</button>
-      <button class="mode-chip" id="flik-marken" type="button" aria-pressed="${flik === "marken"}">🏆 Märken (${(p.badges || []).length}/${MARKEN.length})</button>
+      <button class="mode-chip" id="flik-marken" type="button" aria-pressed="${flik === "marken"}">🎫 Stämplar (${(p.badges || []).length}/${MARKEN.length})</button>
     </div>
     ${flik === "ord" ? `
-      <p style="font-size:.88rem;color:var(--ink-2);margin-bottom:10px">Tryck på ett ord du läst för att höra det ljuda!</p>
+      <p class="section-sub">Tryck på ett ord du läst för att höra det ljuda!</p>
       <div class="grid-cards">
         ${ORDBANK.map(o => {
           const har = klarade.has(o.ord);
           return `<button class="mini-card ${har ? "" : "locked"}" data-hor-ord="${escapeHtml(o.ord)}" type="button" style="cursor:pointer;font-family:inherit;color:inherit">
             ${ordBildHTML(o, false)}
-            <b style="font-family:'Baloo 2',system-ui;font-size:1.15rem">${har ? escapeHtml(formatOrd(o.ord, stil)) : "???"}</b>
+            <b style="font-family:'Fredoka',system-ui;font-size:1.12rem">${har ? escapeHtml(formatOrd(o.ord, stil)) : "???"}</b>
           </button>`;
         }).join("")}
       </div>
@@ -1579,9 +1619,9 @@ function openMinaOrdOchMarken(flik = "ord"){
         ${MARKEN.map(m => {
           const har = (p.badges || []).includes(m.id);
           return `<div class="mini-card ${har ? "" : "locked"}">
-            <div style="font-size:2.2rem">${m.emoji}</div>
+            <div style="font-size:2.1rem">${m.emoji}</div>
             <b>${escapeHtml(m.name)}</b>
-            <small style="font-size:.76rem;color:var(--ink-2)">${escapeHtml(m.desc)}</small>
+            <small style="font-size:.76rem;color:var(--slate)">${escapeHtml(m.desc)}</small>
           </div>`;
         }).join("")}
       </div>
@@ -1609,12 +1649,12 @@ function openMinaResor(){
       <h2>🗺️ Mina resor i Göteborg</h2>
       <button class="icon-btn" id="stang-sheet" type="button" aria-label="Stäng">✕</button>
     </div>
-    <div class="panel" style="background:#E8F6FF;margin-bottom:12px;text-align:center">
-      <div style="font-family:'Baloo 2',system-ui;font-size:1.6rem;font-weight:800">${bes.size} av ${ALLA_STOPP.length} hållplatser</div>
-      <small style="color:var(--ink-2)">${(p.linesDone || []).length} hela linjer · ${p.resmalKlarade || 0} klarade resmål</small>
+    <div class="card" style="background:#EAF4FC;margin-bottom:12px;text-align:center;padding:14px">
+      <div style="font-family:'Fredoka',system-ui;font-size:1.5rem;font-weight:700">${bes.size} av ${ALLA_STOPP.length} hållplatser</div>
+      <small style="color:var(--slate)">${(p.linesDone || []).length} hela linjer · ${p.resmalKlarade || 0} klarade resmål</small>
       <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-        <button class="btn btn-sm" id="spara-vaggkarta" type="button">🖼️ Spara väggkarta (PNG)</button>
-        <button class="btn btn-sm btn-soft" id="skriv-ut-karta" type="button">🖨️ Skriv ut karta</button>
+        <button class="btn btn-sm btn-gbg" id="spara-vaggkarta" type="button">🖼️ Spara väggkarta</button>
+        <button class="btn btn-sm btn-linen" id="skriv-ut-karta" type="button">🖨️ Skriv ut</button>
       </div>
     </div>
     ${TRAM_LINES.map(l => {
@@ -1622,13 +1662,13 @@ function openMinaResor(){
       const pct = Math.round(n / l.stops.length * 100);
       const dark = ljusFarg(l.col);
       return `<div class="linje-rad">
-        <span class="linje-bricka" style="width:36px;height:36px;font-size:1.2rem;background:${l.col};color:${dark ? INK : "#FFFDF7"}">${l.ref}</span>
+        <span class="line-num" style="min-width:34px;height:34px;font-size:1.1rem;background:${l.col};color:${dark ? INK : "#FFFFFF"}">${l.ref}</span>
         <div style="flex:1;min-width:0">
-          <div style="display:flex;justify-content:space-between;font-size:.88rem">
+          <div style="display:flex;justify-content:space-between;font-size:.86rem">
             <b>${escapeHtml(l.a)} – ${escapeHtml(l.b)}</b>
             <span>${n}/${l.stops.length}</span>
           </div>
-          <div class="linje-bar"><span style="width:${pct}%;background:${pct === 100 ? "var(--grass)" : l.col.toLowerCase() === "#ffffff" ? "#7C749E" : l.col}"></span></div>
+          <div class="linje-bar"><span style="width:${pct}%;background:${pct === 100 ? "var(--pine)" : l.col.toLowerCase() === "#ffffff" ? "#8E8475" : l.col}"></span></div>
         </div>
       </div>`;
     }).join("")}
@@ -1653,7 +1693,7 @@ function sparaVaggkartaPNG(p){
     const c = document.createElement("canvas");
     c.width = 1600; c.height = 1780;
     const ctx = c.getContext("2d");
-    ctx.fillStyle = "#FFFDF7";
+    ctx.fillStyle = "#FBF6EC";
     ctx.fillRect(0, 0, c.width, c.height);
     ctx.drawImage(img, 0, 0, c.width, c.height);
     URL.revokeObjectURL(url);
@@ -1667,7 +1707,7 @@ function sparaVaggkartaPNG(p){
   img.src = url;
 }
 
-/* ── Inställningar & Föräldrasidan ("Så går det") ────────────────────── */
+/* ── Inställningar & Föräldrasidan ───────────────────────────────────── */
 function openInstallningar(){
   const p = P();
   const s = p.settings;
@@ -1702,7 +1742,7 @@ function openInstallningar(){
             </div>
           </div>
           <div class="niva-meter">
-            ${NIVAAER.map(n => `<span class="niva-pip" style="background:${n.id <= nivaAvr ? n.farg : "var(--paper)"}"></span>`).join("")}
+            ${NIVAAER.map(n => `<span class="niva-pip" style="background:${n.id <= nivaAvr ? n.farg : "var(--card)"}"></span>`).join("")}
           </div>
           <div class="seg-group" style="margin-top:6px">
             <button class="seg-btn" data-nlage="stigande" type="button" aria-pressed="${s.nivaLage !== "fast"}">Stigande (anpassar sig)</button>
@@ -1713,7 +1753,7 @@ function openInstallningar(){
         <div class="set-row">
           <span><b>Stava &amp; bygga ord</b><small>Hur ord byggs som standard</small></span>
           <div class="seg-group">
-            <button class="seg-btn" data-stava="brickor" type="button" aria-pressed="${s.stavaLage !== "tangentbord"}">🧱 Brickor</button>
+            <button class="seg-btn" data-stava="brickor" type="button" aria-pressed="${s.stavaLage !== "tangentbord"}">🪵 Brickor</button>
             <button class="seg-btn" data-stava="tangentbord" type="button" aria-pressed="${s.stavaLage === "tangentbord"}">⌨️ Tangentbord</button>
           </div>
         </div>
@@ -1748,22 +1788,20 @@ function openInstallningar(){
         ${roster.length ? `
           <div class="set-row" style="flex-wrap:wrap">
             <span><b>Röst på enheten</b></span>
-            <select id="voice-sel" style="padding:6px 10px;border-radius:10px;border:2px solid var(--ink);font-family:inherit;font-weight:700;max-width:220px">
+            <select id="voice-sel" style="padding:6px 10px;border-radius:10px;border:1.5px solid var(--border-hi);font-family:inherit;font-weight:600;max-width:220px">
               <option value="auto" ${s.voiceURI === "auto" ? "selected" : ""}>Automatiskt (bästa)</option>
               <option value="system" ${s.voiceURI === "system" ? "selected" : ""}>Plattans val (iPad Premium)</option>
               ${roster.map(v => `<option value="${escapeHtml(v.voiceURI)}" ${s.voiceURI === v.voiceURI ? "selected" : ""}>${escapeHtml(v.name)}</option>`).join("")}
             </select>
           </div>
         ` : ""}
-        <button class="btn btn-sm btn-soft" id="testa-rost" type="button">🔊 Testa rösten</button>
+        <button class="btn btn-sm btn-linen" id="testa-rost" type="button">🔊 Testa rösten</button>
       </div>
     </details>
 
     <details class="set-group">
       <summary>📊 Så går det för ${escapeHtml(p.name)} <span>▾</span></summary>
-      <div class="set-body">
-        ${renderSaGarDetHTML(p)}
-      </div>
+      <div class="set-body">${renderSaGarDetHTML(p)}</div>
     </details>
 
     <details class="set-group">
@@ -1772,13 +1810,13 @@ function openInstallningar(){
         <div class="set-row"><span><b>Riktiga hållplatsfoton</b></span><button class="seg-btn" data-tog="foton" type="button" aria-pressed="${s.foton !== false}">${s.foton !== false ? "På" : "Av"}</button></div>
         <div class="set-row"><span><b>Minska rörelse</b></span><button class="seg-btn" data-tog="minskaRorelse" type="button" aria-pressed="${!!s.minskaRorelse}">${s.minskaRorelse ? "På" : "Av"}</button></div>
         <div style="display:grid;gap:8px;grid-template-columns:1fr 1fr">
-          <button class="btn btn-sm btn-soft" id="spara-kopia" type="button">💾 Spara kopia</button>
-          <button class="btn btn-sm btn-soft" id="las-kopia" type="button">📂 Läs in kopia</button>
-          <button class="btn btn-sm btn-soft" id="visa-fotokredit" type="button">📸 Fotografer</button>
-          <button class="btn btn-sm btn-soft" id="byt-spelare" type="button">👥 Byt spelare</button>
+          <button class="btn btn-sm btn-linen" id="spara-kopia" type="button">💾 Spara kopia</button>
+          <button class="btn btn-sm btn-linen" id="las-kopia" type="button">📂 Läs in kopia</button>
+          <button class="btn btn-sm btn-linen" id="visa-fotokredit" type="button">📸 Fotografer</button>
+          <button class="btn btn-sm btn-linen" id="byt-spelare" type="button">👥 Byt spelare</button>
         </div>
-        <button class="btn btn-sm btn-danger" id="ta-bort-spelare" type="button">🗑️ Ta bort ${escapeHtml(p.name)}</button>
-        <small style="text-align:center;color:var(--ink-2)">Ordjakten version ${SPELVERSION} · Allt sparas lokalt i webbläsaren</small>
+        <button class="btn btn-sm btn-terra" id="ta-bort-spelare" type="button">🗑️ Ta bort ${escapeHtml(p.name)}</button>
+        <small style="text-align:center;color:var(--slate)">Ordjakten version ${SPELVERSION} · Allt sparas lokalt i webbläsaren</small>
       </div>
     </details>
   `);
@@ -1788,33 +1826,21 @@ function openInstallningar(){
     if(aktivSkarm === "home") renderHome();
     else if(aktivSkarm === "resa") renderResa();
   };
-
-  sheetEl.querySelectorAll("[data-stil]").forEach(b => {
-    b.onclick = () => { SFX.klick(); s.bokstavsStil = b.dataset.stil; spara(); openInstallningar(); };
-  });
-  sheetEl.querySelectorAll("[data-nlage]").forEach(b => {
-    b.onclick = () => { SFX.klick(); s.nivaLage = b.dataset.nlage; spara(); openInstallningar(); };
-  });
-  sheetEl.querySelectorAll("[data-stava]").forEach(b => {
-    b.onclick = () => { SFX.klick(); s.stavaLage = b.dataset.stava; spara(); openInstallningar(); };
-  });
+  sheetEl.querySelectorAll("[data-stil]").forEach(b => { b.onclick = () => { SFX.klick(); s.bokstavsStil = b.dataset.stil; spara(); openInstallningar(); }; });
+  sheetEl.querySelectorAll("[data-nlage]").forEach(b => { b.onclick = () => { SFX.klick(); s.nivaLage = b.dataset.nlage; spara(); openInstallningar(); }; });
+  sheetEl.querySelectorAll("[data-stava]").forEach(b => { b.onclick = () => { SFX.klick(); s.stavaLage = b.dataset.stava; spara(); openInstallningar(); }; });
   $("#niva-ned").onclick = () => { SFX.klick(); s.niva = Math.max(1, Math.round(s.niva || 2) - 1); spara(); openInstallningar(); };
   $("#niva-upp").onclick = () => { SFX.klick(); s.niva = Math.min(6, Math.round(s.niva || 2) + 1); spara(); openInstallningar(); };
-  sheetEl.querySelectorAll("[data-rate]").forEach(b => {
-    b.onclick = () => { SFX.klick(); s.rate = Number(b.dataset.rate); spara(); openInstallningar(); };
-  });
+  sheetEl.querySelectorAll("[data-rate]").forEach(b => { b.onclick = () => { SFX.klick(); s.rate = Number(b.dataset.rate); spara(); openInstallningar(); }; });
   sheetEl.querySelectorAll("[data-tog]").forEach(b => {
     b.onclick = () => {
       const k = b.dataset.tog;
       const nu = k === "spelaPaTyst" || k === "minskaRorelse" ? !!s[k] : s[k] !== false;
       s[k] = !nu;
-      /* Minst en övningstyp på */
       if(s.lasa === false && s.stava === false && s.gbg === false) s.lasa = true;
-      spara();
-      synkaLjudInstallningar();
+      spara(); synkaLjudInstallningar();
       if(k === "spelaPaTyst") vackLjud(!!s.spelaPaTyst);
-      SFX.klick();
-      openInstallningar();
+      SFX.klick(); openInstallningar();
     };
   });
   const vs = $("#voice-sel");
@@ -1856,13 +1882,13 @@ function renderSaGarDetHTML(p){
       <span><b>Bästa svit: ${p.bestStreak || 0}</b></span>
     </div>
     ${rader.length ? rader.map(r => {
-      const farg = r.pct < 65 ? "#FF6B6B" : r.pct < 85 ? "#FFC42E" : "#57C96B";
+      const farg = r.pct < 65 ? "#FDE4DF" : r.pct < 85 ? "#FFF7DF" : "#E7F7EE";
       return `<div class="set-row">
         <span><b>${escapeHtml(r.namn)}</b><small>${r.antal} uppgifter</small></span>
-        <span style="padding:3px 10px;border-radius:999px;border:2px solid var(--ink);background:${farg};font-weight:800">${r.pct}%</span>
+        <span style="padding:3px 10px;border-radius:999px;border:1.5px solid var(--border-hi);background:${farg};font-weight:800">${r.pct}%</span>
       </div>`;
-    }).join("") : `<p style="font-size:.86rem;color:var(--ink-2)">Ingen statistik än — åk en hållplats för att börja!</p>`}
-    ${klur.length ? `<div style="font-size:.84rem;color:var(--ink-2)"><b>Väntande kluringar:</b> ${klur.map(k => escapeHtml(k.ord)).join(", ")}</div>` : ""}
+    }).join("") : `<p style="font-size:.86rem;color:var(--slate)">Ingen statistik än — åk en hållplats för att börja!</p>`}
+    ${klur.length ? `<div style="font-size:.84rem;color:var(--slate)"><b>Väntande kluringar:</b> ${klur.map(k => escapeHtml(k.ord)).join(", ")}</div>` : ""}
   `;
 }
 
@@ -1872,9 +1898,7 @@ function openFotokredit(){
       <h2>📸 Bilderna &amp; fotograferna</h2>
       <button class="icon-btn" id="stang-sheet" type="button" aria-label="Stäng">✕</button>
     </div>
-    <p style="font-size:.85rem;color:var(--ink-2);margin-bottom:10px">
-      Hållplats- och spårvagnsfotona kommer från Wikimedia Commons och används under sina fria licenser. Kartdata från OpenStreetMap (ODbL) och Västtrafiks spårvagnskarta.
-    </p>
+    <p class="section-sub">Hållplats- och spårvagnsfotona kommer från Wikimedia Commons under fria licenser. Kartdata från OpenStreetMap (ODbL) och Västtrafiks spårvagnskarta.</p>
     <div style="max-height:52vh;overflow:auto;font-size:.8rem;display:grid;gap:4px">
       ${Object.entries(STOP_PHOTOS).map(([namn, f]) => `<div><b>${escapeHtml(namn)}</b> — ${escapeHtml(f.by)} (${escapeHtml(f.lic)})</div>`).join("")}
       ${TRAM_PHOTOS.map((f, i) => `<div><b>Spårvagnsfoto ${i + 1}</b> — ${escapeHtml(f.by)} (${escapeHtml(f.lic)})</div>`).join("")}
@@ -1890,23 +1914,17 @@ function openTaBortSpelare(p){
       <h2>🗑️ Ta bort ${escapeHtml(p.name)}?</h2>
       <button class="icon-btn" id="stang-sheet" type="button" aria-label="Stäng">✕</button>
     </div>
-    <p style="margin-bottom:14px">
-      Detta tar bort ${p.coins} mynt, ${(p.visitedStops || []).length} besökta hållplatser och ${(p.klaradeOrd || []).length} lästa ord. Det går inte att ångra.
-    </p>
+    <p class="section-sub">Detta tar bort ${p.coins} biljetter, ${(p.visitedStops || []).length} besökta hållplatser och ${(p.klaradeOrd || []).length} lästa ord. Det går inte att ångra.</p>
     <div style="display:grid;gap:10px">
-      <button class="btn btn-danger" id="bekrafta-tabort" type="button" disabled>Vänta ${kvar} s…</button>
-      <button class="btn btn-soft" id="avbryt-tabort" type="button">Behåll spelaren</button>
+      <button class="btn btn-terra" id="bekrafta-tabort" type="button" disabled>Vänta ${kvar} s…</button>
+      <button class="btn btn-linen" id="avbryt-tabort" type="button">Behåll spelaren</button>
     </div>
   `);
   const btn = $("#bekrafta-tabort");
   const timer = setInterval(() => {
     kvar--;
-    if(kvar <= 0){
-      clearInterval(timer);
-      if(btn){ btn.disabled = false; btn.textContent = `Ja, ta bort ${p.name}`; }
-    }else if(btn){
-      btn.textContent = `Vänta ${kvar} s…`;
-    }
+    if(kvar <= 0){ clearInterval(timer); if(btn){ btn.disabled = false; btn.textContent = `Ja, ta bort ${p.name}`; } }
+    else if(btn){ btn.textContent = `Vänta ${kvar} s…`; }
   }, 1000);
   const avbryt = () => { clearInterval(timer); openInstallningar(); };
   $("#stang-sheet").onclick = avbryt;
@@ -1915,19 +1933,12 @@ function openTaBortSpelare(p){
     clearInterval(timer);
     DATA.players = DATA.players.filter(x => x.id !== p.id);
     DATA.activeId = DATA.players[0]?.id || null;
-    spara();
-    stangSheet();
-    renderWelcome();
+    spara(); stangSheet(); renderWelcome();
   };
 }
 
 function exporteraKopia(){
-  const payload = JSON.stringify({
-    app: "ordjakten",
-    version: SPELVERSION,
-    datum: new Date().toISOString(),
-    players: DATA.players
-  }, null, 2);
+  const payload = JSON.stringify({ app: "ordjakten", version: SPELVERSION, datum: new Date().toISOString(), players: DATA.players }, null, 2);
   const blob = new Blob([payload], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
@@ -1945,8 +1956,7 @@ function oppnaImportDialog(){
     const file = inp.files?.[0];
     if(!file) return;
     try{
-      const txt = await file.text();
-      const rena = valideraKopia(JSON.parse(txt));
+      const rena = valideraKopia(JSON.parse(await file.text()));
       if(!rena){ alert("Filen verkar inte vara en giltig säkerhetskopia från Ordjakten."); return; }
       for(const ny of rena){
         const i = DATA.players.findIndex(x => x.id === ny.id || x.name.toLowerCase() === ny.name.toLowerCase());
@@ -1954,13 +1964,8 @@ function oppnaImportDialog(){
         else DATA.players.push(ny);
       }
       DATA.activeId = rena[0].id;
-      spara();
-      stangSheet();
-      synkaLjudInstallningar();
-      renderHome();
-    }catch(_){
-      alert("Kunde inte läsa filen.");
-    }
+      spara(); stangSheet(); synkaLjudInstallningar(); renderHome();
+    }catch(_){ alert("Kunde inte läsa filen."); }
   };
   inp.click();
 }
@@ -1969,9 +1974,7 @@ function oppnaImportDialog(){
 if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){
   navigator.serviceWorker.register("./sw.js").catch(() => {});
 }
-document.addEventListener("visibilitychange", () => {
-  if(document.hidden) stoppaTal();
-});
+document.addEventListener("visibilitychange", () => { if(document.hidden) stoppaTal(); });
 klippProva();
 synkaLjudInstallningar();
 if(P()) renderHome();

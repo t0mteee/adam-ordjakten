@@ -46,27 +46,29 @@ export function natkartaSVG(l, at, o = {}){
   const andra = TRAM_LINES.filter(x => x.ref !== l.ref);
 
   let html = "";
+  /* Göta älv & hamninloppet — ger Göteborgskartan riktig kustkänsla */
+  html += `<path d="M-90 790 C 60 720, 180 650, 290 610 C 375 575, 430 505, 480 435 C 535 350, 585 215, 650 -70 L 705 -70 C 635 225, 585 365, 528 455 C 470 545, 412 615, 315 655 C 195 705, 75 785, -90 885 Z" fill="#D4EAF7" opacity=".78"/>`;
   /* Övriga linjer dämpade */
   html += andra.map(x =>
-    `<path class="nat-linje annan" d="${natLinjePath(x)}" stroke="${x.col.toLowerCase() === "#ffffff" ? "#B9B2CC" : x.col}" stroke-width="${(5 * skala).toFixed(1)}"/>`
+    `<path class="nat-linje annan" d="${natLinjePath(x)}" stroke="${x.col.toLowerCase() === "#ffffff" ? "#A79E90" : x.col}" stroke-width="${(4.6 * skala).toFixed(1)}"/>`
   ).join("");
 
   /* Den egna linjen */
-  html += `<path class="nat-linje" d="${natLinjePath(l)}" stroke="${INK}" stroke-width="${(9.5 * skala).toFixed(1)}"/>`;
-  html += `<path class="nat-linje" d="${natLinjePath(l)}" stroke="${l.col}" stroke-width="${(6 * skala).toFixed(1)}"/>`;
+  html += `<path class="nat-linje" d="${natLinjePath(l)}" stroke="${INK}" stroke-width="${(9.2 * skala).toFixed(1)}"/>`;
+  html += `<path class="nat-linje" d="${natLinjePath(l)}" stroke="${l.col}" stroke-width="${(5.8 * skala).toFixed(1)}"/>`;
 
   const rikt = o.rikt || 1;
   const nastaAt = at + rikt;
   const A = STOP_XY[l.stops[at]], B = STOP_XY[l.stops[nastaAt]];
   if(A && B){
-    html += `<path class="nat-etapp" d="M${A[0]} ${A[1]}L${B[0]} ${B[1]}" fill="none" stroke="#FFC42E" stroke-width="${(12 * skala).toFixed(1)}" opacity=".75" stroke-linecap="round"/>`;
+    html += `<path class="nat-etapp" d="M${A[0]} ${A[1]}L${B[0]} ${B[1]}" fill="none" stroke="#F2B705" stroke-width="${(12 * skala).toFixed(1)}" opacity=".8" stroke-linecap="round"/>`;
     html += `<circle class="nat-nasta" cx="${B[0]}" cy="${B[1]}" r="${(10.5 * skala).toFixed(1)}" fill="none" stroke="${INK}" stroke-width="${(2.2 * skala).toFixed(1)}" stroke-dasharray="${(3 * skala).toFixed(1)} ${(3 * skala).toFixed(1)}"/>`;
   }
 
   /* Andra linjers hållplatser */
   for(const [namn, P] of Object.entries(STOP_XY)){
     if(stopp.has(namn)) continue;
-    html += `<circle class="nat-stopp" data-stopp-namn="${escapeHtml(namn)}" cx="${P[0]}" cy="${P[1]}" r="${(3.2 * skala).toFixed(1)}" fill="${besokta.has(namn) ? "#57C96B" : "#FFFDF7"}" stroke="#A9A0C4" stroke-width="${(1.5 * skala).toFixed(1)}"/>`;
+    html += `<circle class="nat-stopp" data-stopp-namn="${escapeHtml(namn)}" cx="${P[0]}" cy="${P[1]}" r="${(3.2 * skala).toFixed(1)}" fill="${besokta.has(namn) ? "#2D8A56" : "#FFFDF7"}" stroke="#9C9385" stroke-width="${(1.5 * skala).toFixed(1)}"/>`;
   }
 
   /* Egen linjes hållplatser */
@@ -74,7 +76,7 @@ export function natkartaSVG(l, at, o = {}){
     const P = STOP_XY[namn]; if(!P) return;
     if(i === at) return;
     const akt = besokta.has(namn);
-    html += `<circle class="nat-stopp" data-stopp="${i}" data-stopp-namn="${escapeHtml(namn)}" cx="${P[0]}" cy="${P[1]}" r="${((o.utzoomad ? 4.2 : 6.2) * skala).toFixed(1)}" fill="${akt ? INK : "#FFFDF7"}" stroke="${INK}" stroke-width="${(2.6 * skala).toFixed(1)}"/>`;
+    html += `<circle class="nat-stopp" data-stopp="${i}" data-stopp-namn="${escapeHtml(namn)}" cx="${P[0]}" cy="${P[1]}" r="${((o.utzoomad ? 4.2 : 6.2) * skala).toFixed(1)}" fill="${akt ? "#2D8A56" : "#FFFDF7"}" stroke="${INK}" stroke-width="${(2.5 * skala).toFixed(1)}"/>`;
   });
 
   const upptaget = [];
