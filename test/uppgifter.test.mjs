@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   ALFABET, BOKSTAVSLJUD, ORDBANK, BYGG_HALLPLATSER, formatOrd
 } from "../js/ord-data.mjs";
+import { harOrdBild } from "../js/ordbilder.mjs";
 import {
   gorLasBild, gorBildOrd, gorForstaLjud, gorLucka, gorByggOrd,
   gorSkyltLas, gorHallplatsSkylt, gorByggHallplats, gorVagnModell,
@@ -11,10 +12,11 @@ import {
 import { linjeAv } from "../js/gbg-data.mjs";
 import { nySpelare, laggKluring, kluringKlarad, kollaMarken, valideraKopia } from "../js/lagring.mjs";
 
-test("svenska alfabetet har 29 bokstäver och bokstavsljud för alla", () => {
+test("svenska alfabetet har 29 bokstäver och rena enbokstavsljud för alla", () => {
   assert.equal(ALFABET.length, 29);
   for(const ch of ALFABET){
     assert.ok(BOKSTAVSLJUD[ch], `Saknar bokstavsljud för ${ch}`);
+    assert.equal(BOKSTAVSLJUD[ch].length, 1, `Bokstavsljud får inte dubbelstavas: ${ch} -> ${BOKSTAVSLJUD[ch]}`);
   }
 });
 
@@ -25,15 +27,16 @@ test("formatOrd hanterar VERSALER, gemener och blandat med å/ä/ö", () => {
   assert.equal(formatOrd("Östra Sjukhuset", "versaler"), "ÖSTRA SJUKHUSET");
 });
 
-test("ordbanken har unika ord med giltiga nivåer och bilder", () => {
-  assert.ok(ORDBANK.length >= 80, `Förväntade >=80 ord, fick ${ORDBANK.length}`);
+test("ordbanken har 140+ unika ord och egen bilderboks-SVG för vartenda ord", () => {
+  assert.ok(ORDBANK.length >= 140, `Förväntade >=140 ord, fick ${ORDBANK.length}`);
   const sedda = new Set();
   for(const o of ORDBANK){
     const low = o.ord.toLowerCase();
     assert.ok(!sedda.has(low), `Dubblett i ORDBANK: ${o.ord}`);
     sedda.add(low);
     assert.ok(o.niva >= 1 && o.niva <= 4);
-    assert.ok(o.bild && o.bild.length > 0);
+    assert.ok(o.bild.startsWith("svg:"), `Ord saknar SVG-bild: ${o.ord} (${o.bild})`);
+    assert.ok(harOrdBild(o.bild.slice(4)), `Saknar SVG-ritning i ordbilder.mjs för: ${o.ord} (${o.bild})`);
   }
 });
 

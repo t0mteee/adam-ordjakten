@@ -5,7 +5,7 @@
 import { TRAM_LINES, ALLA_VAGNKORT_NR, ALLA_STOPP } from "./gbg-data.mjs";
 
 export const STORAGE_KEY = "ordjakten_v1";
-export const SPELVERSION = "2.1";
+export const SPELVERSION = "2.2";
 
 export function standardSettings(){
   return {

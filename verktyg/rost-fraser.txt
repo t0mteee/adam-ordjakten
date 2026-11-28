@@ -2,30 +2,30 @@
 # filnamn<tabb>text
 bokstav-a	a
 bokstav-b	b
-bokstav-c	s
+bokstav-c	c
 bokstav-d	d
 bokstav-e	e
-bokstav-f	ff
+bokstav-f	f
 bokstav-g	g
 bokstav-h	h
 bokstav-i	i
 bokstav-j	j
 bokstav-k	k
-bokstav-l	ll
-bokstav-m	mm
-bokstav-n	nn
+bokstav-l	l
+bokstav-m	m
+bokstav-n	n
 bokstav-o	o
 bokstav-p	p
-bokstav-q	k
-bokstav-r	rr
-bokstav-s	ss
+bokstav-q	q
+bokstav-r	r
+bokstav-s	s
 bokstav-t	t
 bokstav-u	u
-bokstav-v	vv
-bokstav-w	vv
-bokstav-x	ks
+bokstav-v	v
+bokstav-w	w
+bokstav-x	x
 bokstav-y	y
-bokstav-z	ss
+bokstav-z	z
 bokstav-aa	å
 bokstav-ae	ä
 bokstav-oe	ö
@@ -72,6 +72,9 @@ vilket-ord-aer-taa	Vilket ord är Tå?
 aal	Ål
 bygg-ordet-aal	Bygg ordet Ål!
 vilket-ord-aer-aal	Vilket ord är Ål?
+lo	Lo
+bygg-ordet-lo	Bygg ordet Lo!
+vilket-ord-aer-lo	Vilket ord är Lo?
 sol	Sol
 bygg-ordet-sol	Bygg ordet Sol!
 vilket-ord-aer-sol	Vilket ord är Sol?
@@ -111,6 +114,18 @@ vilket-ord-aer-aelg	Vilket ord är Älg?
 val	Val
 bygg-ordet-val	Bygg ordet Val!
 vilket-ord-aer-val	Vilket ord är Val?
+haj	Haj
+bygg-ordet-haj	Bygg ordet Haj!
+vilket-ord-aer-haj	Vilket ord är Haj?
+faar	Får
+bygg-ordet-faar	Bygg ordet Får!
+vilket-ord-aer-faar	Vilket ord är Får?
+get	Get
+bygg-ordet-get	Bygg ordet Get!
+vilket-ord-aer-get	Vilket ord är Get?
+ren	Ren
+bygg-ordet-ren	Bygg ordet Ren!
+vilket-ord-aer-ren	Vilket ord är Ren?
 ros	Ros
 bygg-ordet-ros	Bygg ordet Ros!
 vilket-ord-aer-ros	Vilket ord är Ros?
@@ -123,15 +138,66 @@ vilket-ord-aer-noet	Vilket ord är Nöt?
 loev	Löv
 bygg-ordet-loev	Bygg ordet Löv!
 vilket-ord-aer-loev	Vilket ord är Löv?
+loek	Lök
+bygg-ordet-loek	Bygg ordet Lök!
+vilket-ord-aer-loek	Vilket ord är Lök?
+paj	Paj
+bygg-ordet-paj	Bygg ordet Paj!
+vilket-ord-aer-paj	Vilket ord är Paj?
+kex	Kex
+bygg-ordet-kex	Bygg ordet Kex!
+vilket-ord-aer-kex	Vilket ord är Kex?
+ost	Ost
+bygg-ordet-ost	Bygg ordet Ost!
+vilket-ord-aer-ost	Vilket ord är Ost?
+aegg	Ägg
+bygg-ordet-aegg	Bygg ordet Ägg!
+vilket-ord-aer-aegg	Vilket ord är Ägg?
 bro	Bro
 bygg-ordet-bro	Bygg ordet Bro!
 vilket-ord-aer-bro	Vilket ord är Bro?
+fyr	Fyr
+bygg-ordet-fyr	Bygg ordet Fyr!
+vilket-ord-aer-fyr	Vilket ord är Fyr?
+tak	Tak
+bygg-ordet-tak	Bygg ordet Tak!
+vilket-ord-aer-tak	Vilket ord är Tak?
+vaeg	Väg
+bygg-ordet-vaeg	Bygg ordet Väg!
+vilket-ord-aer-vaeg	Vilket ord är Väg?
+eld	Eld
+bygg-ordet-eld	Bygg ordet Eld!
+vilket-ord-aer-eld	Vilket ord är Eld?
+snoe	Snö
+bygg-ordet-snoe	Bygg ordet Snö!
+vilket-ord-aer-snoe	Vilket ord är Snö?
 saag	Såg
 bygg-ordet-saag	Bygg ordet Såg!
 vilket-ord-aer-saag	Vilket ord är Såg?
 sko	Sko
 bygg-ordet-sko	Bygg ordet Sko!
 vilket-ord-aer-sko	Vilket ord är Sko?
+kam	Kam
+bygg-ordet-kam	Bygg ordet Kam!
+vilket-ord-aer-kam	Vilket ord är Kam?
+naal	Nål
+bygg-ordet-naal	Bygg ordet Nål!
+vilket-ord-aer-naal	Vilket ord är Nål?
+pil	Pil
+bygg-ordet-pil	Bygg ordet Pil!
+vilket-ord-aer-pil	Vilket ord är Pil?
+kub	Kub
+bygg-ordet-kub	Bygg ordet Kub!
+vilket-ord-aer-kub	Vilket ord är Kub?
+laas	Lås
+bygg-ordet-laas	Bygg ordet Lås!
+vilket-ord-aer-laas	Vilket ord är Lås?
+rep	Rep
+bygg-ordet-rep	Bygg ordet Rep!
+vilket-ord-aer-rep	Vilket ord är Rep?
+sax	Sax
+bygg-ordet-sax	Bygg ordet Sax!
+vilket-ord-aer-sax	Vilket ord är Sax?
 oega	Öga
 bygg-ordet-oega	Bygg ordet Öga!
 vilket-ord-aer-oega	Vilket ord är Öga?
@@ -144,27 +210,9 @@ vilket-ord-aer-fot	Vilket ord är Fot?
 mun	Mun
 bygg-ordet-mun	Bygg ordet Mun!
 vilket-ord-aer-mun	Vilket ord är Mun?
-ost	Ost
-bygg-ordet-ost	Bygg ordet Ost!
-vilket-ord-aer-ost	Vilket ord är Ost?
-aegg	Ägg
-bygg-ordet-aegg	Bygg ordet Ägg!
-vilket-ord-aer-aegg	Vilket ord är Ägg?
-kam	Kam
-bygg-ordet-kam	Bygg ordet Kam!
-vilket-ord-aer-kam	Vilket ord är Kam?
-naal	Nål
-bygg-ordet-naal	Bygg ordet Nål!
-vilket-ord-aer-naal	Vilket ord är Nål?
-pil	Pil
-bygg-ordet-pil	Bygg ordet Pil!
-vilket-ord-aer-pil	Vilket ord är Pil?
-vaeg	Väg
-bygg-ordet-vaeg	Bygg ordet Väg!
-vilket-ord-aer-vaeg	Vilket ord är Väg?
-tak	Tak
-bygg-ordet-tak	Bygg ordet Tak!
-vilket-ord-aer-tak	Vilket ord är Tak?
+arm	Arm
+bygg-ordet-arm	Bygg ordet Arm!
+vilket-ord-aer-arm	Vilket ord är Arm?
 vagn	Vagn
 bygg-ordet-vagn	Bygg ordet Vagn!
 vilket-ord-aer-vagn	Vilket ord är Vagn?
@@ -177,6 +225,18 @@ vilket-ord-aer-raels	Vilket ord är Räls?
 buss	Buss
 bygg-ordet-buss	Bygg ordet Buss!
 vilket-ord-aer-buss	Vilket ord är Buss?
+cykel	Cykel
+bygg-ordet-cykel	Bygg ordet Cykel!
+vilket-ord-aer-cykel	Vilket ord är Cykel?
+kran	Kran
+bygg-ordet-kran	Bygg ordet Kran!
+vilket-ord-aer-kran	Vilket ord är Kran?
+hjul	Hjul
+bygg-ordet-hjul	Bygg ordet Hjul!
+vilket-ord-aer-hjul	Vilket ord är Hjul?
+skepp	Skepp
+bygg-ordet-skepp	Bygg ordet Skepp!
+vilket-ord-aer-skepp	Vilket ord är Skepp?
 katt	Katt
 bygg-ordet-katt	Bygg ordet Katt!
 vilket-ord-aer-katt	Vilket ord är Katt?
@@ -207,6 +267,21 @@ vilket-ord-aer-bjoern	Vilket ord är Björn?
 uggla	Uggla
 bygg-ordet-uggla	Bygg ordet Uggla!
 vilket-ord-aer-uggla	Vilket ord är Uggla?
+kanin	Kanin
+bygg-ordet-kanin	Bygg ordet Kanin!
+vilket-ord-aer-kanin	Vilket ord är Kanin?
+myra	Myra
+bygg-ordet-myra	Bygg ordet Myra!
+vilket-ord-aer-myra	Vilket ord är Myra?
+svan	Svan
+bygg-ordet-svan	Bygg ordet Svan!
+vilket-ord-aer-svan	Vilket ord är Svan?
+panda	Panda
+bygg-ordet-panda	Bygg ordet Panda!
+vilket-ord-aer-panda	Vilket ord är Panda?
+tiger	Tiger
+bygg-ordet-tiger	Bygg ordet Tiger!
+vilket-ord-aer-tiger	Vilket ord är Tiger?
 boll	Boll
 bygg-ordet-boll	Bygg ordet Boll!
 vilket-ord-aer-boll	Vilket ord är Boll?
@@ -234,9 +309,42 @@ vilket-ord-aer-hatt	Vilket ord är Hatt?
 ring	Ring
 bygg-ordet-ring	Bygg ordet Ring!
 vilket-ord-aer-ring	Vilket ord är Ring?
+hink	Hink
+bygg-ordet-hink	Bygg ordet Hink!
+vilket-ord-aer-hink	Vilket ord är Hink?
+spade	Spade
+bygg-ordet-spade	Bygg ordet Spade!
+vilket-ord-aer-spade	Vilket ord är Spade?
+taelt	Tält
+bygg-ordet-taelt	Bygg ordet Tält!
+vilket-ord-aer-taelt	Vilket ord är Tält?
+lampa	Lampa
+bygg-ordet-lampa	Bygg ordet Lampa!
+vilket-ord-aer-lampa	Vilket ord är Lampa?
+penna	Penna
+bygg-ordet-penna	Bygg ordet Penna!
+vilket-ord-aer-penna	Vilket ord är Penna?
+moessa	Mössa
+bygg-ordet-moessa	Bygg ordet Mössa!
+vilket-ord-aer-moessa	Vilket ord är Mössa?
+vante	Vante
+bygg-ordet-vante	Bygg ordet Vante!
+vilket-ord-aer-vante	Vilket ord är Vante?
+hand	Hand
+bygg-ordet-hand	Bygg ordet Hand!
+vilket-ord-aer-hand	Vilket ord är Hand?
 kaka	Kaka
 bygg-ordet-kaka	Bygg ordet Kaka!
 vilket-ord-aer-kaka	Vilket ord är Kaka?
+bulle	Bulle
+bygg-ordet-bulle	Bygg ordet Bulle!
+vilket-ord-aer-bulle	Vilket ord är Bulle?
+taarta	Tårta
+bygg-ordet-taarta	Bygg ordet Tårta!
+vilket-ord-aer-taarta	Vilket ord är Tårta?
+korv	Korv
+bygg-ordet-korv	Bygg ordet Korv!
+vilket-ord-aer-korv	Vilket ord är Korv?
 glass	Glass
 bygg-ordet-glass	Bygg ordet Glass!
 vilket-ord-aer-glass	Vilket ord är Glass?
@@ -252,6 +360,15 @@ vilket-ord-aer-paeron	Vilket ord är Päron?
 broed	Bröd
 bygg-ordet-broed	Bygg ordet Bröd!
 vilket-ord-aer-broed	Vilket ord är Bröd?
+majs	Majs
+bygg-ordet-majs	Bygg ordet Majs!
+vilket-ord-aer-majs	Vilket ord är Majs?
+tomat	Tomat
+bygg-ordet-tomat	Bygg ordet Tomat!
+vilket-ord-aer-tomat	Vilket ord är Tomat?
+melon	Melon
+bygg-ordet-melon	Bygg ordet Melon!
+vilket-ord-aer-melon	Vilket ord är Melon?
 moln	Moln
 bygg-ordet-moln	Bygg ordet Moln!
 vilket-ord-aer-moln	Vilket ord är Moln?
@@ -261,6 +378,15 @@ vilket-ord-aer-regn	Vilket ord är Regn?
 maane	Måne
 bygg-ordet-maane	Bygg ordet Måne!
 vilket-ord-aer-maane	Vilket ord är Måne?
+sten	Sten
+bygg-ordet-sten	Bygg ordet Sten!
+vilket-ord-aer-sten	Vilket ord är Sten?
+berg	Berg
+bygg-ordet-berg	Bygg ordet Berg!
+vilket-ord-aer-berg	Vilket ord är Berg?
+svamp	Svamp
+bygg-ordet-svamp	Bygg ordet Svamp!
+vilket-ord-aer-svamp	Vilket ord är Svamp?
 gata	Gata
 bygg-ordet-gata	Bygg ordet Gata!
 vilket-ord-aer-gata	Vilket ord är Gata?
@@ -279,12 +405,9 @@ vilket-ord-aer-hamn	Vilket ord är Hamn?
 kung	Kung
 bygg-ordet-kung	Bygg ordet Kung!
 vilket-ord-aer-kung	Vilket ord är Kung?
-cykel	Cykel
-bygg-ordet-cykel	Bygg ordet Cykel!
-vilket-ord-aer-cykel	Vilket ord är Cykel?
-kran	Kran
-bygg-ordet-kran	Bygg ordet Kran!
-vilket-ord-aer-kran	Vilket ord är Kran?
+drake	Drake
+bygg-ordet-drake	Bygg ordet Drake!
+vilket-ord-aer-drake	Vilket ord är Drake?
 spaarvagn	Spårvagn
 bygg-ordet-spaarvagn	Bygg ordet Spårvagn!
 vilket-ord-aer-spaarvagn	Vilket ord är Spårvagn?
@@ -303,6 +426,9 @@ vilket-ord-aer-vagnhall	Vilket ord är Vagnhall?
 foerare	Förare
 bygg-ordet-foerare	Bygg ordet Förare!
 vilket-ord-aer-foerare	Vilket ord är Förare?
+tunnel	Tunnel
+bygg-ordet-tunnel	Bygg ordet Tunnel!
+vilket-ord-aer-tunnel	Vilket ord är Tunnel?
 stopp	Stopp
 bygg-ordet-stopp	Bygg ordet Stopp!
 vilket-ord-aer-stopp	Vilket ord är Stopp?
@@ -324,12 +450,24 @@ vilket-ord-aer-blomma	Vilket ord är Blomma?
 stjaerna	Stjärna
 bygg-ordet-stjaerna	Bygg ordet Stjärna!
 vilket-ord-aer-stjaerna	Vilket ord är Stjärna?
+regnbaage	Regnbåge
+bygg-ordet-regnbaage	Bygg ordet Regnbåge!
+vilket-ord-aer-regnbaage	Vilket ord är Regnbåge?
+snoegubbe	Snögubbe
+bygg-ordet-snoegubbe	Bygg ordet Snögubbe!
+vilket-ord-aer-snoegubbe	Vilket ord är Snögubbe?
 raket	Raket
 bygg-ordet-raket	Bygg ordet Raket!
 vilket-ord-aer-raket	Vilket ord är Raket?
 flygplan	Flygplan
 bygg-ordet-flygplan	Bygg ordet Flygplan!
 vilket-ord-aer-flygplan	Vilket ord är Flygplan?
+helikopter	Helikopter
+bygg-ordet-helikopter	Bygg ordet Helikopter!
+vilket-ord-aer-helikopter	Vilket ord är Helikopter?
+traktor	Traktor
+bygg-ordet-traktor	Bygg ordet Traktor!
+vilket-ord-aer-traktor	Vilket ord är Traktor?
 lastbil	Lastbil
 bygg-ordet-lastbil	Bygg ordet Lastbil!
 vilket-ord-aer-lastbil	Vilket ord är Lastbil?
@@ -345,6 +483,9 @@ vilket-ord-aer-faerja	Vilket ord är Färja?
 nyckel	Nyckel
 bygg-ordet-nyckel	Bygg ordet Nyckel!
 vilket-ord-aer-nyckel	Vilket ord är Nyckel?
+paraply	Paraply
+bygg-ordet-paraply	Bygg ordet Paraply!
+vilket-ord-aer-paraply	Vilket ord är Paraply?
 gitarr	Gitarr
 bygg-ordet-gitarr	Bygg ordet Gitarr!
 vilket-ord-aer-gitarr	Vilket ord är Gitarr?
@@ -369,6 +510,18 @@ vilket-ord-aer-krabba	Vilket ord är Krabba?
 fjaeril	Fjäril
 bygg-ordet-fjaeril	Bygg ordet Fjäril!
 vilket-ord-aer-fjaeril	Vilket ord är Fjäril?
+igelkott	Igelkott
+bygg-ordet-igelkott	Bygg ordet Igelkott!
+vilket-ord-aer-igelkott	Vilket ord är Igelkott?
+snigel	Snigel
+bygg-ordet-snigel	Bygg ordet Snigel!
+vilket-ord-aer-snigel	Vilket ord är Snigel?
+nyckelpiga	Nyckelpiga
+bygg-ordet-nyckelpiga	Bygg ordet Nyckelpiga!
+vilket-ord-aer-nyckelpiga	Vilket ord är Nyckelpiga?
+citron	Citron
+bygg-ordet-citron	Bygg ordet Citron!
+vilket-ord-aer-citron	Vilket ord är Citron?
 pizza	Pizza
 bygg-ordet-pizza	Bygg ordet Pizza!
 vilket-ord-aer-pizza	Vilket ord är Pizza?

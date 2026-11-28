@@ -23,7 +23,7 @@ import {
   natkartaSVG, rullaVagnPaKarta, vaggKartaSVG
 } from "./karta.mjs";
 import {
-  SFX, KLIPP, klippProva, vackLjud, prata, stoppaTal,
+  SFX, KLIPP, klippProva, klippForbered, vackLjud, prata, stoppaTal,
   sagBokstav, ljudaOrd, svenskaRoster, rostEtikett
 } from "./ljud.mjs";
 import {
@@ -103,7 +103,7 @@ function konfetti(){
 
 /* ── Skärm- & modalhantering ─────────────────────────────────────────── */
 function visaSkarm(namn){
-  stoppaTal();
+  if(namn !== aktivSkarm) stoppaTal();
   aktivSkarm = namn;
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("is-active"));
   const el = $(`#screen-${namn}`);
@@ -639,6 +639,7 @@ function startaOrdRunda(linje, at, rikt, nastaStopp){
     kompisMood: "idle"
   };
   forberedFraga();
+  klippForbered(`Nästa hållplats: ${nastaStopp}`, p.name);
   visaSkarm("game");
   renderGame(true);
 }
@@ -1063,7 +1064,7 @@ function registreraRatt(q, direkt){
     text: `${berom} ${visaOrd}!${q.typ === "vagn-modell" && q.kortInfo && runda.nyttKortNr ? ` Du låste upp vagnkort #${q.kortInfo.nr}!` : ""}`
   };
   renderGame(false);
-  prata(`${berom} ${q.ord || q.svar}!`, { settings: p.settings, namn: p.name });
+  prata(`${berom} ${q.ord || q.svar}!`, { settings: p.settings, namn: p.name, fordrojning: 240 });
 }
 
 function registreraVisad(q){
@@ -1081,7 +1082,7 @@ function registreraVisad(q){
   spara();
   runda.feedback = { typ: "fel", text: `Rätt svar är ${formatOrd(q.ord || q.svar, stil)}! Nu rullar vi vidare.` };
   renderGame(false);
-  prata(`Rätt svar är ${q.ord || q.svar}!`, { settings: p.settings, namn: p.name });
+  prata(`Rätt svar är ${q.ord || q.svar}!`, { settings: p.settings, namn: p.name, fordrojning: 240 });
 }
 
 function bedomVal(q, valt){
@@ -1096,7 +1097,7 @@ function bedomVal(q, valt){
     const hint = forklaraFel(q, valt, stilAv(p));
     runda.feedback = { typ: "fel", text: hint.text };
     renderGame(false);
-    prata(hint.tal, { settings: p.settings, namn: p.name });
+    prata(hint.tal, { settings: p.settings, namn: p.name, fordrojning: 240 });
   }
 }
 
@@ -1117,7 +1118,7 @@ function bedomBygg(q, ordIn){
     }
     runda.byggIn = behall;
     renderGame(false);
-    prata(hint.tal, { settings: p.settings, namn: p.name });
+    prata(hint.tal, { settings: p.settings, namn: p.name, fordrojning: 240 });
   }
 }
 
@@ -1145,11 +1146,9 @@ async function gaVidareIrunda(){
   sistaBeloning = null;
   renderResa();
 
-  SFX.utrop();
   const nyttStopp = klarRunda.linje.stops[klarRunda.tillAt];
-  setTimeout(() => {
-    prata(`Nästa hållplats: ${nyttStopp}`, { settings: p.settings, namn: p.name });
-  }, 420);
+  SFX.utrop();
+  prata(`Nästa hållplats: ${nyttStopp}`, { settings: p.settings, namn: p.name, fordrojning: 460 });
 
   await rullaVagnPaKarta($("#natkarta-box"), klarRunda.linje, klarRunda.franAt, klarRunda.tillAt, {
     rikt: klarRunda.rikt,

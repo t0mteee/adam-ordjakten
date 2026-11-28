@@ -5,6 +5,7 @@
 
 import { stopKind } from "./gbg-data.mjs";
 import { formatOrd } from "./ord-data.mjs";
+import { ordBildSVG } from "./ordbilder.mjs";
 
 export const INK = "#13315C";
 export const GBG_BLA = "#1B68B3";
@@ -297,119 +298,14 @@ export function stoppSkyltHTML(namn, stil = "versaler"){
   </span>`;
 }
 
-/* ── Specialritade SVG-bilder för spårvagns- & stadsord ─────────────── */
-const CUSTOM_ORD_SVG = {
-  bro: `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
-    <rect y="68" width="120" height="32" fill="#4FA3D1"/>
-    <path d="M12 82q10-5 20 0t20 0M68 86q10-5 20 0t20 0" fill="none" stroke="#FFFDF7" stroke-width="2.8" stroke-linecap="round"/>
-    <path d="M8 68V46h104v22H92a18 18 0 0 0-32 0H60a18 18 0 0 0-32 0z" fill="#D99B66" stroke="${INK}" stroke-width="3.2"/>
-    <path d="M4 46h112" stroke="${INK}" stroke-width="4.5" stroke-linecap="round"/>
-    <path d="M18 46V28M42 46V28M78 46V28M102 46V28M18 32h84" fill="none" stroke="${INK}" stroke-width="2.8" stroke-linecap="round"/>
-  </svg>`,
-  vagn: `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
-    <path d="M8 82h104" stroke="${INK}" stroke-width="3.8" stroke-linecap="round"/>
-    <path d="M48 26l12-12 12 12M42 14h36" fill="none" stroke="${INK}" stroke-width="3.2" stroke-linecap="round"/>
-    <rect x="14" y="28" width="92" height="44" rx="11" fill="${GBG_BLA}" stroke="${INK}" stroke-width="3.5"/>
-    <rect x="17" y="38" width="86" height="18" fill="${GBG_VIT}"/>
-    <rect x="24" y="41" width="18" height="12" rx="3" fill="${GLAS}" stroke="${INK}" stroke-width="2.2"/>
-    <rect x="50" y="41" width="20" height="12" rx="3" fill="${GLAS}" stroke="${INK}" stroke-width="2.2"/>
-    <rect x="78" y="41" width="18" height="12" rx="3" fill="${GLAS}" stroke="${INK}" stroke-width="2.2"/>
-    <circle cx="34" cy="76" r="6.5" fill="${INK}"/><circle cx="86" cy="76" r="6.5" fill="${INK}"/>
-  </svg>`,
-  sparvagn: `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
-    <path d="M6 82h108" stroke="${INK}" stroke-width="3.8" stroke-linecap="round"/>
-    <path d="M74 26l10-12 10 12M68 14h32" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>
-    <rect x="10" y="28" width="44" height="44" rx="9" fill="${GBG_BLA}" stroke="${INK}" stroke-width="3.4"/>
-    <rect x="54" y="34" width="10" height="34" fill="${INK}"/>
-    <rect x="64" y="28" width="46" height="44" rx="9" fill="${GBG_BLA}" stroke="${INK}" stroke-width="3.4"/>
-    <rect x="13" y="38" width="38" height="16" fill="${GBG_SVART}"/>
-    <rect x="67" y="38" width="40" height="16" fill="${GBG_SVART}"/>
-    <rect x="18" y="40" width="12" height="11" rx="2" fill="${GLAS}"/><rect x="34" y="40" width="12" height="11" rx="2" fill="${GLAS}"/>
-    <rect x="72" y="40" width="13" height="11" rx="2" fill="${GLAS}"/><rect x="89" y="40" width="13" height="11" rx="2" fill="${GLAS}"/>
-    <circle cx="104" cy="62" r="3.5" fill="#F2B705"/>
-    <circle cx="28" cy="76" r="5.8" fill="${INK}"/><circle cx="60" cy="76" r="5.8" fill="${INK}"/><circle cx="92" cy="76" r="5.8" fill="${INK}"/>
-  </svg>`,
-  spar: `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
-    <rect width="120" height="100" fill="#EAE2D3"/>
-    <path d="M18 82h84M24 68h72M30 54h60M36 42h48M41 32h38M45 23h30" stroke="#8F6339" stroke-width="6" stroke-linecap="round"/>
-    <path d="M24 90L50 14M96 90L70 14" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>
-    <path d="M24 90L50 14M96 90L70 14" stroke="#CBD6E4" stroke-width="2.4" stroke-linecap="round"/>
-  </svg>`,
-  rals: `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
-    <path d="M16 74h88M24 56h72M32 38h56M40 22h40" stroke="#8F6339" stroke-width="7" stroke-linecap="round"/>
-    <path d="M26 88L48 12M94 88L72 12" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>
-    <path d="M26 88L48 12M94 88L72 12" stroke="#DCE5F0" stroke-width="2.4" stroke-linecap="round"/>
-  </svg>`,
-  skylt: `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
-    <path d="M60 54v38" stroke="${INK}" stroke-width="6.5" stroke-linecap="round"/>
-    <rect x="14" y="18" width="92" height="40" rx="10" fill="${GBG_BLA}" stroke="${INK}" stroke-width="3.6"/>
-    <rect x="20" y="24" width="80" height="28" rx="6" fill="#FFFDF7"/>
-    <circle cx="34" cy="38" r="9" fill="${GBG_BLA}"/>
-    <text x="34" y="42.5" text-anchor="middle" font-family="Fredoka, system-ui" font-weight="700" font-size="13" fill="#FFFDF7">H</text>
-    <path d="M50 34h40M50 43h28" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>
-  </svg>`,
-  perrong: `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
-    <rect y="64" width="120" height="36" fill="#DDD4C6" stroke="${INK}" stroke-width="3.2"/>
-    <path d="M0 74h120" stroke="#F2B705" stroke-width="5" stroke-dasharray="10 6"/>
-    <path d="M26 64V26h68v38" fill="none" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>
-    <rect x="20" y="18" width="80" height="12" rx="4" fill="${GBG_BLA}" stroke="${INK}" stroke-width="3.2"/>
-    <rect x="38" y="46" width="44" height="8" rx="3" fill="#D95D39" stroke="${INK}" stroke-width="2.8"/>
-    <path d="M44 54v10M76 54v10" stroke="${INK}" stroke-width="3.6"/>
-  </svg>`,
-  biljett: `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
-    <g transform="rotate(-7 60 50)">
-      <path d="M16 26h88v16a8 8 0 0 0 0 16v16H16V58a8 8 0 0 0 0-16z" fill="#F2B705" stroke="${INK}" stroke-width="3.6"/>
-      <path d="M44 28v44" stroke="${INK}" stroke-width="2.8" stroke-dasharray="5 5"/>
-      <rect x="54" y="38" width="38" height="8" rx="3" fill="#FFFDF7" stroke="${INK}" stroke-width="2.2"/>
-      <path d="M56 56h32" stroke="${INK}" stroke-width="3.8" stroke-linecap="round"/>
-      <circle cx="30" cy="50" r="7" fill="${GBG_BLA}" stroke="${INK}" stroke-width="2.4"/>
-    </g>
-  </svg>`,
-  vagnhall: `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
-    <rect x="12" y="34" width="96" height="54" rx="5" fill="#E8DCCB" stroke="${INK}" stroke-width="3.6"/>
-    <path d="M6 36h108L98 16H22z" fill="#D95D39" stroke="${INK}" stroke-width="3.6"/>
-    <rect x="22" y="48" width="32" height="40" rx="4" fill="${INK}"/>
-    <rect x="26" y="54" width="24" height="34" rx="4" fill="${GBG_BLA}" stroke="${INK}" stroke-width="2.2"/>
-    <rect x="30" y="60" width="16" height="10" rx="2" fill="${GLAS}"/>
-    <rect x="66" y="48" width="32" height="40" rx="4" fill="${INK}"/>
-    <rect x="70" y="54" width="24" height="34" rx="4" fill="#2A7A58" stroke="${INK}" stroke-width="2.2"/>
-    <rect x="74" y="60" width="16" height="10" rx="2" fill="${GLAS}"/>
-  </svg>`,
-  forare: `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
-    <circle cx="60" cy="56" r="24" fill="#FFE0C2" stroke="${INK}" stroke-width="3.6"/>
-    <path d="M36 42q24-26 48 0z" fill="${GBG_BLA}" stroke="${INK}" stroke-width="3.6"/>
-    <rect x="32" y="38" width="56" height="8" rx="4" fill="${INK}"/>
-    <circle cx="60" cy="31" r="6" fill="#F2B705" stroke="${INK}" stroke-width="2.2"/>
-    <circle cx="51" cy="56" r="3" fill="${INK}"/><circle cx="69" cy="56" r="3" fill="${INK}"/>
-    <path d="M51 67q9 8 18 0" fill="none" stroke="${INK}" stroke-width="3.2" stroke-linecap="round"/>
-    <path d="M34 90q26-14 52 0" fill="${GBG_BLA}" stroke="${INK}" stroke-width="3.6"/>
-  </svg>`,
-  gata: `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
-    <rect x="10" y="24" width="34" height="44" rx="4" fill="#E89E7A" stroke="${INK}" stroke-width="3.2"/>
-    <rect x="52" y="16" width="32" height="52" rx="4" fill="#F2CE7E" stroke="${INK}" stroke-width="3.2"/>
-    <rect x="90" y="30" width="22" height="38" rx="4" fill="#8FBED9" stroke="${INK}" stroke-width="3.2"/>
-    <rect y="68" width="120" height="32" fill="#C4B9A9" stroke="${INK}" stroke-width="3.2"/>
-    <path d="M8 84h20M44 84h24M84 84h26" stroke="#FFFDF7" stroke-width="4" stroke-linecap="round"/>
-  </svg>`,
-  torg: `<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round">
-    <rect y="68" width="120" height="32" fill="#DFD4C0" stroke="${INK}" stroke-width="3.2"/>
-    <rect x="26" y="42" width="68" height="32" fill="#FFFDF7" stroke="${INK}" stroke-width="3.2"/>
-    <path d="M18 44h84l-10-20H28z" fill="#D95D39" stroke="${INK}" stroke-width="3.2"/>
-    <circle cx="42" cy="58" r="6.5" fill="#F2B705" stroke="${INK}" stroke-width="2.2"/>
-    <circle cx="60" cy="58" r="6.5" fill="#2D8A56" stroke="${INK}" stroke-width="2.2"/>
-    <circle cx="78" cy="58" r="6.5" fill="#1B68B3" stroke="${INK}" stroke-width="2.2"/>
-  </svg>`
-};
-
 export function ordBildHTML(entry, stor = false){
   if(!entry) return "";
-  const bg = entry.bg || "#F6EFE2";
-  const b = entry.bild || "✨";
+  const b = entry.bild || "";
   if(b.startsWith("svg:")){
     const key = b.slice(4);
-    return `<span class="ord-bild ${stor ? "stor" : ""}" style="background:${bg}">${CUSTOM_ORD_SVG[key] || ""}</span>`;
+    return `<span class="ord-bild ${stor ? "stor" : ""}">${ordBildSVG(key)}</span>`;
   }
-  return `<span class="ord-bild emoji ${stor ? "stor" : ""}" style="background:${bg}" aria-hidden="true">${b}</span>`;
+  return `<span class="ord-bild emoji ${stor ? "stor" : ""}" aria-hidden="true">${b}</span>`;
 }
 
 /* ── Vykort-scener (reserv till riktiga foton) ───────────────────────── */

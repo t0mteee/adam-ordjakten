@@ -1,6 +1,6 @@
 /* Ordjaktens servicearbetare — gör att spelet fungerar utan nätverk.
    Höj VERSION när spelet ändras, så hämtas det nya vid nästa start. */
-const VERSION = "ordjakten-v2-r2";
+const VERSION = "ordjakten-v2-r3";
 const SKAL = [
   "./",
   "./index.html",
@@ -12,6 +12,9 @@ const SKAL = [
   "./js/app.mjs",
   "./js/gbg-data.mjs",
   "./js/ord-data.mjs",
+  "./js/ordbilder.mjs",
+  "./js/ordbilder-1.mjs",
+  "./js/ordbilder-2.mjs",
   "./js/konst.mjs",
   "./js/uppgifter.mjs",
   "./js/karta.mjs",

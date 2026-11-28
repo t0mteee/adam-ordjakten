@@ -564,17 +564,15 @@ p{ margin: 0; }
   gap: 14px; margin: 8px 0 18px; min-height: 112px;
 }
 
-/* Ordbild på varmt illustrationskort */
+/* Ordbild som nordisk bilderboks-illustration */
 .ord-bild{
-  display: grid; place-items: center;
-  width: 108px; height: 108px; border-radius: 22px;
-  border: 2px solid rgba(19,49,92,.14); box-shadow: var(--shadow-sm);
-  overflow: hidden;
+  display: block;
+  width: 120px; height: 100px; border-radius: 18px;
+  border: 2px solid rgba(19,49,92,.18); box-shadow: var(--shadow-sm);
+  overflow: hidden; background: #FFFDF7;
 }
-.ord-bild.stor{ width: 136px; height: 136px; border-radius: 26px; }
-.ord-bild.emoji{ font-size: 3.5rem; line-height: 1; }
-.ord-bild.stor.emoji{ font-size: 4.7rem; }
-.ord-bild svg{ width: 88%; height: 88%; display: block; }
+.ord-bild.stor{ width: 162px; height: 135px; border-radius: 22px; }
+.ord-bild svg{ width: 100%; height: 100%; display: block; }
 
 /* Träbrickor i ljudnings-spår med glidande minispårvagn! */
 .ljud-rack{
@@ -660,8 +658,7 @@ p{ margin: 0; }
 .choice-grid{ display: grid; gap: 11px; grid-template-columns: repeat(2, 1fr); }
 .choice-grid.cols-3{ grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
 .choice-grid.cols-1{ grid-template-columns: 1fr; }
-.choice-grid.cols-3 .ord-bild{ width: min(86px, 100%); height: auto; aspect-ratio: 1 / 1; border-radius: 18px; }
-.choice-grid.cols-3 .ord-bild.emoji{ font-size: clamp(2.1rem, 8vw, 3rem); }
+.choice-grid.cols-3 .ord-bild{ width: 100%; max-width: 112px; height: auto; aspect-ratio: 6 / 5; border-radius: 14px; }
 
 .choice-btn{
   min-width: 0;
